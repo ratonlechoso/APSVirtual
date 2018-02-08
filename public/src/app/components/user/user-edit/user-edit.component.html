@@ -1,0 +1,14 @@
+<div class="container">
+<h3>User edit component</h3>
+<div class="form-group">
+<form (submit)="editar()">
+  <input class="form-control" type="text" name="first_name" [(ngModel)]="editUser.first_name">
+  <input class="form-control" type="text" name="last_name" [(ngModel)]="editUser.last_name">
+  <input class="form-control"type="text" name="email" [(ngModel)]="editUser.email">
+
+  <button class="btn btn-secondary" type="submit">
+    Udpate
+  </button>
+</form>
+</div>
+</div>

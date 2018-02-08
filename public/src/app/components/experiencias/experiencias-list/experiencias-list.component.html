@@ -1,0 +1,100 @@
+<app-navigation-menu> </app-navigation-menu>
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/experiencias']">
+            Experiencias ApS
+          </a>
+        </li>
+        <li>Listado</li>
+    </ul>
+  </div>
+
+  <ul class="ambitos" *ngIf="listarExperiencias == false">
+    <h2>Listado de experiencias desarrolladas en el ámbito del Apredizaje-Servicio</h2>
+    <p>Enlazadas a cada una de las areas de conocimiento que figuran abajo, se pueden consultar las esperiencias desarrolladas...
+    </p>
+    <br>
+    <li class="ambitos">
+      <a class="ambitos" (click)="open(1)">
+        <span class="fa fa-bank fa-lg fa-fw"></span> Artes y Humanidades</a>
+    </li>
+    <li class="ambitos">
+      <a class="ambitos" (click)="open(2)">
+        <span class="fa fa-flask fa-lg fa-fw"></span> Ciencias</a>
+    </li>
+    <li class="ambitos">
+      <a class="ambitos" (click)="open(3)">
+        <span class="fa fa-heartbeat fa-lg fa-fw"></span> Ciencias de la Salud</a>
+    </li>
+    <li class="ambitos">
+      <a class="ambitos" (click)="open(4)">
+        <span class="fa fa-balance-scale fa-lg fa-fw"></span> Ciencias Sociales y Políticas</a>
+    </li>
+    <li class="ambitos">
+      <a class="ambitos" (click)="open(5)">
+        <span class="fa fa-gear fa-lg fa-fw"></span> Arquitectura e Ingeniería</a>
+    </li>
+  </ul>
+
+  <div class="container-experiencias" *ngIf="listarExperiencias">
+    <h2>{{nombreLista}}</h2>
+    <br>
+    <div *ngIf="experiencias.length > 0">
+      <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 3, currentPage: p}; let i = index">
+        <h3>{{experiencia.nombre}}
+          <div *ngIf="user">
+            <span class="fa fa-remove pull-right" *ngIf="user.roles == 'administrador'" (click)="borrar(experiencia.id)"></span>
+          </div>
+        </h3>
+        <h3>{{experiencia.universidad}} - {{experiencia.especialidad}}</h3>
+        <h4 *ngIf="experiencia.coordinadores.length > 1">Coordinadores</h4>
+        <h4 *ngIf="experiencia.coordinadores.length == 1">Coordinador</h4>
+        <div *ngFor="let coordinador of experiencia.coordinadores">
+          <p>{{coordinador.nombre}} ({{coordinador.email}})</p>
+        </div>
+        <h4>Destinatario: </h4>
+        <p>{{experiencia.destinatario}}</p>
+        <h4>Descripción:</h4>
+        <p>{{experiencia.descripcion}}</p>
+        <br>
+      </div>
+    </div>
+    <div *ngIf="experiencias.length == 0">
+      <h3>NO HAY NINGUNA EXPERIENCIA EN ESTE AMBITO</h3>
+    </div>
+    <br>
+    <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
+      screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+    <br>
+  </div>
+</div>
+
+
+
+<!-- ************************************************************************** -->
+<!-- MODAL -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
+  (onOpen)="modalDeleteOpened()" #modal>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>¿Borrar experiencia? Si acepta esta acción no podrá revertirla</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalDelete.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalDelete.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

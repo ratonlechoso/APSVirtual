@@ -1,0 +1,67 @@
+<div class="container">
+
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> </i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>Contacto</li>
+    </ul>
+  </div>
+
+  <div class="col-md-6 col-md-offset-3">
+    <div class="well well-sm">
+      <form [formGroup]="rForm" class="form-horizontal"  method="get">
+        <fieldset>
+          <h2>Formulario de contacto</h2>
+
+          <!-- Name input-->
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="">Tu nombre</label>
+            <div class="alert alert-danger" *ngIf="!rForm.controls['name'].valid && rForm.controls['name'].touched">Introduce un nombre</div>              
+            <div class="col-md-9">
+              <input id="name" formControlName="name" type="text" placeholder="Nombre" class="form-control">
+            </div>
+          </div>
+
+          <!-- Email input-->
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="email">Tu E-mail</label>
+            <div class="row alert alert-danger" *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched">Email incorrecto</div>              
+            <div class="col-md-9">
+              <input id="email" formControlName="email" type="text" placeholder="E-mail" class="form-control">
+            </div>
+          </div>
+
+          <!-- Message body -->
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="message">Mensaje</label>
+            <div class="col-md-9">
+              <textarea class="form-control" id="message" formControlName="message" placeholder="Por favor, introduce aquí tu mensaje aquí" rows="5"></textarea>
+            </div>
+          </div>
+
+          <div class="row">
+              <div class="col-md-9">
+                  <button type="submit" class="button expanded submit" [disabled]="!rForm.valid" (click)="enviar()">
+                      <i class="fa fa-envelope"></i>  Enviar
+                  </button>
+              </div>
+              </div>
+      
+          <!-- Form actions -->
+          <!-- <div class="form-group">
+            <div class="col-md-12 text-right">
+              <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+            </div>
+          </div> -->
+        </fieldset>
+      </form>
+      <div [ngClass]="(alerta)" *ngIf="message">{{message}}</div>               
+      <br>
+    </div>
+  </div>
+</div>

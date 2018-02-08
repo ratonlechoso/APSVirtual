@@ -1,0 +1,8 @@
+.error-msg {
+    color: #a94442;
+}
+.fix-error-icon {
+    position: absolute;
+    top: 30px;
+    float: right;
+}

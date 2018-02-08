@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>Restablecer contraseña</li>
+    </ul>
+  </div>
+  <div class="container-center col-md-5">
+    <h2 class="animated pulse">Restablecer contraseña</h2>
+
+    <form [formGroup]="rForm">
+      <div class="form-container">
+        <div class="row columns">
+          <label>Nueva contraseña</label>
+          <div class="alert alert-danger" *ngIf="!rForm.controls['newPassword'].valid && rForm.controls['newPassword'].touched">{{advert1}}</div>
+          <input placeholder="Nueva contraseña" class="form-control" type="password" formControlName="newPassword" ng-required="">
+          <label>Confirmar nueva contraseña</label>
+          <div class="alert alert-danger" *ngIf="!rForm.controls['confirmPassword'].valid && rForm.controls['confirmPassword'].touched">Nueva contraseña y su confirmación no coinciden</div>
+          <input placeholder="Confirmar nueva" class="form-control" type="password" formControlName="confirmPassword">
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="button expanded submit" [disabled]="!rForm.valid" (click)="resetPass(user)">
+          <i class="fa fa-check"></i> Restablecer contraña
+        </button>
+      </div>
+    </form>
+    <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+  </div>

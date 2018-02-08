@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="row">
+        <ul class="breadcrumb">
+            <li routerLinkActive="active">
+                <a [routerLink]="['/home']">
+                    <i class="fa fa-home"> </i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>Perfil de usuario</li>
+        </ul>
+    </div>
+
+    <div class="container-center col-md-4">
+        <h2>Perfil de usuario</h2>
+
+        <p class="label-for">Nombre</p>
+        <h4 class="ml-1">{{user.first_name}}</h4>
+        <p class="label-for">Apellidos</p>
+        <h4 class="ml-1">{{user.last_name}}</h4>
+        <p class="label-for">Email</p>
+        <h4 class="ml-1">{{user.email}}</h4>
+        <p class="label-for">Rol de usuario</p>
+        <h4 class="ml-1">{{user.roles}}</h4>
+
+        <button type="button" class="button expanded submit" value="Aceptar cambios" (click)="edit()">
+            <i class="fa fa-pencil-square-o fa-lg fa-inverse"></i> Editar
+        </button>
+
+        <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="nav-side-menu animated pulse">
+  <div class="brand">EXPERIENCIAS EN APS</div>
+  <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+  <div class="menu-list">
+    <ul id="menu-content" class="menu-content collapse out">
+      <li data-toggle="collapse" data-target="#ambitos" routerLinkActive="active" class="collapsed">
+        <a [routerLink]="['/experiencias-list']">
+          <i class="fa fa-list fa-lg"></i> Listado
+          <span class="arrow"></span>
+        </a>
+      </li>
+      <ul class="sub-menu collapse" routerLinkActive="active" id="ambitos">
+        <li [routerLink]="['/experiencias-list', {ambito_id: 1}]">
+          <span class="fa fa-bank fa-fw"></span> Artes y Humanidades</li>
+        <li [routerLink]="['/experiencias-list', {ambito_id: 2}]">
+          <span class="fa fa-flask fa-fw"></span> Ciencias</li>
+        <li [routerLink]="['/experiencias-list', {ambito_id: 3}]">
+          <span class="fa fa-heartbeat fa-fw"></span> Ciencias de la Salud</li>
+        <li [routerLink]="['/experiencias-list', {ambito_id: 4}]">
+          <span class="fa fa-balance-scale fa-fw "></span> Ciencias Sociales y Políticas</li>
+        <li [routerLink]="['/experiencias-list', {ambito_id: 5}]">
+          <span class="fa fa-gear fa-fw"></span> Arquitectura e Ingeniería</li>
+      </ul>
+      <li class="nav-item active" routerLinkActive="active">
+        <a [routerLink]="['/experiencias-search']">
+          <i class="fa fa-search fa-lg"></i> Buscar
+        </a>
+      </li>
+      <div *ngIf="user.roles != null">
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'administrador' || user.roles == 'universidad'">
+          <a [routerLink]="['/experiencias-add']">
+            <i class="fa fa-plus fa-lg"></i> Añadir nueva
+          </a>
+        </li>
+      </div>
+    </ul>
+  </div>
+  <router-outlet></router-outlet>
+</div>

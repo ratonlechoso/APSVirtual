@@ -1,0 +1,35 @@
+.navbar  {
+    background: #4d4944; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, #4d4944 , rgb(49, 49, 49)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, #4d4944, rgb(49, 49, 49)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, #4d4944,rgb(49, 49, 49)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, #4d4944 ,rgb(49, 49, 49)); /* Standard syntax */
+    color: white;
+    padding-bottom: 0px; 
+}
+.navbar.navbar-expand-md {
+    padding-top: 5px;
+    padding-bottom: 2px; 
+}
+.login-name {
+    font-weight: bold;
+    color:pink
+}
+#imgLogo {
+    margin-left: 50px;
+}
+a#title.navbar-brand {
+    font-size: 180%;
+    font-weight: bold;
+    color: #eeeeee !important;
+}
+
+img {
+    margin-right: 25px;
+}
+
+ul.dropdown-menu.show a.nav-link {
+    padding: 0.25rem 1.5rem;
+    color: black;
+}
+

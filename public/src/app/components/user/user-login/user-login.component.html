@@ -1,0 +1,42 @@
+<div class="container">
+<div class="row">
+    <ul class="breadcrumb">
+        <li routerLinkActive="active"><a [routerLink]="['/register']">
+            <i class="fa fa-home"> Home </i>
+        </a>
+        </li>
+        <li>Login</li>
+    </ul>  
+</div>    
+<div class="col-md-4">
+  <h2 class="animated pulse">Identifícate</h2>
+  <form [formGroup]="rForm" >
+    <div class="row columns">
+            <div class="alert alert-danger" *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched">{{advert1}}</div>              
+            <input
+                placeholder="Email"
+                class="form-control"
+                type="email"
+                formControlName="email">
+            <div class="alert alert-danger" *ngIf="!rForm.controls['password'].valid && rForm.controls['password'].touched">{{advert2}}</div>               
+            <input
+                placeholder="Contraseña"
+                class="form-control"
+                type="password"
+                value= ""
+                formControlName="password"
+                ng-required="">
+    </div>
+    <a  class="normal" (click)="forgotPwd(loginUser)">¿Olvidaste la contraseña?</a>
+    <div class="row">
+        <div class="col-md-11">
+            <button type="button" class="button expanded submit" [disabled]="!rForm.valid" (click)="login(loginUser)">
+                <i class="fa fa-check"></i> Login
+            </button>
+        </div>
+    </div>
+  </form>
+  <div [ngClass]= "(alerta)"
+     *ngIf="message">{{message}}</div>               
+</div>
+</div>

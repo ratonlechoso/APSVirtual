@@ -1,0 +1,24 @@
+<div class="container">
+<h1>Componente usuario </h1>
+
+<div class="row">
+  <div class="col-md-8">
+    <h2>Lista de usuarios</h2>
+    <pre>
+      {{ users | json }}
+    </pre>
+  </div>
+
+  <!-- el evento de usuario createNewUserEvent lanza el metodo create con el paramentro event -->
+  <div class="col-md-4">
+    <app-user-new (createNewUserEvent)="create($event)" ></app-user-new>
+  </div>
+</div>
+<br>
+<br>
+<app-user-list 
+  [users]="users"
+  (destroyUserEvent)="destroy($event)"
+  (actualizarUserEvent)="update($event)"
+></app-user-list>
+</div>

@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> </i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>Perfil de usuario</li>
+    </ul>
+  </div>
+  <div class="container-center col-md-4">
+    <h2>Perfil de usuario</h2>
+
+    <form [formGroup]="rForm" (ngSubmit)="updateUser(newUser)">
+
+      <div class="form-group">
+        <label for="first_name" class="required">Nombre</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['first_name'].valid && rForm.controls['first_name'].touched">El campo nombre es obligatorio</div>
+        <input placeholder="Nombre" class="form-control" type="text" [(ngModel)]="updateUser.first_name" formControlName="first_name">
+      </div>
+
+      <div class="form-group">
+        <label for="last_name" class="required">Apellidos</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['last_name'].valid && rForm.controls['last_name'].touched">{{advert2}}</div>
+        <input placeholder="Apellidos" class="form-control" type="text" [(ngModel)]="updateUser.last_name" formControlName="last_name">
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="required">Email</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['email'].valid && rForm.controls['email'].touched">{{advert2}}</div>
+        <input placeholder="Email" class="form-control" type="email" [(ngModel)]="updateUser.email" formControlName="email">
+      </div>
+
+      <div class="form-group">
+        <label for="rol" class="required">Roles</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['rol'].valid && rForm.controls['rol'].touched">{{advert2}}</div>
+        <select class="form-control minimal" formControlName="rol">
+          <!-- <option {{updateUser.roles}}</option> -->
+          <option *ngFor="let rol of roles" [ngValue]="rol" [selected]="">
+            {{ rol.nombre }}
+          </option>
+        </select>
+      </div>
+
+
+      <div class="form-group">
+        <label for="password" class="required">Contraseña</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['password'].valid && rForm.controls['password'].touched">{{advert2}}</div>
+        <input placeholder="Contraseña" class="form-control" type="password" [(ngModel)]="updateUser.password" formControlName="password">
+        <label for="confirm-password" class="required">Confirmar contraseña</label>
+        <div class="alert alert-danger" *ngIf="!rForm.controls['confirm-password'].valid && rForm.controls['confirm-password'].touched">Nueva contraseña y su confirmación no coinciden</div>
+        <input placeholder="Contraseña" class="form-control" type="password" formControlName="confirm-password">
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" class="button expanded submit" [disabled]="!rForm.valid" (click)="update()">
+            <i class="fa fa-check"></i> Actualizar
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" class="button expanded cancel" (click)=goback();>
+            <i class="fa fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+  </div>
+</div>

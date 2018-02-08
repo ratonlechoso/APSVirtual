@@ -1,0 +1,24 @@
+<h3>User list component</h3>
+<div class="row" *ngFor="let user of users">
+
+  <div class="col-md-8">
+    {{user.id}} - {{user.first_name}} - {{user.last_name}} - {{user.email}}
+  </div>
+
+  <div class="col-md-4">
+    <button class="btn btn-danger" (click)="destroy(user)">
+      Delete
+    </button>
+    <button class="btn btn-success" (click)="user.editable = !user.editable">
+      <span class="fa fa-trash-o" aria-hidden="true"></span>
+      update
+    </button>
+  </div>
+
+  <br>
+
+  <app-user-edit *ngIf="user.editable" [user]="user" (updateUserEvent)="actualizar($event)">
+    <br>
+  </app-user-edit>
+  <br>
+</div>
