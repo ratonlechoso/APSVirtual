@@ -50,7 +50,7 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     this.ambitoId = 0;
     this.activatedRoute.params.subscribe((params: Params) => {
         this.ambitoId = params['ambito_id'];
-        console.log("Ambito: ",this.ambitoId);
+        this.open()
     });
     
   }
@@ -69,9 +69,10 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     //this.loadStudentsByPage(this.page, this.itemsPerPage);
   }
 
-  open(ambitoId) {
+  open() {
     this.listarExperiencias = true;
-    this.subscriptionToGetExp = this.expService.getExperiencias(ambitoId).subscribe( (res) => {
+    console.log("open recibe el ambito: ", this.ambitoId)
+    this.subscriptionToGetExp = this.expService.getExperiencias(this.ambitoId).subscribe( (res) => {
       console.log("respuesta de getExperiencias: ", res)
       if (res['success'] == true) {
         this.experiencias = res['exp']
@@ -79,7 +80,7 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
       }
     })
 
-    switch (ambitoId) {
+    switch (this.ambitoId) {
       case 1:
         this.nombreLista = "Artes y Humanidades"
         break;

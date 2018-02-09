@@ -11,97 +11,61 @@ var async = require('async')
 
 const sqlConn = require('../../DB/sqlConnection')
 
+
 router.get('/experiencias', (req, res) => {
   let ambitoId = req.body.id || req.query.id || req.headers['x-access-token'];
-  console.log("listando experiencias del ambito ", ambitoId )
-  try {
+  console.log("listando experiencias del ambito ", ambitoId)
+  //try {
+  let sQuery =
+    "SELECT " +
+    "destinatario, fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
+    "experiencias.descripcion as `desc`, " +
+    "ambitos.nombre as `nombre_ambito`, " +
+    "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
+    "FROM experiencias " +
+    "INNER JOIN ambitos on experiencias.ambito_id = ambitos.id " +
+    "INNER JOIN especialidades on experiencias.especialidad_id = especialidades.id " +
+    "INNER JOIN universidades on experiencias.universidad_id = universidades.id  " +
+    "WHERE experiencias.ambito_id = " + ambitoId
+
+  sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
+    if (err) {
+      console.log("error: ", err)
+      let content = {
+        success: false,
+        message: 'Error listando experiencias',
+        err: err
+      };
+    }
+    //TRATAMIENTO DE LA ASINCRONIA: 
+    //Por cada fila en exp extrae un element sobre el que realizar las consultas de coordinador y de ficheros multimedia
+    //Por medio del waterfall nos aseguramos de tener la estructura de datos comepleta antes de hacer push en el objeto resultado
     var experiencias = [];
-    let sQuery =
-      "SELECT " +
-      "destinatario, fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
-      "experiencias.descripcion as `desc`, " +
-      "ambitos.nombre as `nombre_ambito`, " +
-      "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
-      "FROM experiencias " +
-      "INNER JOIN ambitos on experiencias.ambito_id = ambitos.id " +
-      "INNER JOIN especialidades on experiencias.especialidad_id = especialidades.id " +
-      "INNER JOIN universidades on experiencias.universidad_id = universidades.id  " +
-      "WHERE experiencias.ambito_id = "+ ambitoId
-
-    sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
-      if (err) {
-        console.log("error: ", err)
-        let content = {
-          success: false,
-          message: 'Error listando experiencias',
-          err: err
-        };
-      }
-
-      //TRATAMIENTO DE LA ASINCRONIA: 
-      //Por cada fila en exp extrae un element sobre el que realizar las consultas de coordinador y de ficheros multimedia
-      //Por medio del waterfall nos aseguramos de tener la estructura de datos comepleta antes de hacer push en el objeto resultado
-      async.eachSeries(exp, (element, callback) => {
-        async.waterfall(
-          [
-            (callback) => {
-              var experiencia = expSchema;
-              experiencia.setExperiencia(element)
-              let sQuery = "SELECT coordinadores.id, nombre, email " +
-                "FROM coordinadores " +
-                "INNER JOIN experiencia_coordinador ON coordinadores.id = experiencia_coordinador.coordinador_id " +
-                "WHERE ?";
-
-              sqlConn.pool.query(sQuery, { 'experiencia_id': element.idExpe }, function (err, coord, fields) { //SELECT COORDINADORES
-                if (err) {
-                  console.log("error listando coordinadores: ", err)
-                  let content = {
-                    success: false,
-                    message: 'Error listando coordinadores',
-                    err: err
-                  };
-                  res.send(content)
-                  return
-                }
-                //console.log("coordinadores: ", coord)
-                experiencia.setCoordinadores(coord)
-                callback(null, experiencia)
-              }) //sql
-
-            },
-            (expe, callback) => {
-              experiencias.push(expe)
-              callback(null, experiencias)
-            }
-          ], (err, expe) => {
-            if (err) {
-              console.log("error: ", err)
-              return res.json(err);
-            }
-            callback()
-          }
-        )
-      },
-        (err, expe) => {
-          if (err) {
-            console.log("error: ", err)
-            return res.json(err);
-          }
-          console.log("EXPERIENCIAS", JSON.stringify(experiencias))
-          let content = {
-            exp: (experiencias),
-            success: true,
-            message: 'ok'
-          };
-          console.log("devolviendo experiencias...")
-          res.send(content)
-          return
-        }); //EACH
-
-    }) //SELECT EXP
-  } catch (err) {
-    console.log("Error obteniendo experiencias: ", err)
-  }
+    var experiencia = expSchema;
+    async.eachSeries(exp, (element, eachCallback) => {
+      let sQuery = "SELECT coordinadores.id, nombre, email " +
+        "FROM coordinadores " +
+        "INNER JOIN experiencia_coordinador ON coordinadores.id = experiencia_coordinador.coordinador_id " +
+        "WHERE ?";
+      sqlConn.pool.query(sQuery, { 'experiencia_id': element.idExpe }, function (err, coord, fields) { //SELECT COORDINADORES
+        if (err) eachCallback(err)
+        experiencia.setExperiencia(element)
+        experiencia.setCoordinadores(coord)
+        experiencias.push(JSON.parse(JSON.stringify(experiencia)))
+        eachCallback(null, experiencias)
+      }) //sql 
+    }, function (err) {
+      if (err) res.send(err)
+      let content = {
+        exp: (experiencias),
+        success: true,
+        message: 'ok'
+      };
+      res.send(content)
+      return
+    }
+    ) //EACH
+  }) //SELECT EXP
 });
 
 router.post('/experiencias', (req, res) => {
@@ -240,7 +204,7 @@ router.delete('/experiencias', (req, res) => {
     let expId = req.body.id || req.query.id || req.headers['x-access-token'];
     sQuery = "DELETE FROM `experiencias` " +
       "WHERE ? "
-      console.log("expId vale: ", expId)
+    console.log("expId vale: ", expId)
     sqlConn.pool.query(sQuery, { 'id': expId }, function (err, deletedExp) { //Eliminar experiencia
       console.log("datos de callback del delete: ", deletedExp)
       if (err) {

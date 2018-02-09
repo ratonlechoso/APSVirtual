@@ -1,14 +1,42 @@
-  <app-navigation-menu> </app-navigation-menu>
-  <div class="container">
+<app-navigation-menu> </app-navigation-menu>
+<div class="container">
     <div class="row">
         <ul class="breadcrumb">
-            <li routerLinkActive="active"><a [routerLink]="['/home']">
-                <i class="fa fa-home"> Home </i>
-            </a>
+            <li routerLinkActive="active">
+                <a [routerLink]="['/home']">
+                    <i class="fa fa-home"> Home </i>
+                </a>
             </li>
             <li>Experiencias APS</li>
-        </ul>  
-    </div>    
+        </ul>
+    </div>
     <router-outlet></router-outlet>
-  </div>
 
+
+    <ul class="ambitos" >
+        <h2>Listado de experiencias desarrolladas en el ámbito del Apredizaje-Servicio</h2>
+        <p>Enlazadas a cada una de las areas de conocimiento que figuran abajo, se pueden consultar las esperiencias desarrolladas...
+        </p>
+        <br>
+        <li class="ambitos">
+            <a class="ambitos" [routerLink]="['/experiencias-list', {ambito_id: 1}]">
+                <span class="fa fa-bank fa-lg fa-fw"></span> Artes y Humanidades</a>
+        </li>
+        <li class="ambitos">
+            <a class="ambitos" [routerLink]="['/experiencias-list', {ambito_id: 2}]">
+                <span class="fa fa-flask fa-lg fa-fw"></span> Ciencias</a>
+        </li>
+        <li class="ambitos">
+            <a class="ambitos" [routerLink]="['/experiencias-list', {ambito_id: 3}]">
+                <span class="fa fa-heartbeat fa-lg fa-fw"></span> Ciencias de la Salud</a>
+        </li>
+        <li class="ambitos">
+            <a class="ambitos" [routerLink]="['/experiencias-list', {ambito_id: 4}]">
+                <span class="fa fa-balance-scale fa-lg fa-fw"></span> Ciencias Sociales y Políticas</a>
+        </li>
+        <li class="ambitos">
+            <a class="ambitos" [routerLink]="['/experiencias-list', {ambito_id: 5}]">
+                <span class="fa fa-gear fa-lg fa-fw"></span> Arquitectura e Ingeniería</a>
+        </li>
+    </ul>
+</div>
