@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
 import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
 // import { NgbModule } from '@ng- bootstrap/ng-bootstrap';
@@ -14,6 +15,7 @@ import { AuthService } from './auth.service';
 import { CommonService } from './common.service';
 import { UserService } from './components/user/user.service'
 import { ExpService } from './components/experiencias/exp.service'
+import { NgbDateCustomParserFormatter } from './components/tools/NgbDateCustomParserFormatter'
 
 //RUTAS 
 import {AppRoutingModule} from "./app.routes" 
@@ -41,13 +43,13 @@ import { BsModalModule, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { ExperienciasListComponent } from './components/experiencias/experiencias-list/experiencias-list.component';
 import { ExperienciasComponent } from './components/experiencias/experiencias.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { ExperienciasAddComponent } from './components/experiencias/experiencias-add/experiencias-add.component';
 import { ExperienciasSearchComponent } from './components/experiencias/experiencias-search/experiencias-search.component';
 import { EnlacesExternosComponent } from './components/enlaces-externos/enlaces-externos.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
 import { ExperienciasCreateComponent } from './components/experiencias/experiencias-create/experiencias-create.component';
 import { TermsComponent } from './components/terms/terms.component';
 import { PoliticsComponent } from './components/politics/politics.component';
+import { ExperienciasUpdateComponent } from './components/experiencias/experiencias-update/experiencias-update.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -72,13 +74,13 @@ import { PoliticsComponent } from './components/politics/politics.component';
     NavigationMenuComponent,
     ExperienciasListComponent,
     ExperienciasComponent,
-    ExperienciasAddComponent,
     ExperienciasSearchComponent,
     EnlacesExternosComponent,
     ContactoComponent,
     ExperienciasCreateComponent,
     TermsComponent,
-    PoliticsComponent
+    PoliticsComponent,
+    ExperienciasUpdateComponent
   ],
   imports: [
     BrowserModule, 
@@ -98,10 +100,11 @@ import { PoliticsComponent } from './components/politics/politics.component';
     UserService,
     ExpService,
     CommonService,
-    BsModalService,
-    AuthGuard
+    BsModalService, 
+    AuthGuard,
+    {provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent] 
 })
-export class AppModule { }
+export class AppModule { } 
  

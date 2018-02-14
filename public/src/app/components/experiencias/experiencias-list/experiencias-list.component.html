@@ -22,7 +22,8 @@
       <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 3, currentPage: p}; let i = index">
         <h3>{{experiencia.nombre}}
           <div *ngIf="user">
-            <span class="fa fa-remove pull-right" *ngIf="user.roles == 'administrador'" (click)="borrar(experiencia.id)"></span>
+            <span class="fa fa-remove pull-right" *ngIf="user.roles == 'Administrador'" (click)="borrar(experiencia.id)"></span>
+            <span class="fa fa-edit pull-right" *ngIf="user.roles == 'Administrador'" (click)="update(experiencia.id)"></span>
           </div>
         </h3>
         <h3>{{experiencia.universidad}} - {{experiencia.especialidad}}</h3>
@@ -35,6 +36,8 @@
         <p>{{experiencia.destinatario}}</p>
         <h4>Descripción:</h4>
         <p>{{experiencia.descripcion}}</p>
+        <br>
+        <br>
         <br>
       </div>
     </div>

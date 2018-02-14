@@ -23,6 +23,7 @@ export class UserUpdateComponent implements OnInit, OnDestroy {
   updateUser: User
   user: User
   roles
+  updateUserRol
   idUser 
   confirmPassword: string
   message: string = ''
@@ -39,6 +40,11 @@ export class UserUpdateComponent implements OnInit, OnDestroy {
   ) {
     _userService.getRoles().subscribe((rolesList) => {
       this.roles = rolesList
+      this.roles.forEach(element => {
+        if (element.nombre == this.updateUser.roles) 
+          this.updateUserRol = element
+      })
+
     })
 
     this.updateUser = new User();
@@ -75,7 +81,6 @@ export class UserUpdateComponent implements OnInit, OnDestroy {
     //   this.updateUser = user
     // })
   }
-
 
   ngOnInit() {
     this.advert1 = "Email incorrecto."

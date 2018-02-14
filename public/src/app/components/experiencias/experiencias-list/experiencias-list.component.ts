@@ -105,6 +105,23 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     console.log("El id de exp es:  ", expId)
     this.modalDelete.open(expId)
   } 
+  update (expId){
+    this.expId = expId 
+    let experiencia: Experiencia
+    //Obtener experiencia con id expId
+    this.subscriptionToGetExp = this.expService.getExperiencia(expId).subscribe( (res) => {
+//      console.log("respuesta de getExperiencias: ", res)
+      if (res['success'] == true) {
+        experiencia = res['exp']
+        this.expService.setExp(experiencia)
+        //console.log("Probando geter para la experiencia seteada en el servicio:  ", expId)
+        let expFromService = <Experiencia>JSON.parse(JSON.stringify(this.expService.exp))
+        console.log("Experiencia del servicio: ", expFromService)
+        this.router.navigate(['experiencias-update']);
+      } 
+    })
+  } 
+
   modalDeleteDismissed() {
     console.log("Modal cerrado sin acción")
   }

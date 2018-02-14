@@ -12,8 +12,8 @@ import { ResetPassComponent } from './components/user/reset-pass/reset-pass.comp
 import { ExperienciasComponent } from './components/experiencias/experiencias.component';
 import { ExperienciasListComponent } from './components/experiencias/experiencias-list/experiencias-list.component';
 import { ExperienciasSearchComponent } from './components/experiencias/experiencias-search/experiencias-search.component';
-import { ExperienciasAddComponent } from './components/experiencias/experiencias-add/experiencias-add.component';
 import { ExperienciasCreateComponent } from './components/experiencias/experiencias-create/experiencias-create.component';
+import { ExperienciasUpdateComponent } from './components/experiencias/experiencias-update/experiencias-update.component';
 import { EnlacesExternosComponent } from './components/enlaces-externos/enlaces-externos.component';
 import { ContactoComponent } from './components/contacto/contacto.component';
 import { TermsComponent } from './components/terms/terms.component';
@@ -72,6 +72,10 @@ const appRoutes: Routes = [
   { 
     path: 'experiencias-add', 
     component: ExperienciasCreateComponent
+  },
+  { 
+    path: 'experiencias-update', 
+    component: ExperienciasUpdateComponent
   },
   { 
     path: 'experiencias-search', 

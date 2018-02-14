@@ -11,14 +11,14 @@
             Experiencias APS
           </a>
         </li>
-        <li>Insertar nueva</li>
+        <li>Modificar</li>
     </ul>
   </div>
   <div class="container-center col-md-10">
 
     <!-- TITULO -->
-    <h2>Insertar una experiencia en ApS</h2>
-    <form [formGroup]="myForm" novalidate (ngSubmit)="save(myForm)">
+    <h2>Modificar: {{updateExp.nombre}}</h2>
+    <form [formGroup]="myForm" novalidate (ngSubmit)="update(myForm)">
 
       <!--------------------------------  CAMPOS ------------------------------------------>
 
@@ -26,7 +26,8 @@
       <div class="form-group">
         <label class="required negrita">Nombre del proyecto</label>
         <div class="alert alert-danger" *ngIf="!myForm.controls.nombre.valid && myForm.controls.nombre.touched">Este campo es obligatorio</div>
-        <input type="text" formControlName="nombre" placeholder="Introduce aquí el nombre del proyecto" class="form-control">
+        <input type="text" [(ngModel)]="updateExp.nombre" formControlName="nombre" placeholder="Introduce aquí el nombre del proyecto"
+          class="form-control">
       </div>
 
       <!-- COORDINADORES(ARRAY) -->
@@ -34,21 +35,21 @@
         <div *ngFor="let coordinador of myForm.controls.coordinadores.controls; let i=index">
           <div>
             <label class="negrita">Coordinador (#{{i + 1}})</label>
-            <span class="fa fa-remove pull-right" *ngIf="myForm.controls.coordinadores.controls.length > 1" (click)="removeCoordinador(i)"></span>
+            <span class="fa fa-remove pull-right" *ngIf="myForm.controls.coordinadores.controls.length > 1" (click)="removeCoordinador(i, myForm.controls.coordinadores.controls[i].controls.email)"></span>
           </div>
           <div class="form-group row" [formGroupName]="i">
             <div class="col-md-1"></div>
-            <!--nombre-->
+            <!--NOMBRE-->
             <div class="col-md-5">
               <label class="required">Nombre</label>
               <div class="alert alert-danger" *ngIf="!myForm.controls.coordinadores.controls[i].controls.nombre.valid && myForm.controls.coordinadores.controls[i].controls.nombre.touched">Este campo es obligatorio</div>
-              <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre del coordinador">
+              <input type="text" [(ngModel)]="updateExp.coordinadores[i].nombre" class="form-control" formControlName="nombre" placeholder="Nombre del coordinador">
             </div>
-            <!--email-->
+            <!--EMAIL-->
             <div class="col-md-6">
               <label class="required">Email</label>
               <div class="alert alert-danger" *ngIf="!myForm.controls.coordinadores.controls[i].controls.email.valid && myForm.controls.coordinadores.controls[i].controls.email.touched">Este campo es obligatorio</div>
-              <input type="email" class="form-control" formControlName="email" placeholder="Dirección de Email">
+              <input type="email" [(ngModel)]="updateExp.coordinadores[i].email" class="form-control" formControlName="email" placeholder="Dirección de Email">
             </div>
           </div>
         </div>
@@ -59,28 +60,27 @@
           </button>
         </div>
       </div>
-
       <!-- DESTINATARIO -->
       <div class="form-group">
         <label class="required negrita">Destinatario del proyecto</label>
         <div class="alert alert-danger" *ngIf="!myForm.controls['destinatario'].valid && myForm.controls['destinatario'].touched">Este campo es obligatorio</div>
-        <input class="form-control" type="text" formControlName="destinatario" placeholder="Destinatario del proyecto">
+        <input class="form-control" type="text" [(ngModel)]="updateExp.destinatario" formControlName="destinatario" placeholder="Destinatario del proyecto">
       </div>
 
       <!-- DESCRIPCION -->
       <div class="form-group">
         <label class="required negrita">Descripción</label>
         <!-- <div class="alert alert-danger" *ngIf="!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched">Este campo es obligatorio</div> -->
-        <textarea rows="5" cols="50" formControlName="descripcion" placeholder="Descripción del proyecto" class="form-control"></textarea>
+        <textarea rows="5" cols="50" formControlName="descripcion" [(ngModel)]="updateExp.descripcion" placeholder="Descripción del proyecto"
+          class="form-control"></textarea>
       </div>
 
       <!-- AMBITO -->
       <div class="row">
         <div class="form-group col-md-6">
           <label class="required negrita">Ambito</label>
-          <select class="form-control minimal" formControlName="ambito" (change)="onChangeAmbito($event.target.value) ">
-            <option [ngValue]="0">Selecciona un ámbito</option>
-            <option *ngFor="let ambito of ambitos" [ngValue]="ambito.id">
+          <select class="form-control minimal" formControlName="ambito" [(ngModel)]="updateExpAmbito" (change)="onChangeAmbito($event.target.value) ">
+            <option *ngFor="let ambito of ambitos" [ngValue]="ambito">
               {{ ambito.nombre }}
             </option>
           </select>
@@ -88,9 +88,8 @@
         <!-- ESPECIALIDAD -->
         <div class="form-group col-md-6">
           <label class="required negrita">Especialidad</label>
-          <select class="form-control minimal" formControlName="especialidad">
-            <option [ngValue]="0">Selecciona una especialidad</option>
-            <option *ngFor="let especialidad of especialidades" [ngValue]="especialidad.id">
+          <select class="form-control minimal" formControlName="especialidad" [(ngModel)]="updateExpEspecialidad">
+            <option *ngFor="let especialidad of especialidades" [ngValue]="especialidad">
               {{ especialidad.nombre }}
             </option>
           </select>
@@ -106,9 +105,8 @@
         <!-- UNIVERSIDAD -->
         <div class="form-group col-md-8">
           <label class="required negrita">Universidad</label>
-          <select class="form-control minimal" formControlName="universidad">
-            <option [ngValue]="null">Selecciona una universidad</option>
-            <option *ngFor="let universidad of universidades" [ngValue]="universidad.id">
+          <select class="form-control minimal" formControlName="universidad" [(ngModel)]="updateExpUniversidad">
+            <option *ngFor="let universidad of universidades" [ngValue]="universidad">
               {{ universidad.nombre }}
             </option>
           </select>
@@ -118,16 +116,14 @@
         <div class="form-group col-md-4">
           <label class="required negrita">Fecha</label>
           <div class="input-group">
-            <input formControlName="fecha" class="form-control" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker #d="ngbDatepicker">
+            <input formControlName="fecha" [(ngModel)]="model" class="form-control" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker
+              #d="ngbDatepicker">
             <button class="input-group-addon" (click)="d.toggle()" type="button">
               <i class="fa fa-calendar" style="width: 1.2rem; height: 1rem; cursor: pointer;"></i>
             </button>
           </div>
         </div>
       </div>
-
-
-
       <!-- MULTIMEDIAS(ARRAY) -->
       <div formArrayName="multimedias">
         <div *ngFor="let multimedia of myForm.controls.multimedias.controls; let i=index">
@@ -173,7 +169,12 @@
       <div class="row">
         <div class="col-md-6">
           <button type="submit" class="button submit" [disabled]="!myForm.valid">
-            <i class="fa fa-check"></i> Aceptar
+            <i class="fa fa-check"></i> Aceptar cambios
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" class="button cancel" (click)=goback();>
+            <i class="fa fa-times"></i> Cancelar
           </button>
         </div>
         <div class="alert alert-danger" *ngIf="message">{{message}}</div>

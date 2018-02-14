@@ -65,22 +65,6 @@ export class ExperienciasCreateComponent implements OnInit {
       //FORMATEAR FECHA A UN SOLO CAMPO
     });
 
-    /*    this.myForm = _fb.group({
-          'nombre': [''],
-          'coordinadores': this._fb.array([
-            this.initCoordinador(),
-          ]),
-          'destinatario': [''],
-          'descripcion': [''],
-          'fecha': [''],
-          'ambito': [null],
-          'especialidad': [''],
-          'universidad': [''],
-          'multimedias': this._fb.array([
-            this.initMultimedia(),
-          ]),
-          //FORMATEAR FECHA A UN SOLO CAMPO
-        });*/
     this.myForm.valueChanges.subscribe(data => {
       const fecha = this.myForm.controls['fecha']
       if (fecha.value != '') {
@@ -89,7 +73,6 @@ export class ExperienciasCreateComponent implements OnInit {
         //console.log(fecha.value)  
       }
     })
-
   }
 
   selectToday() {
@@ -111,26 +94,22 @@ export class ExperienciasCreateComponent implements OnInit {
   }
 
   onChangeAmbito(value) {
-    console.log("pasa")
     let idx = parseInt(value)
     if (idx == 0) return
     this._expService.getEspecialidades(idx).subscribe((especialidadesList) => {
       this.especialidades = especialidadesList
     })
-
   }
 
   ngOnInit() {
   }
 
   addCoordinador() {
-    // add address to the list
     const control = <FormArray>this.myForm.controls['coordinadores'];
     control.push(this.initCoordinador());
   }
 
   addMultimedia() {
-    // add address to the list
     const control = <FormArray>this.myForm.controls['multimedias'];
     control.push(this.initMultimedia());
   }
@@ -191,7 +170,6 @@ export class ExperienciasCreateComponent implements OnInit {
     });
   }
 
-
   save(model: Experiencia) {
     console.log("salvando ...")
     let ngbDate = this.myForm.controls['fecha'].value;
@@ -199,8 +177,6 @@ export class ExperienciasCreateComponent implements OnInit {
 
     this.newExp = this.myForm.value
     this.newExp.fecha = formatDate
-
-    //this.newExp.fecha = 
     console.log("experiencia: ", JSON.stringify(this.newExp))
     console.log("Modelo: ", model);
      this._expService.createExperiencia(this.newExp).subscribe( (res) => {
@@ -210,7 +186,6 @@ export class ExperienciasCreateComponent implements OnInit {
          this.message = res['message']
        }
      })
-
   }
 }
 

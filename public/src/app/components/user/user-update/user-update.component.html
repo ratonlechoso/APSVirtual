@@ -36,9 +36,8 @@
       <div class="form-group">
         <label for="rol" class="required">Roles</label>
         <div class="alert alert-danger" *ngIf="!rForm.controls['rol'].valid && rForm.controls['rol'].touched">{{advert2}}</div>
-        <select class="form-control minimal" formControlName="rol">
-          <!-- <option {{updateUser.roles}}</option> -->
-          <option *ngFor="let rol of roles" [ngValue]="rol" [selected]="">
+        <select class="form-control minimal" formControlName="rol" [(ngModel)]="updateUserRol">
+          <option *ngFor="let rol of roles" [ngValue]="rol" >
             {{ rol.nombre }}
           </option>
         </select>

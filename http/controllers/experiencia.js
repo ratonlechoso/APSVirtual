@@ -12,6 +12,45 @@ var async = require('async')
 const sqlConn = require('../../DB/sqlConnection')
 
 
+router.get('/experiencia', (req, res) => {
+  let expId = req.body.id || req.query.id || req.headers['x-access-token'];
+  console.log("obteniendo experiencia con ID ", expId)
+  let sQuery =
+    "SELECT " +
+    "destinatario, fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
+    "experiencias.descripcion as `desc`, " +
+    "ambitos.nombre as `nombre_ambito`, " +
+    "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
+    "FROM experiencias " +
+    "INNER JOIN ambitos on experiencias.ambito_id = ambitos.id " +
+    "INNER JOIN especialidades on experiencias.especialidad_id = especialidades.id " +
+    "INNER JOIN universidades on experiencias.universidad_id = universidades.id  " +
+    "WHERE experiencias.id = " + expId
+  sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
+    if (err) res.send(err)
+    var experiencia = expSchema;
+    experiencia.setExperiencia(exp[0])
+    let sQuery = "SELECT coordinadores.id, nombre, email " +
+      "FROM coordinadores " +
+      "INNER JOIN experiencia_coordinador ON coordinadores.id = experiencia_coordinador.coordinador_id " +
+      "WHERE ?";
+    sqlConn.pool.query(sQuery, { 'experiencia_id': expId }, function (err, coord, fields) { //SELECT COORDINADORES
+      if (err) res.send(err)
+      console.log("Coord: ", coord)
+      experiencia.setCoordinadores(coord)
+      //console.log(experiencia)
+      let content = {
+        exp: (experiencia),
+        success: true,
+        message: 'ok'
+      };
+      res.send(content)
+      return
+    }) //SELECT coordinadores
+  }) //SELECT experiencias
+}); //metodo
+
+
 router.get('/experiencias', (req, res) => {
   let ambitoId = req.body.id || req.query.id || req.headers['x-access-token'];
   console.log("listando experiencias del ambito ", ambitoId)
@@ -67,6 +106,94 @@ router.get('/experiencias', (req, res) => {
     ) //EACH
   }) //SELECT EXP
 });
+
+router.put('/experiencias', (req, res) => {
+  var reqExp = req.body;
+  try {
+      let campos = {
+        nombre: reqExp.nombre,
+        destinatario: reqExp.destinatario,
+        descripcion: reqExp.descripcion,
+        fecha: reqExp.fecha,
+        ambito_id: reqExp.ambito.id,
+        especialidad_id: reqExp.especialidad.id,
+        universidad_id: reqExp.universidad.id
+      }
+      let sQuery = "UPDATE `experiencias` " +
+        "SET ?  WHERE id = " + reqExp.id
+        sqlConn.pool.query(sQuery, campos, function (err, exp) { //UPDATE experiencia
+          if (err) throw err
+        sQuery = "DELETE FROM  `experiencia_coordinador` " +
+          "WHERE  ? "
+          sqlConn.pool.query(sQuery, { 'experiencia_id': reqExp.id }, function (err, rows) { //DELETE experiencia
+            if (err) throw err
+
+          ////////////////RECORRER COORDINADORES ...
+          async.eachSeries(reqExp.coordinadores, (element, eachCallback) => {
+            //reqExp.coordinadores.forEach(element => {
+            sQuery = "SELECT * FROM coordinadores where ? "
+            console.log("email vale ", element.email)
+            sqlConn.pool.query(sQuery, { 'email': element.email }, function (err, results) { //SELECT COORDINADORES
+              console.log("select coordinador")
+              if (err) throw err
+              if (results == "") { //Se crea el coordinador y la entrada en la tabla intermedia
+
+                sQuery = "INSERT INTO `coordinadores` " +
+                  "SET ? "
+                campos = {
+                  nombre: element.nombre,
+                  email: element.email,
+                  universidad_id: reqExp.universidad
+                }
+                sqlConn.pool.query(sQuery, campos, function (err, newCoord, fields) { //INSERTAR COORDINADORES
+                  if (err) throw err
+                  let coordId = newCoord.insertId
+                  sQuery = "INSERT INTO experiencia_coordinador " +
+                    "SET ?"
+                  campos = {
+                    coordinador_id: coordId,
+                    experiencia_id: reqExp.id
+                  }
+                  sqlConn.pool.query(sQuery, campos, function (err, results, fields) { //INSERTAR EXPERIENCIA_COORDINADOR
+                    console.log("insertando en tabla experiencia_coordinador 1 ...")
+                    if (err) throw err
+                    eachCallback(null)
+                  })
+                })
+              } else {//solo la entrada en la tabla intermedia experiencia_coordinador
+                console.log("coordinador ya existente. Se asocia en la tabla intermedia: ", results[0])
+                sQuery = "INSERT INTO experiencia_coordinador " +
+                  "SET ?"
+                campos = {
+                  coordinador_id: results[0].id,
+                  experiencia_id: reqExp.id
+                }
+                sqlConn.pool.query(sQuery, campos, function (err, results, fields) { //INSERTAR EXPERIENCIA_COORDINADOR
+                  console.log("insertando en tabla experiencia_coordinador 2 ...")
+                  if (err) throw err
+                  eachCallback(null)
+                })
+              } //else
+              
+            }) //SELECT COORDINADORES
+          }, function (err) {
+            console.log("fin de eachseries")
+            let content = {
+              success: true,
+              message: 'ok'
+            };
+            res.send(content)
+            return
+          }
+          ) //ASYNC EACHSERIES
+        })
+      })
+
+  } catch (err) {
+    console.log("ERROR: ", err)
+  }
+});
+
 
 router.post('/experiencias', (req, res) => {
   var reqExp = req.body;
@@ -158,9 +285,7 @@ router.post('/experiencias', (req, res) => {
   }
 })
 
-
 router.post('/experiencias_mongo', (req, res) => {
-
   var reqExp = req.body;
   // process.nextick nos asegura que la función pasada como parçametro va a ser llamada inmediatamente (en el proximo tick). 
   // con tick se refieren a la siguiente iteracción del "nodejs eventloop".
