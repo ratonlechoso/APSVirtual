@@ -1,0 +1,14 @@
+<form [formGroup]="myForm" novalidate (ngSubmit)="edit(myForm)">
+    <!-- NOMBRE -->
+    <div class="row">
+      <div class="form-group col-md-7">
+        <div class="alert alert-danger" *ngIf="!myForm.controls.nombre.valid && myForm.controls.nombre.touched">Este campo es obligatorio</div>
+        <input type="text" formControlName="nombre" [(ngModel)]="editUniv.nombre" placeholder="Introduce aquí el nombre de la universidad"
+          class="form-control">
+      </div>
+      <div class="col-md-2">
+        <span class="fa fa-close pull-right pointer" style="color:red"  (click)="cancel()"></span>
+        <span class="fa fa-check pull-right pointer" style="color:green" (click)="edit(universidad)"></span>
+      </div>
+    </div>
+  </form>

@@ -1,0 +1,22 @@
+<app-navigation-menu> </app-navigation-menu>
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/ambitos']">
+            Experiencias ApS
+          </a>
+        </li>
+        <li>Ambitos</li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <app-ambitos-list></app-ambitos-list>
+  </div>  
+
+</div>  

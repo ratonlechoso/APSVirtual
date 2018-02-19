@@ -1,0 +1,57 @@
+<h2>Listado de universidades</h2>
+<br>
+<div class="row">
+  <p class="col-md-12 negrita">Nombre de la universidad </p>
+</div>
+
+<div *ngFor="let universidad of universidades | paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
+  <div class="row" *ngIf="!universidad.editable">
+    <p class="col-md-9">{{universidad.nombre}}
+      <span class="fa fa-close pull-right pointer color-blue " (click)="delete(universidad)"></span>
+      <span class="fa fa-edit pull-right pointer color-blue" (click)="changeEditMode(universidad)"></span>
+    </p>
+  </div>
+  <app-universidades-edit *ngIf="universidad.editable" [universidad]="universidad" (updated)="updateList($event)">
+  </app-universidades-edit>
+</div>
+
+<!-- BOTONES -->
+<div class="row tab" *ngIf="!addMode">
+  <button type="button" class="button btn-form mt0" (click)="changeAddMode()">
+    <i class="fa fa-plus"></i> Añadir
+  </button>
+</div>
+<br>
+<app-universidades-add *ngIf="addMode" (added)="addModeEvent($event)">
+  <br>
+</app-universidades-add>
+<br>
+
+<br>
+<pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
+  screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+<br>
+
+
+
+<!-- ************************************************************************** -->
+<!-- MODAL -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
+  (onOpen)="modalDeleteOpened()" #modal>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>¿Borrar especialidad? Si acepta esta acción no podrá revertirla</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalDelete.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalDelete.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

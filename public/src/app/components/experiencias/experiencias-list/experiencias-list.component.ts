@@ -4,8 +4,6 @@ import { ExpService } from '../exp.service';
 import { Experiencia }  from '../experiencia'
 import { Subscription }   from 'rxjs/Subscription'; 
 import { AuthService } from './../../../auth.service';
-import { User } from './../../user/user';
-import { BsModalComponent, BsModalService } from 'ng2-bs3-modal';
 
 @Component({
   selector: 'app-experiencias-list',
@@ -13,12 +11,9 @@ import { BsModalComponent, BsModalService } from 'ng2-bs3-modal';
   styleUrls: ['./experiencias-list.component.css']
 })
 export class ExperienciasListComponent implements OnInit, OnDestroy {
-  @ViewChild('modal')
-  modalDelete: BsModalComponent;
 
   experiencias: Experiencia[]
   expId: String
-  user: User 
   ambitoId: number
   listarExperiencias:boolean
   subscriptionToGetExp: Subscription
@@ -36,11 +31,6 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     authService: AuthService
   ) { 
-    this.user = authService.user;
-    this.listarExperiencias = false;
-    authService.user$.subscribe( (user) => {
-      this.user = user;
-     });
   }
 
   ngOnInit() {
@@ -100,11 +90,6 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  borrar (expId){
-    this.expId = expId
-    console.log("El id de exp es:  ", expId)
-    this.modalDelete.open(expId)
-  } 
   update (expId){
     this.expId = expId 
     let experiencia: Experiencia
@@ -122,22 +107,33 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     })
   } 
 
-  modalDeleteDismissed() {
-    console.log("Modal cerrado sin acción")
-  }
-  modalDeleteOpened() {
-    /**No hacer nada*/
-  }
-  modalDeleteClosed() {
-    this.subscriptionToDeleteExp = this.expService.deleteExperiencia(this.expId).subscribe( (res) => {
+  showDetail (expId) {
+    this.expId = expId 
+    let experiencia: Experiencia
+    //Obtener experiencia con id expId
+    this.subscriptionToGetExp = this.expService.getExperiencia(expId).subscribe( (res) => {
+//      console.log("respuesta de getExperiencias: ", res)
       if (res['success'] == true) {
-        for (var i = this.experiencias.length - 1; i >= 0; i--) {
-          if (this.experiencias[i].id == this.expId) {
-              this.experiencias.splice(i, 1);
-          }
-        }
-      }
+        experiencia = res['exp']
+        this.expService.setExp(experiencia)
+        //console.log("Probando geter para la experiencia seteada en el servicio:  ", expId)
+        let expFromService = <Experiencia>JSON.parse(JSON.stringify(this.expService.exp))
+        console.log("Experiencia del servicio: ", expFromService)
+        this.router.navigate(['experiencias-detail']);
+      } 
     })
   }
+
+  // modalDeleteClosed() {
+  //   this.subscriptionToDeleteExp = this.expService.deleteExperiencia(this.expId).subscribe( (res) => {
+  //     if (res['success'] == true) {
+  //       for (var i = this.experiencias.length - 1; i >= 0; i--) {
+  //         if (this.experiencias[i].id == this.expId) {
+  //             this.experiencias.splice(i, 1);
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
 }

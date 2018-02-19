@@ -30,9 +30,25 @@
       <div *ngIf="user.roles != null">
         <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
           <a [routerLink]="['/experiencias-add']">
-            <i class="fa fa-plus fa-lg"></i> Añadir nueva
+            <i class="fa fa-plus fa-lg"></i> Añadir nueva experiencia
           </a>
         </li>
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+          <a [routerLink]="['/universidades']">
+            <i class="fa fa-chevron-right fa-lg"></i> Universidades
+          </a>
+        </li>
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+          <a [routerLink]="['/ambitos']">
+            <i class="fa fa-chevron-right fa-lg"></i> Ambitos de conocimiento
+          </a>
+        </li>
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+          <a [routerLink]="['/especialidades']">
+            <i class="fa fa-chevron-right fa-lg"></i> Especialidades
+          </a>
+        </li>
+
       </div>
     </ul>
   </div>

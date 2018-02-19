@@ -16,36 +16,13 @@ export class ExpService {
   exp$ = this.expSource.asObservable();
   exp:  Experiencia
 
+  /******************* EXPERIENCIA ***************************/
+
   setExp(exp: Experiencia) {
     console.log("pasa por setExp")
     this.exp = exp
     this.expSource.next(exp);
     this.exp$ = this.expSource.asObservable();
-  }
-
-
-  getAmbitos(): Observable<Object> {
-    let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    console.log("Accediendo al endpoint GET experiencias")
-    return this._http.get(`${this.base_url}/ambitos`, options).map(res => this.parseRes(res));
-  }
-
-  getEspecialidades(id): Observable<Object> {
-    let headers = new Headers({ 'x-access-token': id });
-    headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    console.log("Accediendo al endpoint GET experiencias")
-    return this._http.get(`${this.base_url}/especialidades`, options).map(res => this.parseRes(res));
-  }
-
-  getUniversidades(): Observable<Object> {
-    let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    console.log("Accediendo al endpoint GET Universidades")
-    return this._http.get(`${this.base_url}/universidades`, options).map(res => this.parseRes(res));
   }
 
   getExperiencias(ambitoId): Observable<Object> {
@@ -83,12 +60,90 @@ export class ExpService {
     return this._http.put(`${this.base_url}/experiencias`, body, options).map( (res) => this.parseRes(res) );
   }
 
-
   deleteExperiencia(id: String): Observable<Object> {
     let headers = new Headers({ 'x-access-token': id });
     let options = new RequestOptions({ headers: headers });
     return this._http.delete(`${this.base_url}/experiencias/`, options).map( (res) => this.parseRes(res) );
   }
+
+  /************************ AMBITOS *******************************/
+
+  getAmbitos(): Observable<Object> {
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    console.log("Accediendo al endpoint GET ambitos")
+    return this._http.get(`${this.base_url}/ambitos`, options).map(res => this.parseRes(res));
+  }
+
+  /************************ ESPECIALIDADES *******************************/
+
+  getEspecialidades(id): Observable<Object> {
+    let headers = new Headers({ 'x-access-token': id });
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    console.log("Accediendo al endpoint GET especialidades")
+    return this._http.get(`${this.base_url}/especialidades`, options).map(res => this.parseRes(res));
+  }
+
+  addEspecialidad(espec: any): Observable<Object> {
+    let body = JSON.stringify(espec);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.post(`${this.base_url}/especialidad`, body, options).map( (res) => this.parseRes(res) );
+  }
+
+  updateEspecialidad(espec: any): Observable<Object> {
+    let body = JSON.stringify(espec);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.put(`${this.base_url}/especialidad`, body, options).map( (res) => this.parseRes(res) );
+  }
+
+  deleteEspecialidad(id: String): Observable<Object> {
+    let headers = new Headers({ 'x-access-token': id });
+    let options = new RequestOptions({ headers: headers });
+    return this._http.delete(`${this.base_url}/especialidad/`, options).map( (res) => this.parseRes(res) );
+  }
+
+   /******************* UNIVERSIDAD ***************************/
+
+   getUniversidades(): Observable<Object> {
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    console.log("Accediendo al endpoint GET Universidades")
+    return this._http.get(`${this.base_url}/universidades`, options).map(res => this.parseRes(res));
+  }
+
+  addUniversidad(univ: any): Observable<Object> {
+    let body = JSON.stringify(univ);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.post(`${this.base_url}/universidad`, body, options).map( (res) => this.parseRes(res) );
+  }
+
+
+  updateUniversidad(univ: any): Observable<Object> {
+    let body = JSON.stringify(univ);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.put(`${this.base_url}/universidad`, body, options).map( (res) => this.parseRes(res) );
+  }
+
+  deleteUniversidad(id: String): Observable<Object> {
+    let headers = new Headers({ 'x-access-token': id });
+    let options = new RequestOptions({ headers: headers });
+    return this._http.delete(`${this.base_url}/universidad/`, options).map( (res) => this.parseRes(res) );
+  }
+
+
+
+  /******************* AUXILIARES *******************/
 
   parseRes(res) {
     let body = JSON.parse(res['_body']);

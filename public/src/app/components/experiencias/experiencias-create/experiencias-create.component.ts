@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Experiencia } from '../experiencia';
 import { Coordinador } from '../experiencia';
@@ -26,9 +27,9 @@ export class ExperienciasCreateComponent implements OnInit {
   //ambitos = ['Artes y Humanidades', 'Ciencias', 'Ciencias de la Salud', 'Ciencias Sociales y Politicas', 'Arquitectura e Ingenieria'];
 
   newExp: Experiencia
-  ambitos
-  especialidades
-  universidades
+  ambitos: any
+  especialidades: any
+  universidades: any
   filesToUpload: Array<File>;
 
   message: String
@@ -36,6 +37,7 @@ export class ExperienciasCreateComponent implements OnInit {
   constructor(
     private _expService: ExpService,
     private _router: Router,
+    private _location: Location,
     private _fb: FormBuilder
   ) {
     _expService.getAmbitos().subscribe((ambitosList) => {
@@ -122,6 +124,10 @@ export class ExperienciasCreateComponent implements OnInit {
   removeMultimedia(i: number) {
     const control = <FormArray>this.myForm.controls['multimedias'];
     control.removeAt(i);
+  }
+
+  goback() {
+    this._location.back();
   }
 
   upload() {

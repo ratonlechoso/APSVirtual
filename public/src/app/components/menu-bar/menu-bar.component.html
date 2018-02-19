@@ -14,24 +14,29 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['private']">Privado</a>
+        <a class="nav-link" [routerLink]="['experiencias']">Experiencias desarrolladas</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['experiencias']">Experiencias</a>
+          <a class="nav-link" [routerLink]="['proyectos']">Nuevas iniciativas en ApS</a>
       </li>
       <li class="dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
+          Bibliografía
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="nav-link" [routerLink]="['userUpdate']">Actualizar usuario</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item disabled" href="#">Recursos bibliográficos</a>
+          <!-- <div class="dropdown-divider"></div> -->
+          <a class="dropdown-item" [routerLink]="['biblio-recursos-externos']">Bibliografía externa</a>
         </ul>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+          <a class="nav-link disabled" href="#">Videoteca</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled (for testing)</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['private']">protected (for testing)</a>
       </li>
     </ul>
 

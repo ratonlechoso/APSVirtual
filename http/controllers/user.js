@@ -39,29 +39,46 @@ router.get('/getUser', (req, res) => {
       return;
     }
     user.setUser(rows[0])
-    // user.id = rows[0].id
-    // user.lastLogin = moment();
-    // user.first_name = rows[0].first_name
-    // user.last_name = rows[0].last_name
-    // user.signUpDate = rows[0].sign_up_date
-    // user.email = rows[0].email
-    // user.roles = rows[0].rol_nombre
-    console.log("getUser -> firstName: ", user.first_name)
-    console.log("getUser -> ID: ", user.id)
     res.status(200).send({ user })
 
   })
 });
 
-
 router.get('/check-state', auth.verifyToken, (req, res) => {
-
-  let content = {
-    success: true,
-    message: 'Logeado correctamente. Bienvenido!'
+  let roles = []
+  let userId = -1
+  try {
+    privileged_rol = req.body.roles || req.query.roles || req.headers['x-access-roles'];
+    userId = req.body.userId || req.query.userId || req.headers['x-access-id'];
+    if (privileged_rol != undefined) {
+      var user = UserSqlSchema;
+      let sQuery = "SELECT *  " +
+        "FROM users " +
+        "WHERE  ? "
+      sqlConn.pool.query(sQuery, { 'id': userId }, function (err, rows, fields) { //SELECT QUERY
+        if (err) {
+          console.log("Privilegios insuficientes")
+          res.send({ success: false, message: 'privilegios insuficientes.' });
+          return
+        }
+        if (rows[0].rol_id != privileged_rol) {
+          console.log("Privilegios insuficientes")
+          res.send({ success: false, message: 'privilegios insuficientes.' });
+          return
+        }
+        res.send({ success: true, message: 'Logeado correctamente. Bienvenido!' });
+        return
+      })
+    } else {
+      let content = {
+        success: true,
+        message: 'Logeado correctamente. Bienvenido!'
+      }
+      res.send(content);
+    }
+  } catch (err) {
+    console.log(err)
   }
-  res.send(content);
-
 });
 
 router.put('/update/:id', (req, res) => {
@@ -148,17 +165,6 @@ router.post('/register', (req, res) => {
           });
           console.log("registrando usuario", newUser)
           newUser.setUser(reqUser)
-          newUser.id = results.insertId
-          //          newUser.roles = "alumno"
-          // newUser.id = results.insertId
-          // newUser.first_name = reqUser.first_name
-          // newUser.last_name = reqUser.last_name
-          // newUser.lastLogin = moment()
-          // newUser.signUpDate = reqUser.sign_up_date
-          // newUser.email = reqUser.email
-          // newUser.password = pass
-          // newUser.roles = "alumno" //<-- rol_id=2
-
           let content = {
             user: newUser,
             success: true,
@@ -208,14 +214,6 @@ router.post('/login', (req, res) => {
     }
     user.setUser(rows[0])
     user.lastLogin = moment().format().toString()
-    // user.id = rows[0].id
-    // user.lastLogin = moment();
-    // user.first_name = rows[0].first_name
-    // user.last_name = rows[0].last_name
-    // user.signUpDate = rows[0].sign_up_date
-    // user.email = rows[0].email
-    // user.roles = rows[0].rol_nombre
-    //      console.log("Actualizado fecha de ultimo login. UserID: ", user.id)
     sQuery = "UPDATE users SET ? WHERE id=" + user.id
     let campos = {
       last_login: moment().format().toString()

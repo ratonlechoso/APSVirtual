@@ -19,23 +19,10 @@
     <h2>{{nombreLista}}</h2>
     <br>
     <div *ngIf="experiencias.length > 0">
-      <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 3, currentPage: p}; let i = index">
-        <h3>{{experiencia.nombre}}
-          <div *ngIf="user">
-            <span class="fa fa-remove pull-right" *ngIf="user.roles == 'Administrador'" (click)="borrar(experiencia.id)"></span>
-            <span class="fa fa-edit pull-right" *ngIf="user.roles == 'Administrador'" (click)="update(experiencia.id)"></span>
-          </div>
-        </h3>
-        <h3>{{experiencia.universidad}} - {{experiencia.especialidad}}</h3>
-        <h4 *ngIf="experiencia.coordinadores.length > 1">Coordinadores</h4>
-        <h4 *ngIf="experiencia.coordinadores.length == 1">Coordinador</h4>
-        <div *ngFor="let coordinador of experiencia.coordinadores">
-          <p>{{coordinador.nombre}} ({{coordinador.email}})</p>
-        </div>
-        <h4>Destinatario: </h4>
-        <p>{{experiencia.destinatario}}</p>
-        <h4>Descripción:</h4>
-        <p>{{experiencia.descripcion}}</p>
+      <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
+        <h2>{{experiencia.nombre}}</h2>
+        <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>
+        <h4><span title = "Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)"></span></h4>
         <br>
         <br>
         <br>
@@ -51,26 +38,3 @@
   </div>
 </div>
 
-
-
-<!-- ************************************************************************** -->
-<!-- MODAL -->
-<!-- ************************************************************************** -->
-
-<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
-  (onOpen)="modalDeleteOpened()" #modal>
-  <bs-modal-header>
-    <h4 class="modal-title">APS Virtual</h4>
-  </bs-modal-header>
-  <bs-modal-body>
-    <p>¿Borrar experiencia? Si acepta esta acción no podrá revertirla</p>
-  </bs-modal-body>
-  <bs-modal-footer>
-    <button type="button" class="button expanded submit" (click)="modalDelete.close()">
-      <i class="fa fa-check"></i> ok
-    </button>
-    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalDelete.dismiss()">
-      <i class="fa fa-times"></i> Cancelar
-    </button>
-  </bs-modal-footer>
-</bs-modal>

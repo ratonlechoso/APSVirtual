@@ -177,8 +177,13 @@
           </button>
         </div>
         <div class="alert alert-danger" *ngIf="message">{{message}}</div>
-      </div>
 
+        <div class="col-md-6">
+          <button type="button" class="button cancel" (click)=goback();>
+            <i class="fa fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
       <!-- <div class="margin-20" >
         <div>myForm details:-</div>
         <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>

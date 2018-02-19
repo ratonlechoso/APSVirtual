@@ -280,6 +280,10 @@ ul.breadcrumb li a:hover {
     cursor: pointer;
 }
 
+.icon-blue, .color-blue {
+    color: rgb(1, 33, 92);
+}
+
 /* PAGINACION */
 
 ul.ngx-pagination {
@@ -332,4 +336,5 @@ ul.ngx-pagination {
     }
   
   }
-  
+
+

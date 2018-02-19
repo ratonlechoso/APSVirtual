@@ -1,0 +1,22 @@
+<form [formGroup]="myForm" novalidate (ngSubmit)="add(myForm)">
+    <!-- NOMBRE -->
+    <div class="row">
+        <div class="form-group col-md-7">
+            <div class="alert alert-danger" *ngIf="!myForm.controls.nombre.valid && myForm.controls.nombre.touched">Este campo es obligatorio</div>
+            <input type="text" formControlName="nombre" placeholder="Introduce aquí el nombre del proyecto" class="form-control">
+        </div>
+        <!-- AMBITO -->
+        <div class="form-group col-md-3">
+            <select class="form-control minimal" formControlName="ambito">
+                <option [ngValue]="">Selecciona un ámbito</option>
+                <option *ngFor="let ambito of ambitos" [ngValue]="ambito.id">
+                    {{ ambito.nombre }}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <span class="fa fa-close pull-right pointer" style="color:red" (click)="cancel()"></span>
+            <span class="fa fa-check pull-right pointer" style="color:green" (click)="add()"></span>
+        </div>
+    </div>
+</form>
