@@ -1,0 +1,23 @@
+<form [formGroup]="myForm" novalidate (ngSubmit)="add(myForm)">
+  <!-- TITULO -->
+  <div class="row">
+    <div class="form-group col-md-7">
+      <div class="alert alert-danger" *ngIf="!myForm.controls.titulo.valid && myForm.controls.titulo.touched">Este campo es obligatorio</div>
+      <input type="text" formControlName="titulo" placeholder="Introduce aquí el titulo del recurso"
+        class="form-control">
+    </div>
+  </div>
+  <!-- DESCRIPCION -->
+  <div class="row">
+    <div class="form-group col-md-7">
+      <div class="alert alert-danger" *ngIf="!myForm.controls.descripcion.valid && myForm.controls.descripcion.touched">Este campo es obligatorio</div>
+      <input type="text" formControlName="descripcion" placeholder="Introduce aquí la descripcion del recurso"
+        class="form-control">
+    </div>
+
+    <div class="col-md-1">
+      <span class="fa fa-close pull-right pointer" style="color:red" (click)="cancel()"></span>
+      <span class="fa fa-check pull-right pointer" style="color:green" (click)="add()"></span>
+    </div>
+  </div>
+</form>

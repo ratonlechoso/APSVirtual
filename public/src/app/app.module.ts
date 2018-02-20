@@ -67,6 +67,9 @@ import { UniversidadesAddComponent } from './components/universidades/universida
 import { EspecialidadesAddComponent } from './components/especialidades/especialidades-add/especialidades-add.component';
 import { EspecialidadesEditComponent } from './components/especialidades/especialidades-edit/especialidades-edit.component';
 import { UniversidadesEditComponent } from './components/universidades/universidades-edit/universidades-edit.component';
+import { BiblioRecursosExternosListComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-list/biblio-recursos-externos-list.component';
+import { BiblioRecursosExternosEditComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-edit/biblio-recursos-externos-edit.component';
+import { BiblioRecursosExternosAddComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-add/biblio-recursos-externos-add.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -109,7 +112,10 @@ import { UniversidadesEditComponent } from './components/universidades/universid
     UniversidadesAddComponent,
     EspecialidadesAddComponent,
     EspecialidadesEditComponent,
-    UniversidadesEditComponent
+    UniversidadesEditComponent,
+    BiblioRecursosExternosListComponent,
+    BiblioRecursosExternosEditComponent,
+    BiblioRecursosExternosAddComponent
   ],
   imports: [
     Angular2FontawesomeModule,

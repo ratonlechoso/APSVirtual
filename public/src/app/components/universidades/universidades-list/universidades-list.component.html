@@ -44,7 +44,9 @@
     <h4 class="modal-title">APS Virtual</h4>
   </bs-modal-header>
   <bs-modal-body>
-    <p>¿Borrar especialidad? Si acepta esta acción no podrá revertirla</p>
+    <div *ngIf="universidad != null">
+      <p>¿Eliminar la universidad:  <span class="negrita">{{universidad.nombre}}</span>? Si acepta esta acción no podrá revertirla</p>
+    </div>
   </bs-modal-body>
   <bs-modal-footer>
     <button type="button" class="button expanded submit" (click)="modalDelete.close()">

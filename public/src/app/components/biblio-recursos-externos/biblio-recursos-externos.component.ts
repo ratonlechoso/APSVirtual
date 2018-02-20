@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-biblio-recursos-externos',
@@ -6,8 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./biblio-recursos-externos.component.css']
 })
 export class BiblioRecursosExternosComponent implements OnInit {
-
-  constructor() { }
+  constructor()  {}
 
   ngOnInit() {
   }

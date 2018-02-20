@@ -1,0 +1,23 @@
+<form [formGroup]="myForm" novalidate (ngSubmit)="edit(myForm)">
+  <!-- TITULO -->
+  <div class="row">
+    <div class="form-group col-md-7">
+      <div class="alert alert-danger" *ngIf="!myForm.controls.titulo.valid && myForm.controls.titulo.touched">Este campo es obligatorio</div>
+      <input type="text" formControlName="titulo" [(ngModel)]="editBib.titulo" placeholder="Introduce aquí el titulo del recurso"
+        class="form-control">
+    </div>
+  </div>
+  <!-- DESCRIPCION -->
+  <div class="row">
+    <div class="form-group col-md-7">
+      <div class="alert alert-danger" *ngIf="!myForm.controls.descripcion.valid && myForm.controls.descripcion.touched">Este campo es obligatorio</div>
+      <input type="text" formControlName="descripcion" [(ngModel)]="editBib.descripcion" placeholder="Introduce aquí la descripcion del recurso"
+        class="form-control">
+    </div>
+
+    <div class="col-md-2">
+      <span class="fa fa-close pull-right pointer" style="color:red" (click)="cancel()"></span>
+      <span class="fa fa-check pull-right pointer" style="color:green" (click)="edit(bibliografia)"></span>
+    </div>
+  </div>
+</form>

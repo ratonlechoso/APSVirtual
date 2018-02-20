@@ -50,7 +50,8 @@ export class EspecialidadesListComponent implements OnInit {
       this._expService.getEspecialidades(0).subscribe((especialidadesList) => {
         this.especialidades = especialidadesList
         this.especialidades.forEach(element => {
-          element.ambito_nombre = this.ambitos[element.ambito_id - 1].nombre
+          if (element.ambito_id >=1 && element.ambito_id <= 5) //Validar ambito
+            element.ambito_nombre = this.ambitos[element.ambito_id-1].nombre
           element.editable = false;
         });
       })

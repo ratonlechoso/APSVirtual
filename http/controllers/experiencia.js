@@ -431,7 +431,6 @@ router.delete('/universidad', (req, res) => {
     let univId = req.body.id || req.query.id || req.headers['x-access-token'];
     sQuery = "DELETE FROM `universidades` " +
       "WHERE ? "
-    console.log("especId vale: ", especId)
     sqlConn.pool.query(sQuery, { 'id': univId }, function (err, deletedUniv) { //Eliminar universidad
       console.log("datos de callback del delete: ", deletedUniv)
       if (err) {
@@ -596,6 +595,114 @@ router.delete('/especialidad', (req, res) => {
     console.log("Error en delete: ", err)
   }
 });
+
+
+/*************************************************************************************************************/
+/*********************************** SUB-API BIBLIOGRAFIAS EXTERNAS******************************************/
+/*************************************************************************************************************/
+
+router.get('/bibliografiaExt', (req, res) => {
+  let sQuery = "SELECT * FROM bibliografia_externa order by titulo asc"
+  sqlConn.pool.query(sQuery, function (err, rows, fields) { //SELECT QUERY
+    if (err) {
+      console.log("error: ", err)
+      let content = {
+        success: false,
+        message: 'Error al realizar la petición a la BBDD',
+        err: err
+      };
+    }
+    res.status(200).send(rows);
+  })
+});
+
+
+router.post('/bibliografiaExt', (req, res) => {
+  var reqBib = req.body;
+  console.log("pasa")
+  try {
+    let campos = {
+      titulo: reqBib.titulo,
+      descripcion: reqBib.descripcion,
+    }
+    let sQuery = "INSERT INTO `bibliografia_externa` " +
+      "SET ? "
+    sqlConn.pool.query(sQuery, campos, function (err, rows, fields) { //INSERTANDO Bib
+      if (err) {
+        res.send({ success: false, message: "DB error: " + err })
+        return
+      }
+      let content = {
+        success: true,
+        message: 'Bibliografía insertada'
+      };
+      res.send(content);
+      return;
+    });
+  } catch (err) {
+    console.log("error: ", err)
+    return next(err)
+  }
+})
+
+router.put('/bibliografiaExt', (req, res) => {
+  var reqBib = req.body;
+  console.log(reqBib)
+  try {
+    let campos = {
+      titulo: reqBib.titulo,
+      descripcion: reqBib.descripcion,
+    }
+    let sQuery = "UPDATE `bibliografia_externa` " +
+      "SET ? WHERE  id=" + reqBib.id
+    sqlConn.pool.query(sQuery, campos, function (err, rows, fields) { //UPDATE BIB
+      if (err) {
+        res.send({ success: false, message: "DB error: " + err })
+        return
+      }
+      let content = {
+        success: true, 
+        message: 'Recurso bibliografico actualizado'
+      }; 
+      res.send(content);
+      return;
+    });
+  } catch (err) {
+    console.log("error: ", err)
+    return next(err)
+  }
+})
+
+
+router.delete('/bibliografiaExt', (req, res) => {
+  //Se borra la experiencia y los archivos multimedia asociados, pero no se borran los coordinadores.
+  try {
+    let bibId = req.body.id || req.query.id || req.headers['x-access-token'];
+    sQuery = "DELETE FROM `bibliografia_externa` " +
+      "WHERE ? "
+    console.log("bibId vale: ", bibId)
+    sqlConn.pool.query(sQuery, { 'id': bibId }, function (err, deletedBib) { //ELIMINAR RECURSOS BIBLIOGRAFICO 
+      console.log("datos de callback del delete: ", deletedBbib)
+      if (err) {
+        let content = {
+          err: err,
+          success: false,
+          message: 'Error borrando recurso bibliográfico externo'
+        };
+        res.send(content)
+      }
+      let content = {
+        success: true,
+        message: 'Borrado correctamente'
+      };
+      res.send(content);
+      return;
+    })
+  } catch (err) {
+    console.log("Error en delete: ", err)
+  }
+});
+
 
 /*************************************************************************************************************/
 /*********************************** EJEMPLOS DE MONGO *************************************************/

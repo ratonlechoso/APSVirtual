@@ -141,9 +141,41 @@ export class ExpService {
     return this._http.delete(`${this.base_url}/universidad/`, options).map( (res) => this.parseRes(res) );
   }
 
+  /**************** BIBLIOGRAFIA EXTERNAS ****************************/
+
+  getBibliografiasExt(): Observable<Object> {
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    console.log("Accediendo al endpoint GET Universidades")
+    return this._http.get(`${this.base_url}/bibliografiaExt`, options).map(res => this.parseRes(res));
+  }
+
+  addBibliografiaExt(bib: any): Observable<Object> {
+    let body = JSON.stringify(bib);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.post(`${this.base_url}/bibliografiaExt`, body, options).map( (res) => this.parseRes(res) );
+  }
 
 
-  /******************* AUXILIARES *******************/
+  updateBibliografiaExt(bib: any): Observable<Object> {
+    let body = JSON.stringify(bib);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.put(`${this.base_url}/bibliografiaExt`, body, options).map( (res) => this.parseRes(res) );
+  }
+
+  deleteBibliografiaExt(id: String): Observable<Object> {
+    let headers = new Headers({ 'x-access-token': id });
+    let options = new RequestOptions({ headers: headers });
+    return this._http.delete(`${this.base_url}/bibliografiaExt/`, options).map( (res) => this.parseRes(res) );
+  }
+
+
+  /******************* AUXILIARES ************************************/
 
   parseRes(res) {
     let body = JSON.parse(res['_body']);
