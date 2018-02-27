@@ -7,11 +7,14 @@ import { AuthService } from './../../../auth.service';
 import { ExpService } from '../exp.service';
 import { Subscription } from 'rxjs/Subscription';
 import { matchOtherValidator } from './../../tools/match-other-validator';
+import { FileUploader } from 'ng2-file-upload';
 
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
+import { forEach } from '@angular/router/src/utils/collection';
 
 const now = new Date();
+const URL = 'http://localhost:3567/api/exp/upload';
 
 @Component({
   selector: 'app-experiencias-update',
@@ -20,6 +23,8 @@ const now = new Date();
 })
 export class ExperienciasUpdateComponent implements OnInit {
   @Input() exp: Experiencia;
+
+  public uploader: FileUploader = new FileUploader({ url: URL });
 
   myForm: FormGroup
   subscriptionToVerify: Subscription
@@ -36,7 +41,8 @@ export class ExperienciasUpdateComponent implements OnInit {
   updateExpAmbito //Selected value para el select
   updateExpEspecialidad //Selected value para el select
   updateExpUniversidad //Selected value para el select
-  filesToUpload: Array<File>
+  adjuntos: Array<any>
+  filesToUpload: Array<any>
   idExp
   message: string = ''
   advert1: string
@@ -57,13 +63,15 @@ export class ExperienciasUpdateComponent implements OnInit {
     //this.updateExp = {} as Experiencia //Esta es la forma correcta de inicializar un objeto basado en una Interface cuando no se requieren valores iniciales.
     this.updateExp = <Experiencia>JSON.parse(JSON.stringify(this._expService.exp))
     this.idExp = this.updateExp.id
+    this.adjuntos = this.updateExp.adjuntos
+    console.log("adjuntos: ", this.adjuntos)
+    this.filesToUpload = []
     _expService.getAmbitos().subscribe((ambitosList) => {
       this.ambitos = ambitosList
       this.ambitos.forEach(element => {
         if (element.nombre == this.updateExp.ambito)
           this.updateExpAmbito = element
       })
-      console.log("ambito en subscribe : ", this.updateExpAmbito)
       _expService.getEspecialidades(this.updateExpAmbito.id).subscribe((especialidadesList) => {
         this.especialidades = especialidadesList
         this.especialidades.forEach(element => {
@@ -90,8 +98,6 @@ export class ExperienciasUpdateComponent implements OnInit {
     }
     console.log("fecha en Model: ", this.model)
 
-    this.filesToUpload = [];
-
     this.myForm = _fb.group({
       'nombre': ['', Validators.required],
       'coordinadores': this._fb.array([
@@ -103,21 +109,26 @@ export class ExperienciasUpdateComponent implements OnInit {
       'ambito': [this.updateExpAmbito, Validators.required],
       'especialidad': ['', Validators.required],
       'universidad': ['', Validators.required],
-      'multimedias': this._fb.array([
-        this.initMultimedia(),
-      ]),
       //FORMATEAR FECHA A UN SOLO CAMPO
     });
 
-    this.subscriptionToVerify = _expService.exp$.subscribe((exp) => {
-      console.log("pasa por subscribe user")
-      this.updateExp = <Experiencia>JSON.parse(JSON.stringify(exp))
-      console.log(this.updateExp)
-    })
+    // this.subscriptionToVerify = _expService.exp$.subscribe((exp) => {
+    //   console.log("pasa por subscribe user")
+    //   this.updateExp = <Experiencia>JSON.parse(JSON.stringify(exp))
+    //   console.log(this.updateExp)
+    // })
 
   } //CONSTRUCTOR
 
   ngOnInit() {
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      var jsonResponse = JSON.parse(response);
+      let campos = { nombre_local: item.file.name, nombre_server: jsonResponse.file }
+      this.filesToUpload.push(campos)
+      console.log("RESPUESTA: ", jsonResponse.file)
+      console.log("ITEM: ", item.file.name)
+    };
   }
 
   selectToday() {
@@ -173,9 +184,30 @@ export class ExperienciasUpdateComponent implements OnInit {
     console.log("Despues de borrar el cordinador: ", JSON.stringify(this.updateExp.coordinadores))
   }
 
-  removeMultimedia(i: number) {
-    const control = <FormArray>this.myForm.controls['multimedias'];
-    control.removeAt(i);
+  removeAdjunto(i: number, nombre_fichero) {
+    console.log("Adjuntos antes: ", this.adjuntos)
+    this.adjuntos = this.adjuntos.filter(function (el) {
+      return el.nombre_fichero !== nombre_fichero;
+    });
+    console.log("Adjuntos despues: ", this.adjuntos)
+  }
+
+  subir(item: any) {
+    console.log("item: ", item)
+    item.upload()
+  }
+
+  eliminar(item: any) {
+    console.log("eliminando: ", item)
+    for (var i = this.filesToUpload.length - 1; i >= 0; i--) {
+      if (this.filesToUpload[i].nombre_local === item.file.name) {
+        console.log("Eliminando del array ...")
+        this.filesToUpload.splice(i, 1);
+        break
+      }
+    }
+    item.remove()
+    console.log("Lista de ficheros: ", this.filesToUpload)
   }
 
   goback() {
@@ -186,8 +218,20 @@ export class ExperienciasUpdateComponent implements OnInit {
     console.log("salvando ...")
     let ngbDate = this.myForm.controls['fecha'].value;
     let formatDate = (ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year)
-
     this.updateExp = this.myForm.value
+    this.updateExp.adjuntos = []
+    this.adjuntos.forEach(element => {
+      this.updateExp.adjuntos.push(element)
+    });
+    this.filesToUpload.forEach(element => {
+      let campos = {
+        id: -1,
+        nombre_fichero: <string>element.nombre_server,
+        descripcion: <string>null,
+        experiencia_id: <number>this.idExp
+      }
+      this.updateExp.adjuntos.push(campos)
+    });
     this.updateExp.id = this.idExp
     this.updateExp.fecha = formatDate
 
@@ -196,12 +240,24 @@ export class ExperienciasUpdateComponent implements OnInit {
     console.log("experiencia: ", JSON.stringify(this.updateExp))
     console.log("Modelo: ", model);
     this._expService.updateExperiencia(this.updateExp).subscribe((res) => {
-      if (res['success'] == true) console.log("Actualizado correctamente")
-      else {
+      if (res['success'] == true) {
+        this._expService.getExperiencia(this.updateExp.id).subscribe((res) => {
+          //      console.log("respuesta de getExperiencias: ", res)
+          if (res['success'] == true) {
+            let experiencia = res['exp']
+            this._expService.setExp(experiencia)
+            //console.log("Probando geter para la experiencia seteada en el servicio:  ", expId)
+            let expFromService = <Experiencia>JSON.parse(JSON.stringify(this._expService.exp))
+            console.log("Experiencia del servicio: ", expFromService)
+          }
+          this._location.back();
+        })
+      } else {
         console.log(res['message'])
         this.message = res['message']
       }
     })
   }
+
 
 }

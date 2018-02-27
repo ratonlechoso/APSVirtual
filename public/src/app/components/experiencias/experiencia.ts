@@ -4,11 +4,12 @@ export interface Coordinador {
     email: string
 }
 
-export interface Multimedia {
+export interface Adjunto {
     id: number
-    nombre_archivo: string
-    text: string
-}
+    nombre_fichero: string
+    descripcion: string
+    experiencia_id: number
+ }
 
 export interface Experiencia {
     id: string
@@ -16,7 +17,7 @@ export interface Experiencia {
     coordinadores: Coordinador []
     destinatario: string
     descripcion: string
-    multimedias: Multimedia []
+    adjuntos: Adjunto []
     fecha: String
     universidad: string
     ambito: string

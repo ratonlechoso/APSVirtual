@@ -33,8 +33,16 @@ export class ExpService {
     return this._http.get(`${this.base_url}/experiencias`, options).map(res => this.parseRes(res));
   }
 
+
+  getImages(expId): Observable<Object> {
+    let headers = new Headers({ 'x-access-token': expId });
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    console.log("Accediendo al endpoint GET images")
+    return this._http.get(`${this.base_url}/images`, options).map(res => this.parseRes(res));
+  }
+
   getExperiencia(expId): Observable<Object> {
-    
     let headers = new Headers({ 'x-access-token': expId });
     headers.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: headers });

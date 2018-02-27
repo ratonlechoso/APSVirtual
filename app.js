@@ -58,6 +58,7 @@ app.use(function (req, res, next) {
 
 //Ruta de las vistas de angular ...
 app.use(express.static(path.join(__dirname + '/public/dist')))
+app.use(express.static(path.join(__dirname + '/uploads')))
 app.all('*', (req, res, next) => {
   console.log("Enrutando a través de Angular...")
   res.sendFile(path.resolve('./public/dist/index.html'))

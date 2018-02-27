@@ -104,7 +104,7 @@
       <div class="row">
         <!-- UNIVERSIDAD -->
         <div class="form-group col-md-8">
-          <label class="required negrita">Universidad</label>
+          <label class="negrita">Universidad</label>
           <select class="form-control minimal" formControlName="universidad" [(ngModel)]="updateExpUniversidad">
             <option *ngFor="let universidad of universidades" [ngValue]="universidad">
               {{ universidad.nombre }}
@@ -124,47 +124,66 @@
           </div>
         </div>
       </div>
-      <!-- MULTIMEDIAS(ARRAY) -->
-      <div formArrayName="multimedias">
-        <div *ngFor="let multimedia of myForm.controls.multimedias.controls; let i=index">
-          <div>
-            <label class="negrita">Multimedia (#{{i + 1}})</label>
-            <span class="fa fa-remove pull-right" *ngIf="myForm.controls.multimedias.controls.length > 1" (click)="removeMultimedia(i)"></span>
-          </div>
-          <div class="form-group" [formGroupName]="i">
-            <div class="row">
-              <div class="col-md-1"></div>
-              <!-- archivo -->
-              <div class="input-group col-md-11">
-                <input type="text" class="form-control-static" formControlName="nombre_archivo" readonly>
-                <label class="button btn-form mt0">
-                  <i class="fa fa-file" style="width: 1.2rem; height: 1rem; cursor: pointer;"></i>
-                  <input type="file" (change)="fileChangeEvent($event, i)" hidden/>
-                </label>
-              </div>
-            </div>
 
-            <!-- <input type="file" (change)="fileChangeEvent($event, i)" placeholder="Upload file..." /> -->
-
-            <!--texto-->
-            <div class="row">
-              <div class="col-md-1"></div>
-              <div class="col-md-11">
-                <label class="required">texto asociado</label>
-                <div class="alert alert-danger" *ngIf="!myForm.controls.multimedias.controls[i].controls.texto.valid && myForm.controls.multimedias.controls[i].controls.texto.touched">Este campo es obligatorio</div>
-                <textarea rows="2" cols="50" class="form-control" formControlName="texto" placeholder="Texto asociado"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="row tab">
-            <div class="col-md-1"></div>
-            <button type="button" class="button btn-form mt0" (click)="addMultimedia()">
-              <i class="fa fa-plus"> </i> Archivo multimedia
-            </button>
-          </div>
-        </div>
+      <label class="required negrita">Imagenes adjuntas</label>
+      <div *ngFor="let image of adjuntos; let i=index">
+        <span class="fa fa-remove pull-right" (click)="removeAdjunto(i, image.nombre_fichero)"></span>
+        <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
+        <p></p>
       </div>
 
+      <div class="form-group">
+        <label class="negrita" for="single">Archivo adjunto</label>
+        <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" />
+      </div>
+      <div *ngIf="uploader.queue!=''">
+        <table class="table">
+          <thead>
+            <tr>
+              <th width="50%">Nombre</th>
+              <th>Tamaño</th>
+              <th>Progreso</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td>
+                <strong>{{ item.file.name }}</strong>
+              </td>
+              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+              <td>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="item.isSuccess">
+                  <i class="fa fa-check" style="color:green"></i>
+                </span>
+                <span *ngIf="item.isCancel">
+                  <i class="fa fa-circle" style="color:orange"></i>
+                </span>
+                <span *ngIf="item.isError">
+                  <i class="fa fa-cancel" style="color:red"></i>
+                </span>
+              </td>
+              <td nowrap>
+                <button type="button" class="btn btn-success btn-xs" (click)="subir(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                  <span class="fa fa-upload"></span> Subir
+                </button>
+                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                  <span class="fa fa-ban"></span> Cancelar
+                </button>
+                <button type="button" class="btn btn-danger btn-xs" (click)="eliminar(item)">
+                  <span class="fa fa-trash"></span> Borrar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <!-- BOTONES -->
       <div class="row">
         <div class="col-md-6">

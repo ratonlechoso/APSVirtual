@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { ExpService } from './../exp.service';
 import { Subscription } from 'rxjs/Subscription';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { FileUploader } from 'ng2-file-upload';
 import * as moment from 'moment';
 
 const now = new Date();
-const URL = 'http://localhost:3567/api/experiencia/uploadMM'; //QUITAR
+const URL = 'http://localhost:3567/api/exp/upload';
 
 @Component({
   selector: 'app-experiencias-create',
@@ -19,6 +20,8 @@ const URL = 'http://localhost:3567/api/experiencia/uploadMM'; //QUITAR
 })
 
 export class ExperienciasCreateComponent implements OnInit {
+
+  public uploader: FileUploader = new FileUploader({ url: URL });
 
   myForm: FormGroup
   subscriptionToVerify: Subscription
@@ -30,7 +33,7 @@ export class ExperienciasCreateComponent implements OnInit {
   ambitos: any
   especialidades: any
   universidades: any
-  filesToUpload: Array<File>;
+  filesToUpload: Array<any>
 
   message: String
 
@@ -48,7 +51,8 @@ export class ExperienciasCreateComponent implements OnInit {
       this.universidades = universidadesList
     })
 
-    this.filesToUpload = [];
+    let campos = { nombre_local: String, nombre_server: String }
+    this.filesToUpload = []
     this.newExp = {} as Experiencia //Esta es la forma correcta de inicializar un objeto basado en una Interface cuando no se requieren valores iniciales.
     this.myForm = _fb.group({
       'nombre': ['', Validators.required],
@@ -61,8 +65,8 @@ export class ExperienciasCreateComponent implements OnInit {
       'ambito': [null, Validators.required],
       'especialidad': ['', Validators.required],
       'universidad': ['', Validators.required],
-      'multimedias': this._fb.array([
-        this.initMultimedia(),
+      'adjuntos': this._fb.array([
+        this.initAdjuntos(),
       ]),
       //FORMATEAR FECHA A UN SOLO CAMPO
     });
@@ -77,6 +81,17 @@ export class ExperienciasCreateComponent implements OnInit {
     })
   }
 
+  ngOnInit() {
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      var jsonResponse = JSON.parse(response);
+      let campos = { nombre_local: item.file.name, nombre_server: jsonResponse.file }
+      this.filesToUpload.push(campos)
+      console.log("RESPUESTA: ", jsonResponse.file);
+      console.log("ITEM: ", item.file.name);
+    };
+  }
+
   selectToday() {
     this.model = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
   }
@@ -88,7 +103,7 @@ export class ExperienciasCreateComponent implements OnInit {
     })
   }
 
-  initMultimedia() {
+  initAdjuntos() {
     return this._fb.group({
       'nombre_archivo': [''],
       'texto': ['']
@@ -103,17 +118,14 @@ export class ExperienciasCreateComponent implements OnInit {
     })
   }
 
-  ngOnInit() {
-  }
-
   addCoordinador() {
     const control = <FormArray>this.myForm.controls['coordinadores'];
     control.push(this.initCoordinador());
   }
 
   addMultimedia() {
-    const control = <FormArray>this.myForm.controls['multimedias'];
-    control.push(this.initMultimedia());
+    const control = <FormArray>this.myForm.controls['adjuntos'];
+    control.push(this.initAdjuntos());
   }
 
   removeCoordinador(i: number) {
@@ -121,8 +133,8 @@ export class ExperienciasCreateComponent implements OnInit {
     control.removeAt(i);
   }
 
-  removeMultimedia(i: number) {
-    const control = <FormArray>this.myForm.controls['multimedias'];
+  removeADjunto(i: number) {
+    const control = <FormArray>this.myForm.controls['adjuntos'];
     control.removeAt(i);
   }
 
@@ -130,50 +142,21 @@ export class ExperienciasCreateComponent implements OnInit {
     this._location.back();
   }
 
-  upload() {
-    this.makeFileRequest(URL, [], this.filesToUpload).then((result) => {
-      console.log(result);
-    }, (error) => {
-      console.error(error);
-    });
+  subir(item: any) {
+    console.log("item: ", item)
+    item.upload()
   }
-
-  fileChangeEvent(fileInput: any, i: number) {
-    console.log(fileInput.target.files[0])
-    if (fileInput.target.files[0] == undefined) {
-      return
+  eliminar(item: any) {
+    console.log("eliminando: ", item)
+    for (var i = this.filesToUpload.length - 1; i >= 0; i--) {
+      if (this.filesToUpload[i].nombre_local === item.file.name) {
+        console.log("Eliminando del array ...")
+        this.filesToUpload.splice(i, 1);
+        break
+      }
     }
-    // this.filesToUpload = <Array<File>>fileInput.target.files;
-
-    this.filesToUpload.push(fileInput.target.files[0]);
-    const control = <FormArray>this.myForm.controls['multimedias'];
-    control.controls[i].get('nombre_archivo').setValue(this.filesToUpload[i].name)
-
-
-    for (var j = 0; j < this.filesToUpload.length; j++)
-      console.log(this.filesToUpload[j].name)
-
-  }
-
-  makeFileRequest(url: string, params: Array<string>, files: Array<File>) {
-    return new Promise((resolve, reject) => {
-      var formData: any = new FormData();
-      var xhr = new XMLHttpRequest();
-      for (var i = 0; i < files.length; i++) {
-        formData.append("uploads[]", files[i], files[i].name);
-      }
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-          if (xhr.status == 200) {
-            resolve(JSON.parse(xhr.response));
-          } else {
-            reject(xhr.response);
-          }
-        }
-      }
-      xhr.open("POST", url, true);
-      xhr.send(formData);
-    });
+    item.remove()
+    console.log("Lista de ficheros: ", this.filesToUpload)
   }
 
   save(model: Experiencia) {
@@ -183,15 +166,16 @@ export class ExperienciasCreateComponent implements OnInit {
 
     this.newExp = this.myForm.value
     this.newExp.fecha = formatDate
+    this.newExp.adjuntos = this.filesToUpload
     console.log("experiencia: ", JSON.stringify(this.newExp))
     console.log("Modelo: ", model);
-     this._expService.createExperiencia(this.newExp).subscribe( (res) => {
-       if (res['success'] == true) console.log("Grabado correctamente")
-       else  {
-         console.log(res['message'])
-         this.message = res['message']
-       }
-     })
+    this._expService.createExperiencia(this.newExp).subscribe((res) => {
+      if (res['success'] == true) console.log("Grabado correctamente")
+      else {
+        console.log(res['message'])
+        this.message = res['message']
+      }
+    })
   }
 }
 

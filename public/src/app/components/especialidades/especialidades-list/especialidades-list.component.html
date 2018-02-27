@@ -1,21 +1,31 @@
 <h2>Listado de grados universitarios</h2>
 <br>
 <div class="row">
-  <p class="col-md-7 negrita">Nombre del grado </p>
-  <p class="col-md-4 negrita">Ámbito de conocimiento </p>
+  <div class="col-md-7">
+    <input type="text" [(ngModel)]="query" name="query" placeholder="Filtrar resultados por el nombre del grado">
+  </div>
 </div>
-<div *ngFor="let especialidad of especialidades | paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
-  <div class="row" *ngIf="!especialidad.editable" >
+
+<div class="row">
+  <p class="col-md-7 negrita">Nombre del grado
+    <span class="fa fa-arrow-circle-o-down pointer" [style.color]="nombreAsc ? 'green' : 'black'" (click)="orderBy('nombre', 1)"></span>
+    <span class="fa fa-arrow-circle-o-up  pointer " [style.color]="nombreDesc ? 'green' : 'black'" (click)="orderBy('nombre', 0)"></span>
+  </p>
+  <p class="col-md-4 negrita">Ámbito de conocimiento
+    <span class="fa fa-arrow-circle-o-down pointer " [style.color]="nombreAmbitoAsc ? 'green' : 'black'" (click)="orderBy('ambito_nombre', 1)"></span>
+    <span class="fa fa-arrow-circle-o-up pointer " [style.color]="nombreAmbitoDesc ? 'green' : 'black'" (click)="orderBy('ambito_nombre', 0)"></span>
+  </p>
+</div>
+<div *ngFor="let especialidad of especialidades | orderBy: sortingField:ascending | search: 'ambito_nombre, nombre':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
+
+  <div class="row" *ngIf="!especialidad.editable">
     <p class="col-md-7">{{especialidad.nombre}} </p>
     <p class="col-md-4">{{especialidad.ambito_nombre}}
       <span class="fa fa-close pull-right pointer color-blue " (click)="delete(especialidad)"></span>
       <span class="fa fa-edit pull-right pointer color-blue" (click)="changeEditMode(especialidad)"></span>
     </p>
   </div>
-  <app-especialidades-edit 
-    *ngIf="especialidad.editable" 
-    [especialidad]="especialidad" 
-    (updated)="updateList($event)">
+  <app-especialidades-edit *ngIf="especialidad.editable" [especialidad]="especialidad" (updated)="updateList($event)">
   </app-especialidades-edit>
 </div>
 

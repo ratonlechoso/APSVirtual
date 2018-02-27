@@ -10,13 +10,14 @@ module.exports = {
     }],
     destinatario: String,
     descripcion: String,
-    multimedias: [{
-        multimedia_id: Number,  //FK
-        nombre_archivo: String,
-        texto: String
+    adjuntos: [{
+        id: Number,  //FK
+        nombre_fichero: String,
+        descripcion: String
     }],
     fecha: String,
     ambito: String,
+    ambito_id: Number, 
     especialidad: String,
     universidad: String,
 
@@ -27,6 +28,7 @@ module.exports = {
         this.descripcion = experiencia.desc
         this.fecha = experiencia.fecha
         this.ambito = experiencia.nombre_ambito
+        this.ambito_id = experiencia.ambito_id
         this.especialidad = experiencia.nombre_especialidad
         this.universidad = experiencia.nombre_uni
     },
@@ -35,8 +37,8 @@ module.exports = {
         this.coordinadores = coordinadores;
     },
 
-    setMultimedias: function (multimedias) {
-        this.multimedias = multimedias
+    setAdjuntos: function (adjuntos) {
+        this.adjuntos = adjuntos
     }
 
 }

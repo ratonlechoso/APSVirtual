@@ -4,22 +4,43 @@ var router = express.Router();
 var experiencia = require('../../models/experiencia_mongo');
 var expSchema = require('../../models/experiencia');
 var config = require('../../config');
+//var fileManage = require('../../tools/fileManage');
 var auth = require('../middleware/auth');
 var moment = require('moment')
 var multer = require("multer");
 var async = require('async')
-
+var fs = require('fs');
 const sqlConn = require('../../DB/sqlConnection')
 
+
+router.get('/images', (req, res) => {
+  let expId = req.body.id || req.query.id || req.headers['x-access-token'];
+  console.log("obteniendo Imagenes de la experiencia ID ", expId)
+  let images = []
+  let sQuery =
+    "SELECT nombre_fichero FROM adjuntos " +
+    "WHERE experiencia_id = " + expId
+  sqlConn.pool.query(sQuery, function (err, adjuntos, fields) { //SELECT IMAGES
+    console.log("PASA")
+    if (err) {
+      console.log("ERROR: ", err)
+      res.send(err)
+      return;
+    }
+    res.send({ status: "OK", ficheros: adjuntos })
+    return;
+  })
+})
 
 router.get('/experiencia', (req, res) => {
   let expId = req.body.id || req.query.id || req.headers['x-access-token'];
   console.log("obteniendo experiencia con ID ", expId)
   let sQuery =
     "SELECT " +
-    "destinatario, fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
+    "experiencias.destinatario , experiencias.fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
     "experiencias.descripcion as `desc`, " +
     "ambitos.nombre as `nombre_ambito`, " +
+    "experiencias.ambito_id, " +
     "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
     "FROM experiencias " +
     "INNER JOIN ambitos on experiencias.ambito_id = ambitos.id " +
@@ -27,7 +48,11 @@ router.get('/experiencia', (req, res) => {
     "INNER JOIN universidades on experiencias.universidad_id = universidades.id  " +
     "WHERE experiencias.id = " + expId
   sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
-    if (err) res.send(err)
+    if (err) {
+      console.log("error al obtener experiencias: ", err)
+      res.send(err)
+      return;
+    }
     var experiencia = expSchema;
     experiencia.setExperiencia(exp[0])
     let sQuery = "SELECT coordinadores.id, nombre, email " +
@@ -38,15 +63,20 @@ router.get('/experiencia', (req, res) => {
       if (err) res.send(err)
       console.log("Coord: ", coord)
       experiencia.setCoordinadores(coord)
-      //console.log(experiencia)
-      let content = {
-        exp: (experiencia),
-        success: true,
-        message: 'ok'
-      };
-      res.send(content)
-      return
+      let sQuery = "SELECT * FROM `adjuntos` WHERE ?"
+      sqlConn.pool.query(sQuery, { experiencia_id: expId }, function (err, adj, fields) { //SELECT EXPERIENCIAS
+        if (err) res.send(err)
+        experiencia.setAdjuntos(adj)
+        let content = {
+          exp: (experiencia),
+          success: true,
+          message: 'ok'
+        };
+        res.send(content)
+        return
+      })
     }) //SELECT coordinadores
+
   }) //SELECT experiencias
 }); //metodo
 
@@ -77,7 +107,7 @@ router.get('/experiencias', (req, res) => {
       };
     }
     //TRATAMIENTO DE LA ASINCRONIA: 
-    //Por cada fila en exp extrae un element sobre el que realizar las consultas de coordinador y de ficheros multimedia
+    //Por cada fila en exp extrae un element sobre el que realizar las consultas de coordinador y de ficheros adjuntos
     //Por medio del waterfall nos aseguramos de tener la estructura de datos comepleta antes de hacer push en el objeto resultado
     var experiencias = [];
     var experiencia = expSchema;
@@ -123,8 +153,30 @@ router.put('/experiencias', (req, res) => {
       "SET ?  WHERE id = " + reqExp.id
     sqlConn.pool.query(sQuery, campos, function (err, exp) { //UPDATE experiencia
       if (err) throw err
-      sQuery = "DELETE FROM  `experiencia_coordinador` " +
-        "WHERE  ? "
+
+
+      /// INSERTAR ADJUNTOS
+      sQuery = "DELETE FROM `adjuntos` WHERE ?"
+      sqlConn.pool.query(sQuery, { 'experiencia_id': reqExp.id }, function (err, rows) { //DELETE ADJUNTOS
+        if (err) throw err
+        async.eachSeries(reqExp.adjuntos, (element, eachCallback) => {
+          sQuery = "INSERT INTO `adjuntos` " +
+            "SET ? "
+          campos = {
+            nombre_fichero: element.nombre_fichero,
+            descripcion: element.descripcion,
+            experiencia_id: element.experiencia_id
+          }
+          sqlConn.pool.query(sQuery, campos, function (err, newCoord, fields) { //INSERTAR ADJUNTOS
+            if (err) throw err
+            eachCallback(null)
+          })
+        }), function (err) {
+          console.log("fin de eachseries")
+        }
+      })
+
+      sQuery = "DELETE FROM  `experiencia_coordinador` WHERE  ? "
       sqlConn.pool.query(sQuery, { 'experiencia_id': reqExp.id }, function (err, rows) { //DELETE experiencia
         if (err) throw err
 
@@ -188,12 +240,10 @@ router.put('/experiencias', (req, res) => {
         ) //ASYNC EACHSERIES
       })
     })
-
   } catch (err) {
     console.log("ERROR: ", err)
   }
 });
-
 
 router.post('/experiencias', (req, res) => {
   var reqExp = req.body;
@@ -227,6 +277,25 @@ router.post('/experiencias', (req, res) => {
         db.query(sQuery, campos, function (err, experiencia, fields) { //INSERTANDO EXPERIENCIA
           console.log("experiencia insertada", experiencia.insertId)
           expId = experiencia.insertId
+
+          //INSERTAR ADJUNTOS
+
+          sQuery = "INSERT INTO `adjuntos` (nombre_fichero, experiencia_id) VALUES ?"
+          let records = []
+          reqExp.adjuntos.forEach(element => {
+            let value = []
+            value.push(element.nombre_server)
+            value.push(expId)
+            records.push(value)
+          });
+          console.log("ARRAY DE ADJUNTOS: ", records)
+          db.query(sQuery, [records], function (err, result) { //INSERTANDO ADJUNTOS
+
+            if (err) {
+              console.log("error insertando en adjuntos", err)
+              return (next)
+            }
+          })
 
           //RECORRER COORDINADORES ...
           reqExp.coordinadores.forEach(element => {
@@ -287,7 +356,7 @@ router.post('/experiencias', (req, res) => {
 
 
 router.delete('/experiencias', (req, res) => {
-  //Se borra la experiencia y los archivos multimedia asociados, pero no se borran los coordinadores.
+  //Se borra la experiencia y los archivos adjuntos asociados, pero no se borran los coordinadores.
   try {
     let expId = req.body.id || req.query.id || req.headers['x-access-token'];
     sQuery = "DELETE FROM `experiencias` " +
@@ -568,7 +637,6 @@ router.put('/especialidad', (req, res) => {
 
 
 router.delete('/especialidad', (req, res) => {
-  //Se borra la experiencia y los archivos multimedia asociados, pero no se borran los coordinadores.
   try {
     let especId = req.body.id || req.query.id || req.headers['x-access-token'];
     sQuery = "DELETE FROM `especialidades` " +
@@ -661,9 +729,9 @@ router.put('/bibliografiaExt', (req, res) => {
         return
       }
       let content = {
-        success: true, 
+        success: true,
         message: 'Recurso bibliografico actualizado'
-      }; 
+      };
       res.send(content);
       return;
     });
@@ -675,7 +743,6 @@ router.put('/bibliografiaExt', (req, res) => {
 
 
 router.delete('/bibliografiaExt', (req, res) => {
-  //Se borra la experiencia y los archivos multimedia asociados, pero no se borran los coordinadores.
   try {
     let bibId = req.body.id || req.query.id || req.headers['x-access-token'];
     sQuery = "DELETE FROM `bibliografia_externa` " +
@@ -702,6 +769,48 @@ router.delete('/bibliografiaExt', (req, res) => {
     console.log("Error en delete: ", err)
   }
 });
+/**********************************************************************************
+ * UTILES
+ **********************************************************************************/
+
+var storage = multer.diskStorage({ //multers disk storage settings
+  destination: function (req, file, cb) {
+    let pathToAssetsInDist = './public/dist/assets/uploads/'
+    cb(null, pathToAssetsInDist);
+  },
+  filename: function (req, file, cb) {
+    var datetimestamp = Date.now();
+    //Se formatea el nombre para no incurrir en nombres duplicados
+    cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+  }
+});
+
+var upload = multer({ //multer settings
+  storage: storage
+}).single('file');
+
+router.post('/upload', function (req, res) {
+  upload(req, res, function (err) {
+    console.log(req.file)
+    //SE DEBE DEVOLVER EL REQ.FILE.FILENAME QUE CONTIENE EL NOMBRE DEL FICHERO EN EL BACKEND PARA QUE EL FRONT 
+    //LO ENVIE AL ENDPOINT QUE ACTUA SOBRE LA BASE DE DATOS.
+    if (err) {
+      res.json({ error_code: 1, err_desc: err })
+      return;
+    }
+    //Esto no se si es lo mas ortodoxo pero debo tener una copia de los ficheros que se suben en el assets/uploads de src 
+    //para que las subidas sean permanentes respecto a los reinicios del servidor
+    
+    let pathToAssetsInDist = './public/dist/assets/uploads/'
+    let pathToAssetsInSrc =  './public/src/assets/uploads/'
+    console.log("copiando ",pathToAssetsInDist, req.file.filename, ' a ', pathToAssetsInSrc, req.file.filename )
+    fs.createReadStream(pathToAssetsInDist+req.file.filename).pipe(fs.createWriteStream(pathToAssetsInSrc+req.file.filename));
+
+    res.json({ error_code: 0, file: req.file.filename, err_desc: null })
+  })
+})
+
+
 
 
 /*************************************************************************************************************/

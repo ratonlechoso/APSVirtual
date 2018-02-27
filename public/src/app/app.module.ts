@@ -25,6 +25,11 @@ import {AppRoutingModule} from "./app.routes"
 import { AuthGuard } from './components/tools/auth';
 import { AuthGuardForAdmin } from './components/tools/auth-admin';
 
+//CUSTOM PIPES
+import { PairsPipe } from './components/tools/pairs-pipe';
+import { OrderBy } from './components/tools/array-sort-pipe';
+import { SearchPipe } from './components/tools/search-pipe';
+
 
 //COMPONENTES
 import { AppComponent } from './app.component';
@@ -70,6 +75,11 @@ import { UniversidadesEditComponent } from './components/universidades/universid
 import { BiblioRecursosExternosListComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-list/biblio-recursos-externos-list.component';
 import { BiblioRecursosExternosEditComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-edit/biblio-recursos-externos-edit.component';
 import { BiblioRecursosExternosAddComponent } from './components/biblio-recursos-externos/biblio-recursos-externos-add/biblio-recursos-externos-add.component';
+import { ProyectosListComponent } from './components/proyectos/proyectos-list/proyectos-list.component';
+import { ProyectosCreateComponent } from './components/proyectos/proyectos-create/proyectos-create.component';
+import { ProyectosSearchComponent } from './components/proyectos/proyectos-search/proyectos-search.component';
+import { ProyectosUpdateComponent } from './components/proyectos/proyectos-update/proyectos-update.component';
+import { NavigationMenuProyectosComponent } from './components/proyectos/navigation-menu-proyectos/navigation-menu-proyectos.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -115,7 +125,15 @@ import { BiblioRecursosExternosAddComponent } from './components/biblio-recursos
     UniversidadesEditComponent,
     BiblioRecursosExternosListComponent,
     BiblioRecursosExternosEditComponent,
-    BiblioRecursosExternosAddComponent
+    BiblioRecursosExternosAddComponent,
+    PairsPipe,
+    OrderBy,
+    SearchPipe,
+    ProyectosListComponent,
+    ProyectosCreateComponent,
+    ProyectosSearchComponent,
+    ProyectosUpdateComponent,
+    NavigationMenuProyectosComponent
   ],
   imports: [
     Angular2FontawesomeModule,

@@ -19,11 +19,18 @@ export class UniversidadesListComponent implements OnInit {
   universidades: any
   universidad: any
   addMode: boolean
+
+  ascending: boolean
+  nombreAsc: boolean
+  nombreDesc: boolean
+  query:string
+
   constructor(
     private _expService: ExpService
   ) { 
     this.addMode = false
     this.loadUniv()
+    this.nombreAsc = true
   }
 
   ngOnInit() {
@@ -51,6 +58,12 @@ export class UniversidadesListComponent implements OnInit {
         });
 
       })
+  }
+
+  orderBy (order: boolean) {
+    this.ascending = order
+    this.nombreAsc = this.nombreDesc = false
+    this.ascending? this.nombreAsc = true: this.nombreDesc = true
   }
 
   addModeEvent(event) {

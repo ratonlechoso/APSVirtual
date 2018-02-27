@@ -1,10 +1,19 @@
 <h2>Listado de universidades</h2>
 <br>
 <div class="row">
-  <p class="col-md-12 negrita">Nombre de la universidad </p>
+  <div class="col-md-7">
+    <input type="text" [(ngModel)]="query" name="query" placeholder="Filtrar resultados">
+  </div>
 </div>
 
-<div *ngFor="let universidad of universidades | paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
+<div class="row">
+  <p class="col-md-12 negrita">Nombre de la universidad
+    <span class="fa fa-arrow-circle-o-down pointer" [style.color]="nombreAsc ? 'green' : 'black'" (click)="orderBy(1)"></span>
+    <span class="fa fa-arrow-circle-o-up  pointer " [style.color]="nombreDesc ? 'green' : 'black'" (click)="orderBy(0)"></span>
+  </p>
+</div>
+
+<div *ngFor="let universidad of universidades |  orderBy: 'nombre':ascending | search: 'nombre':query | paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
   <div class="row" *ngIf="!universidad.editable">
     <p class="col-md-9">{{universidad.nombre}}
       <span class="fa fa-close pull-right pointer color-blue " (click)="delete(universidad)"></span>
@@ -45,7 +54,8 @@
   </bs-modal-header>
   <bs-modal-body>
     <div *ngIf="universidad != null">
-      <p>¿Eliminar la universidad:  <span class="negrita">{{universidad.nombre}}</span>? Si acepta esta acción no podrá revertirla</p>
+      <p>¿Eliminar la universidad:
+        <span class="negrita">{{universidad.nombre}}</span>? Si acepta esta acción no podrá revertirla</p>
     </div>
   </bs-modal-body>
   <bs-modal-footer>

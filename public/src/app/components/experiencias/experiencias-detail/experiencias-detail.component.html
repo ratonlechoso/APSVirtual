@@ -23,7 +23,8 @@
   <div class="container-experiencias">
     <h3>{{experiencia.nombre}}
       <div *ngIf="user">
-        <span title="Eliminar la experiencia" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'" (click)="borrar()"></span>
+        <span title="Eliminar la experiencia" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'"
+          (click)="borrar()"></span>
         <span title="Actualizar datos" class="fa fa-edit pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'" (click)="update(experiencia.id)"></span>
       </div>
     </h3>
@@ -39,7 +40,13 @@
     <p>{{experiencia.descripcion}}</p>
     <br>
     <br>
+    <hr>
     <br>
+    <div *ngFor="let image of experiencia.adjuntos ">
+
+      <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
+      <p></p>
+    </div>
   </div>
   <!-- BOTONES -->
   <div class="row">

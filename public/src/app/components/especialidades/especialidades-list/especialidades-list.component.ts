@@ -20,11 +20,23 @@ export class EspecialidadesListComponent implements OnInit {
   especialidad: any
   ambitos: any
   addMode: boolean
+  sortingField: string
+  ascending: boolean
+  nombreAsc: boolean
+  nombreDesc: boolean
+  nombreAmbitoAsc: boolean
+  nombreAmbitoDesc: boolean
+  query:string
+
   constructor(
     private _expService: ExpService
   ) {
     this.addMode = false
     this.loadEspec()
+    this.sortingField="nombre"
+    this.ascending = true
+    this.nombreAsc = true
+    this.query=""
   }
 
   ngOnInit() {
@@ -58,6 +70,24 @@ export class EspecialidadesListComponent implements OnInit {
     })
   }
 
+  orderBy (field: string, order: boolean) {
+    this.sortingField = field
+    this.ascending = order
+    this.nombreAmbitoAsc = this.nombreAmbitoDesc = this.nombreAsc = this.nombreDesc = false
+    switch (field) {
+      case 'nombre':
+        (this.ascending? this.nombreAsc = true: this.nombreDesc = true)
+        break;
+      case 'ambito_nombre':
+        (this.ascending? this.nombreAmbitoAsc = true: this.nombreAmbitoDesc = true)
+      break;  
+    
+      default:
+        break;
+    }
+
+  }
+
   addModeEvent(event) {
     if (event)
       this.loadEspec()
@@ -89,3 +119,4 @@ export class EspecialidadesListComponent implements OnInit {
 
 
 }
+
