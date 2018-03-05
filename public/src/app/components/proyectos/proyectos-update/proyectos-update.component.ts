@@ -82,12 +82,11 @@ export class ProyectosUpdateComponent implements OnInit {
       })
     })
     _projService.getProvincias().subscribe((provinciasList) => {
-      console.log("obteniendo provincias")
       this.provincias = provinciasList
+      console.log("Provincias: ", this.provincias)
       this.provincias.forEach(element => {
-        console.log("provincia: ", element.id, " ,", this.updateProj.entidad.provincia_id)
         if (element.id == this.updateProj.entidad.provincia_id) {
-          console.log("provincia: ", element)
+          console.log("provincia SELECCIONADA: ", element)
           this.updateProjEntidadProvincia = element
         }
       })
@@ -96,8 +95,10 @@ export class ProyectosUpdateComponent implements OnInit {
     _expService.getAmbitos().subscribe((ambitosList) => {
       this.ambitos = ambitosList
       this.ambitos.forEach(element => {
-        if (element.nombre == this.updateProj.ambito)
+        if (element.nombre == this.updateProj.ambito) {
+          console.log("ambito SELECCIONADO: ", element)
           this.updateProjAmbito = element
+        }
       })
       _expService.getEspecialidades(this.updateProjAmbito.id).subscribe((especialidadesList) => {
         this.especialidades = especialidadesList
