@@ -27,7 +27,7 @@ export class ExperienciasCreateComponent implements OnInit {
   subscriptionToVerify: Subscription
 
   model: NgbDateStruct;
-  //ambitos = ['Artes y Humanidades', 'Ciencias', 'Ciencias de la Salud', 'Ciencias Sociales y Politicas', 'Arquitectura e Ingenieria'];
+  
 
   newExp: Experiencia
   ambitos: any

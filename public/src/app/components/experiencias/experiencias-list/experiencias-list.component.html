@@ -1,4 +1,4 @@
-<app-navigation-menu> </app-navigation-menu>
+<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>
 <div class="container">
   <div class="row">
     <ul class="breadcrumb">
@@ -16,11 +16,11 @@
   </div>
 
   <div class="container-experiencias">
-    <h2>{{nombreLista}}</h2>
+    <h1>{{nombreLista}}</h1>
     <br>
     <div *ngIf="experiencias.length > 0">
       <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
-        <h2>{{experiencia.nombre}}</h2>
+        <h3>{{experiencia.nombre}}</h3>
         <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>
         <h4><span title = "Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)"></span></h4>
         <br>
@@ -33,7 +33,7 @@
     </div>
     <br>
     <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
-      screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+      screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página" autoHide="true"></pagination-controls>
     <br>
   </div>
 </div>

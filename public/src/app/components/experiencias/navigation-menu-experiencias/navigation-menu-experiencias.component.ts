@@ -5,12 +5,12 @@ import { AuthService } from '../../../auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'app-navigation-menu',
-  templateUrl: './navigation-menu.component.html',
-  styleUrls: ['./navigation-menu.component.css']
+  selector: 'app-navigation-menu-experiencias',
+  templateUrl: './navigation-menu-experiencias.component.html',
+  styleUrls: ['./navigation-menu-experiencias.component.css']
 })
 
-export class NavigationMenuComponent implements OnInit, OnDestroy {
+export class NavigationMenuExperienciasComponent implements OnInit, OnDestroy {
   user: User
   subscriptionToGetUser: Subscription
   constructor(

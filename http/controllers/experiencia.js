@@ -18,7 +18,7 @@ router.get('/images', (req, res) => {
   console.log("obteniendo Imagenes de la experiencia ID ", expId)
   let images = []
   let sQuery =
-    "SELECT nombre_fichero FROM adjuntos " +
+    "SELECT nombre_fichero FROM adjuntos_experiencias " +
     "WHERE experiencia_id = " + expId
   sqlConn.pool.query(sQuery, function (err, adjuntos, fields) { //SELECT IMAGES
     console.log("PASA")
@@ -47,7 +47,7 @@ router.get('/experiencia', (req, res) => {
     "INNER JOIN especialidades on experiencias.especialidad_id = especialidades.id " +
     "INNER JOIN universidades on experiencias.universidad_id = universidades.id  " +
     "WHERE experiencias.id = " + expId
-  sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
+  sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS 
     if (err) {
       console.log("error al obtener experiencias: ", err)
       res.send(err)
@@ -63,7 +63,7 @@ router.get('/experiencia', (req, res) => {
       if (err) res.send(err)
       console.log("Coord: ", coord)
       experiencia.setCoordinadores(coord)
-      let sQuery = "SELECT * FROM `adjuntos` WHERE ?"
+      let sQuery = "SELECT * FROM `adjuntos_experiencias` WHERE ?"
       sqlConn.pool.query(sQuery, { experiencia_id: expId }, function (err, adj, fields) { //SELECT EXPERIENCIAS
         if (err) res.send(err)
         experiencia.setAdjuntos(adj)
@@ -156,11 +156,11 @@ router.put('/experiencias', (req, res) => {
 
 
       /// INSERTAR ADJUNTOS
-      sQuery = "DELETE FROM `adjuntos` WHERE ?"
+      sQuery = "DELETE FROM `adjuntos_experiencias` WHERE ?"
       sqlConn.pool.query(sQuery, { 'experiencia_id': reqExp.id }, function (err, rows) { //DELETE ADJUNTOS
         if (err) throw err
         async.eachSeries(reqExp.adjuntos, (element, eachCallback) => {
-          sQuery = "INSERT INTO `adjuntos` " +
+          sQuery = "INSERT INTO `adjuntos_experiencias` " +
             "SET ? "
           campos = {
             nombre_fichero: element.nombre_fichero,
@@ -280,7 +280,7 @@ router.post('/experiencias', (req, res) => {
 
           //INSERTAR ADJUNTOS
 
-          sQuery = "INSERT INTO `adjuntos` (nombre_fichero, experiencia_id) VALUES ?"
+          sQuery = "INSERT INTO `adjuntos_experiencias` (nombre_fichero, experiencia_id) VALUES ?"
           let records = []
           reqExp.adjuntos.forEach(element => {
             let value = []

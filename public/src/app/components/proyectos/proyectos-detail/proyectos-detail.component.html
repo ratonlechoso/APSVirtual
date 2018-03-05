@@ -1,0 +1,86 @@
+<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/experiencias']">
+            Proyectos ApS
+          </a>
+        </li>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/experiencias-list', {ambito_id: ambito_id}]">
+            Listado
+          </a>
+        </li>
+        <li>Detalle de proyecto</li>
+    </ul>
+  </div>
+  <br>
+  <div class="container-experiencias">
+    <h3>{{proyecto.nombre}}
+      <div *ngIf="user">
+        <span title="Eliminar la experiencia" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'"
+          (click)="borrar()"></span>
+        <span title="Actualizar datos" class="fa fa-edit pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'" (click)="update(proyecto.id)"></span>
+      </div>
+    </h3>
+    <h3>{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</h3>
+    <h4>Estado actual del proyecto: </h4>
+    <p> {{proyecto.estado.nombre}}</p>
+    <div *ngIf="proyecto.coordinadores!= null">
+      <h4 *ngIf="proyecto.coordinadores.length > 1">Coordinadores</h4>
+      <h4 *ngIf="proyecto.coordinadores.length == 1">Coordinador</h4>
+      <div *ngFor="let coordinador of proyecto.coordinadores">
+        <p>{{coordinador.nombre}} ({{coordinador.email}})</p>
+      </div>
+    </div>
+    <h4>Descripción:</h4>
+    <p>{{proyecto.descripcion}}</p>
+    <br>
+    <hr>
+    <br>
+    <div *ngFor="let image of proyecto.adjuntos ">
+
+      <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
+      <p></p>
+    </div>
+  </div>
+  <!-- BOTONES -->
+  <div class="row">
+    <div class="col-md-6">
+      <button type="button" class="button cancel" (click)=goback();>
+        <i class="fa fa-times"></i> Volver al listado
+      </button>
+    </div>
+    <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+  </div>
+
+</div>
+
+
+
+<!-- ************************************************************************** -->
+<!-- MODAL -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
+  (onOpen)="modalDeleteOpened()" #modal>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>¿Borrar proyecto? Si acepta esta acción no podrá revertirla</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalDelete.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalDelete.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

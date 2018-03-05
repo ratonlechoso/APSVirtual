@@ -1,0 +1,8 @@
+.nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+.my-drop-zone { border: dotted 3px lightgray; }
+
+#div_entidad {
+    background-color: rgb(248, 245, 212)
+
+}

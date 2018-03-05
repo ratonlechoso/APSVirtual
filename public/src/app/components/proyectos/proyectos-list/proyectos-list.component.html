@@ -1,3 +1,40 @@
-<p>
-  proyectos-list works!
-</p>
+<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/proyectos']">
+            Proyectos ApS
+          </a>
+        </li>
+        <li>Listado</li>
+    </ul>
+  </div>
+
+  <div class="container-experiencias">
+    <h2>{{nombreLista}}</h2>
+    <br>
+    <div *ngIf="proyectos.length > 0">
+      <div class="experiencia-detalle" *ngFor="let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
+        <h2>{{proyecto.nombre}}</h2>
+        <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>
+        <h4><span title = "Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"></span></h4>
+        <br>
+        <br>
+        <br>
+      </div>
+    </div>
+    <div *ngIf="proyectos.length == 0">
+      <h3>NO HAY NINGUN PROYECTO EN ESTE AMBITO</h3>
+    </div>
+    <br>
+    <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
+      screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+    <br>
+  </div>
+</div>
+

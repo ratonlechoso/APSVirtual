@@ -35,9 +35,8 @@ export class ExperienciasDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("PASA")
     try {
-    this.experiencia = <Experiencia>JSON.parse(JSON.stringify(this._expService.exp))
+      this.experiencia = <Experiencia>JSON.parse(JSON.stringify(this._expService.exp))
     } catch (err) {
       console.log("EXP: ", this.experiencia)      
       this.router.navigate(['experiencias']);

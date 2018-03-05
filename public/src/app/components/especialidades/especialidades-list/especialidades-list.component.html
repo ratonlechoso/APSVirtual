@@ -16,7 +16,7 @@
     <span class="fa fa-arrow-circle-o-up pointer " [style.color]="nombreAmbitoDesc ? 'green' : 'black'" (click)="orderBy('ambito_nombre', 0)"></span>
   </p>
 </div>
-<div *ngFor="let especialidad of especialidades | orderBy: sortingField:ascending | search: 'ambito_nombre, nombre':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
+<div *ngFor="let especialidad of especialidades | orderBy: sortingField:ascending | search: 'nombre':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
 
   <div class="row" *ngIf="!especialidad.editable">
     <p class="col-md-7">{{especialidad.nombre}} </p>

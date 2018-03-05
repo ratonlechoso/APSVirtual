@@ -1,3 +1,174 @@
-<p>
-  proyectos-create works!
-</p>
+<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
+<div class="container">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/proyectos']">
+            Proyectos APS
+          </a>
+        </li>
+        <li>Insertar nueva</li>
+    </ul>
+  </div>
+  <div class="container-center col-md-10">
+
+    <!-- TITULO -->
+    <h2>Insertar un proyecto de ApS</h2>
+    <form [formGroup]="myForm" novalidate (ngSubmit)="save(myForm)">
+
+      <!--------------------------------  CAMPOS ------------------------------------------>
+
+      <!-- NOMBRE -->
+      <div class="form-group">
+        <label class="required negrita">Nombre del proyecto</label>
+        <div class="alert alert-danger" *ngIf="!myForm.controls.nombre.valid && myForm.controls.nombre.touched">Este campo es obligatorio</div>
+        <input type="text" formControlName="nombre" placeholder="Introduce aquí el nombre del proyecto" class="form-control">
+      </div>
+
+      <!-- ENTIDAD -->
+      <div class="form-group" id="div_entidad">
+        <div>
+          <label class="negrita">Entidad demandante del proyecto</label>
+        </div>
+        <div class="row">
+          <!--nombre-->
+          <div class="col-md-5">
+            <label class="required negrita">Nombre</label>
+            <div class="alert alert-danger" *ngIf="!myForm.controls.nombre_entidad.valid && myForm.controls.nombre_entidad.touched">Este campo es obligatorio</div>
+            <input type="text" class="form-control" formControlName="nombre_entidad" placeholder="Nombre de la entidad">
+          </div>
+          <!--email-->
+          <div class="col-md-6">
+            <label class="required negrita">Email</label>
+            <div class="alert alert-danger" *ngIf="!myForm.controls.email_entidad.valid && myForm.controls.email_entidad.touched">Este campo es obligatorio</div>
+            <input type="email" class="form-control" formControlName="email_entidad" placeholder="Dirección de Email">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label class="required negrita">Provincia</label>
+            <select class="form-control minimal" formControlName="provincia_entidad">
+              <option [ngValue]="0">Selecciona una provincia</option>
+              <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">
+                {{ provincia.nombre }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-5">
+            <div class="form-group">
+              <label class="required negrita">Municipio</label>
+              <input type="text" class="form-control" formControlName="municipio_entidad" placeholder="Municipio de la entidad">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESCRIPCION -->
+      <div class="form-group">
+        <label class="required negrita">Descripción</label>
+        <!-- <div class="alert alert-danger" *ngIf="!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched">Este campo es obligatorio</div> -->
+        <textarea rows="5" cols="50" formControlName="descripcion" placeholder="Descripción del proyecto" class="form-control"></textarea>
+      </div>
+
+      <!-- AMBITO -->
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label class="required negrita">Ambito</label>
+          <select class="form-control minimal" formControlName="ambito" >
+            <option [ngValue]="0">Selecciona un ámbito</option>
+            <option *ngFor="let ambito of ambitos" [ngValue]="ambito.id">
+              {{ ambito.nombre }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Adjuntos(ARRAY) -->
+      <div formArrayName="adjuntos">
+        <div *ngFor="let adjunto of myForm.controls.adjuntos.controls; let i=index">
+          <div class="form-group">
+            <label class="negrita" for="single">Archivo adjunto</label>
+            <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" />
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th width="50%">Nombre</th>
+                <th>Tamaño</th>
+                <th>Progreso</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of uploader.queue">
+                <td>
+                  <strong>{{ item.file.name }}</strong>
+                </td>
+                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                <td>
+                  <div class="progress" style="margin-bottom: 0;">
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span *ngIf="item.isSuccess">
+                    <i class="fa fa-check" style="color:green"></i>
+                  </span>
+                  <span *ngIf="item.isCancel">
+                    <i class="fa fa-circle" style="color:orange"></i>
+                  </span>
+                  <span *ngIf="item.isError">
+                    <i class="fa fa-cancel" style="color:red"></i>
+                  </span>
+                </td>
+                <td nowrap>
+                  <button type="button" class="btn btn-success btn-xs" (click)="subir(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                    <span class="fa fa-upload"></span> Subir
+                  </button>
+                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                    <span class="fa fa-ban"></span> Cancelar
+                  </button>
+                  <button type="button" class="btn btn-danger btn-xs" (click)="eliminar(item)">
+                    <span class="fa fa-trash"></span> Borrar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+
+        </div>
+
+      </div>
+
+      <!-- BOTONES -->
+      <div class="row">
+        <div class="col-md-6">
+          <button type="submit" class="button submit" [disabled]="!myForm.valid">
+            <i class="fa fa-check"></i> Aceptar
+          </button>
+        </div>
+        <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+
+        <div class="col-md-6">
+          <button type="button" class="button cancel" (click)=goback();>
+            <i class="fa fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+      <div class="margin-20">
+        <div>myForm details:-</div>
+        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
+        <pre>form value: <br>{{myForm.value | json}}</pre>
+      </div>
+    </form>
+
+
+  </div>
+</div>

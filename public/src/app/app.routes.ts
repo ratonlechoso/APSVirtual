@@ -15,6 +15,14 @@ import { ExperienciasSearchComponent } from './components/experiencias/experienc
 import { ExperienciasCreateComponent } from './components/experiencias/experiencias-create/experiencias-create.component';
 import { ExperienciasUpdateComponent } from './components/experiencias/experiencias-update/experiencias-update.component';
 import { ExperienciasDetailComponent } from './components/experiencias/experiencias-detail/experiencias-detail.component';
+
+import { ProyectosComponent } from './components/proyectos/proyectos.component';
+import { ProyectosListComponent } from './components/proyectos/proyectos-list/proyectos-list.component';
+import { ProyectosSearchComponent } from './components/proyectos/proyectos-search/proyectos-search.component';
+import { ProyectosCreateComponent } from './components/proyectos/proyectos-create/proyectos-create.component';
+import { ProyectosUpdateComponent } from './components/proyectos/proyectos-update/proyectos-update.component';
+import { ProyectosDetailComponent } from './components/proyectos/proyectos-detail/proyectos-detail.component';
+
 import { UniversidadesComponent } from './components/universidades/universidades.component';
 import { AmbitosComponent } from './components/ambitos/ambitos.component';
 import { EspecialidadesComponent } from './components/especialidades/especialidades.component';
@@ -94,6 +102,37 @@ const appRoutes: Routes = [
   { 
     path: 'experiencias-search', 
     component: ExperienciasSearchComponent
+  },
+  { 
+    path: 'proyectos', 
+    component: ProyectosComponent
+  },
+  // {
+  //   path: 'experiencias-list', 
+  //   component: ExperienciasListComponent,
+  //   outlet: 'sidebar'
+  // },
+  { 
+    path: 'proyectos-list', 
+    component: ProyectosListComponent
+  },
+  { 
+    path: 'proyectos-add', 
+    component: ProyectosCreateComponent,
+    canActivate: [AuthGuardForAdmin]
+  },
+  { 
+    path: 'proyectos-update', 
+    component: ProyectosUpdateComponent,
+    canActivate: [AuthGuardForAdmin]
+  },
+  { 
+    path: 'proyectos-detail', 
+    component: ProyectosDetailComponent
+  },
+  { 
+    path: 'proyectos-search', 
+    component: ProyectosSearchComponent
   },
   { 
     path: 'enlaces-externos', 

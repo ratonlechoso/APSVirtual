@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const app = express()
 const userController = require('./http/controllers/user.js')
 const expController = require('./http/controllers/experiencia.js')
+const projController = require('./http/controllers/proyecto.js')
 const commonController = require('./http/controllers/common.js')
 const path = require('path');
 const morgan = require('morgan');
@@ -33,6 +34,7 @@ app.set('view engine', 'ejs');
 //OJO. Las rutas dependen tanto de esta configuración como del loquesea.service.ts de angular
 app.use('/api/user', userController)
 app.use('/api/exp', expController)
+app.use('/api/proj', projController)
 app.use('/api/common', commonController)
 
 // Add headers

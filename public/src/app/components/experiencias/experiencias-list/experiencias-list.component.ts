@@ -31,6 +31,7 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     authService: AuthService
   ) { 
+    this.experiencias = []
   }
 
   ngOnInit() {
@@ -70,43 +71,27 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
       }
     })
 
-    switch (this.ambitoId) {
-      case 1:
+    switch (this.ambitoId.toString()) {
+      case "1":
         this.nombreLista = "Artes y Humanidades"
         break;
-      case 2:
+      case "2":
         this.nombreLista = "Ciencias"
         break;
-      case 3:
+      case "3":
         this.nombreLista = "Ciencias de la Salud"
         break;
-      case 4:
+      case "4":
         this.nombreLista = "Ciencias Sociales y Políticas"
         break;
-      case 5:
+      case "5":
         this.nombreLista = "Arquitectura e Ingeniería"
         break;                  
       default:
         break;
     }
   }
-  update (expId){
-    this.expId = expId 
-    let experiencia: Experiencia
-    //Obtener experiencia con id expId
-    this.subscriptionToGetExp = this.expService.getExperiencia(expId).subscribe( (res) => {
-//      console.log("respuesta de getExperiencias: ", res)
-      if (res['success'] == true) {
-        experiencia = res['exp']
-        this.expService.setExp(experiencia)
-        //console.log("Probando geter para la experiencia seteada en el servicio:  ", expId)
-        let expFromService = <Experiencia>JSON.parse(JSON.stringify(this.expService.exp))
-        console.log("Experiencia del servicio: ", expFromService)
-        this.router.navigate(['experiencias-update']);
-      } 
-    })
-  } 
-
+  
   showDetail (expId) {
     this.expId = expId 
     let experiencia: Experiencia
@@ -123,17 +108,4 @@ export class ExperienciasListComponent implements OnInit, OnDestroy {
       } 
     })
   }
-
-  // modalDeleteClosed() {
-  //   this.subscriptionToDeleteExp = this.expService.deleteExperiencia(this.expId).subscribe( (res) => {
-  //     if (res['success'] == true) {
-  //       for (var i = this.experiencias.length - 1; i >= 0; i--) {
-  //         if (this.experiencias[i].id == this.expId) {
-  //             this.experiencias.splice(i, 1);
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
-
 }

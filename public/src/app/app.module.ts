@@ -16,6 +16,7 @@ import { AuthService } from './auth.service';
 import { CommonService } from './common.service';
 import { UserService } from './components/user/user.service'
 import { ExpService } from './components/experiencias/exp.service'
+import { ProyectosService } from './components/proyectos/proyectos.service'
 import { NgbDateCustomParserFormatter } from './components/tools/NgbDateCustomParserFormatter'
 
 //RUTAS 
@@ -48,7 +49,7 @@ import { ResetPassComponent } from './components/user/reset-pass/reset-pass.comp
 import { UserUpdateComponent } from './components/user/user-update/user-update.component';
 import { FieldErrorDisplayComponent } from './components/tools/field-error-display/field-error-display.component';
 import { UserViewProfileComponent } from './components/user/user-view-profile/user-view-profile.component';
-import { NavigationMenuComponent } from './components/experiencias/navigation-menu/navigation-menu.component';
+import { NavigationMenuExperienciasComponent } from './components/experiencias/navigation-menu-experiencias/navigation-menu-experiencias.component';
 import { BsModalModule, BsModalService } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { ExperienciasListComponent } from './components/experiencias/experiencias-list/experiencias-list.component';
 import { ExperienciasComponent } from './components/experiencias/experiencias.component';
@@ -80,6 +81,8 @@ import { ProyectosCreateComponent } from './components/proyectos/proyectos-creat
 import { ProyectosSearchComponent } from './components/proyectos/proyectos-search/proyectos-search.component';
 import { ProyectosUpdateComponent } from './components/proyectos/proyectos-update/proyectos-update.component';
 import { NavigationMenuProyectosComponent } from './components/proyectos/navigation-menu-proyectos/navigation-menu-proyectos.component';
+import { ProyectosComponent } from './components/proyectos/proyectos.component';
+import { ProyectosDetailComponent } from './components/proyectos/proyectos-detail/proyectos-detail.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -101,7 +104,7 @@ import { NavigationMenuProyectosComponent } from './components/proyectos/navigat
     UserUpdateComponent,
     FieldErrorDisplayComponent,
     UserViewProfileComponent,
-    NavigationMenuComponent,
+    NavigationMenuExperienciasComponent,
     ExperienciasListComponent,
     ExperienciasComponent,
     ExperienciasSearchComponent,
@@ -133,7 +136,9 @@ import { NavigationMenuProyectosComponent } from './components/proyectos/navigat
     ProyectosCreateComponent,
     ProyectosSearchComponent,
     ProyectosUpdateComponent,
-    NavigationMenuProyectosComponent
+    NavigationMenuProyectosComponent,
+    ProyectosComponent,
+    ProyectosDetailComponent
   ],
   imports: [
     Angular2FontawesomeModule,
@@ -153,6 +158,7 @@ import { NavigationMenuProyectosComponent } from './components/proyectos/navigat
     GlobalEventsManager,
     UserService,
     ExpService,
+    ProyectosService,
     CommonService,
     BsModalService, 
     AuthGuard,
