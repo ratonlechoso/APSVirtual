@@ -8,7 +8,8 @@ import { Observable } from 'rxjs'; //se implementan los observables para manejar
 
 @Injectable()
 export class ExpService {
-  base_url = 'http://localhost:3567/api/exp';
+  //base_url = 'http://localhost:3567/api/exp';
+  base_url = 'api/exp';
   constructor(public _http: Http
   ) { }
 

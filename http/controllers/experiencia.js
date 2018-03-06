@@ -167,13 +167,14 @@ router.put('/experiencias', (req, res) => {
             descripcion: element.descripcion,
             experiencia_id: element.experiencia_id
           }
+          console.log("Campos en adjuntos: ", campos)
           sqlConn.pool.query(sQuery, campos, function (err, newCoord, fields) { //INSERTAR ADJUNTOS
             if (err) throw err
             eachCallback(null)
           })
-        }), function (err) {
+        }, function (err) {
           console.log("fin de eachseries")
-        }
+        })
       })
 
       sQuery = "DELETE FROM  `experiencia_coordinador` WHERE  ? "

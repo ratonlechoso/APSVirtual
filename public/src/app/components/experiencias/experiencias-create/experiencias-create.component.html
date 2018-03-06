@@ -128,61 +128,59 @@
 
       <!-- Adjuntos(ARRAY) -->
       <div formArrayName="adjuntos">
-        <div *ngFor="let adjunto of myForm.controls.adjuntos.controls; let i=index">
-          <div class="form-group">
-            <label class="negrita" for="single">Archivo adjunto</label>
-            <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" />
-          </div>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th width="50%">Nombre</th>
-                <th>Tamaño</th>
-                <th>Progreso</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of uploader.queue">
-                <td>
-                  <strong>{{ item.file.name }}</strong>
-                </td>
-                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
-                <td>
-                  <div class="progress" style="margin-bottom: 0;">
-                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
-                  </div>
-                </td>
-                <td class="text-center">
-                  <span *ngIf="item.isSuccess">
-                    <i class="fa fa-check" style="color:green"></i>
-                  </span>
-                  <span *ngIf="item.isCancel">
-                    <i class="fa fa-circle" style="color:orange"></i>
-                  </span>
-                  <span *ngIf="item.isError">
-                    <i class="fa fa-cancel" style="color:red"></i>
-                  </span>
-                </td>
-                <td nowrap>
-                  <button type="button" class="btn btn-success btn-xs" (click)="subir(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
-                    <span class="fa fa-upload"></span> Subir
-                  </button>
-                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
-                    <span class="fa fa-ban"></span> Cancelar
-                  </button>
-                  <button type="button" class="btn btn-danger btn-xs" (click)="eliminar(item)">
-                    <span class="fa fa-trash"></span> Borrar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-
+        <div class="form-group">
+          <label class="negrita" for="single">Archivo adjunto</label>
+          <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" />
         </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th width="50%">Nombre</th>
+              <th>Tamaño</th>
+              <th>Progreso</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td>
+                <strong>{{ item.file.name }}</strong>
+              </td>
+              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+              <td>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="item.isSuccess">
+                  <i class="fa fa-check" style="color:green"></i>
+                </span>
+                <span *ngIf="item.isCancel">
+                  <i class="fa fa-circle" style="color:orange"></i>
+                </span>
+                <span *ngIf="item.isError">
+                  <i class="fa fa-cancel" style="color:red"></i>
+                </span>
+              </td>
+              <td nowrap>
+                <button type="button" class="btn btn-success btn-xs" (click)="subir(item)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                  <span class="fa fa-upload"></span> Subir
+                </button>
+                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                  <span class="fa fa-ban"></span> Cancelar
+                </button>
+                <button type="button" class="btn btn-danger btn-xs" (click)="eliminar(item)">
+                  <span class="fa fa-trash"></span> Borrar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
 
       </div>
 

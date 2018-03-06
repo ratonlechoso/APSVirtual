@@ -66,7 +66,7 @@
 <!-- MODAL -->
 <!-- ************************************************************************** -->
 
-<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
+<bs-modal (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
   (onOpen)="modalDeleteOpened()" #modal>
   <bs-modal-header>
     <h4 class="modal-title">APS Virtual</h4>

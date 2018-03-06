@@ -9,9 +9,11 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './user-view-profile.component.html',
   styleUrls: ['./user-view-profile.component.css']
 })
+
 export class UserViewProfileComponent implements OnInit, OnDestroy {
   subscriptionToVerify: Subscription
   user: User
+  message: String
 
   constructor(
     private authService: AuthService,

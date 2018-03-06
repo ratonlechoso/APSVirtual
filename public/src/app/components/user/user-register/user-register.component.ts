@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../user';
 import { Router } from '@angular/router';
@@ -30,6 +31,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     private authService: AuthService, 
     private _userService: UserService,
     private router: Router,
+    private _location: Location,
     private fb: FormBuilder
   ) {
     this.newUser = new User();
@@ -62,6 +64,10 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         this.router.navigate(['home']);
       }
     })
+  }
+
+  goback() {
+    this._location.back();
   }
 
   ngOnDestroy() {

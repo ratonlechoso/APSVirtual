@@ -9,7 +9,8 @@ import { Observable } from 'rxjs'; //se implementan los observables para manejar
 @Injectable()
 
 export class ProyectosService {
-    base_url = 'http://localhost:3567/api/proj';
+    //base_url = 'http://localhost:3567/api/proj';
+    base_url = 'api/proj';
     constructor(public _http: Http
     ) { }
 

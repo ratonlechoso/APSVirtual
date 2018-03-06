@@ -15,7 +15,8 @@ import * as moment from 'moment';
 import { forEach } from '@angular/router/src/utils/collection';
 
 const now = new Date();
-const URL = 'http://localhost:3567/api/exp/upload';
+//const URL = 'http://localhost:3567/api/exp/upload';
+const URL = 'api/exp/upload';
 
 
 

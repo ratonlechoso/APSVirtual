@@ -11,7 +11,8 @@ import { FileUploader } from 'ng2-file-upload';
 import * as moment from 'moment';
 
 const now = new Date();
-const URL = 'http://localhost:3567/api/exp/upload';
+//const URL = 'http://localhost:3567/api/exp/upload';
+const URL = 'api/exp/upload';
 
 @Component({
   selector: 'app-experiencias-create',

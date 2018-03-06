@@ -34,6 +34,7 @@ import { SearchPipe } from './components/tools/search-pipe';
 
 //COMPONENTES
 import { AppComponent } from './app.component';
+import { NotFoundComponent } from './components/not-found.component';
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { UserEditComponent } from './components/user/user-edit/user-edit.component';
 import { UserDetailsComponent } from './components/user/user-details/user-details.component';
@@ -90,6 +91,7 @@ import { ProyectosDetailComponent } from './components/proyectos/proyectos-detai
 @NgModule({
   declarations: [
     AppComponent,
+    NotFoundComponent,
     UserListComponent,
     UserEditComponent,
     UserDetailsComponent,
