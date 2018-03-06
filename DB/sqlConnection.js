@@ -1,17 +1,29 @@
 'use strict'
 var mysql = require('mysql');
+const config = require('../config')
 
 module.exports = {
+    // pool: mysql.createPool({
+    //     connectionLimit: 100,
+    //     host: 'localhost',
+    //     database: 'aps',
+    //     user: 'admindb',
+    //     password: 'apsvirtualdb',
+    //     port: '3306',
+    //     debug: false
+    // }),
+
     pool: mysql.createPool({
         connectionLimit: 100,
-        host: 'localhost',
-        database: 'aps',
-        user: 'admindb',
-        password: 'apsvirtualdb',
-        port: '3306',
+        host: 'r42ii9gualwp7i1y.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
+        database: 'yr3yzb75mbcq6uyw',
+        user: 'j2z8kee35yp9x63q',
+        password: 'ipk19uqhwo0ocfsl',
+        port: config.portDbSql,
         debug: false
     }),
-    
+
+
     inTransaction: function (pool, body, callback) {
         pool.getConnection(function(err, conn) {
             if (err) return callback(err);

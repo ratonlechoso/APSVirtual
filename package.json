@@ -34,6 +34,7 @@
     "step": "^1.0.0"
   },
   "devDependencies": {
+    "enhanced-resolve": "^3.3.0",
     "nodemon": "^1.12.1"
   }
 }
