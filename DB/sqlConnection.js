@@ -1,6 +1,6 @@
 'use strict'
 var mysql = require('mysql');
-const config = require('../config')
+const config = require('../config/index')
 
 module.exports = {
     // pool: mysql.createPool({
@@ -15,10 +15,10 @@ module.exports = {
 
     pool: mysql.createPool({
         connectionLimit: 100,
-        host: 'r42ii9gualwp7i1y.chr7pe7iynqr.eu-west-1.rds.amazonaws.com',
-        database: 'yr3yzb75mbcq6uyw',
-        user: 'j2z8kee35yp9x63q',
-        password: 'ipk19uqhwo0ocfsl',
+        host: config.hostDbSql,
+        database: config.schemaDbSql,
+        user: config.userDbSql,
+        password: config.passwordDbSql,
         port: config.portDbSql,
         debug: false
     }),

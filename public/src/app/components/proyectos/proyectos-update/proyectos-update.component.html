@@ -78,13 +78,13 @@
           <!--nombre-->
           <div class="col-md-5">
             <label class="required negrita">Nombre</label>
-            <div class="alert alert-danger" *ngIf="!myForm.controls.nombre_entidad.valid && myForm.controls.nombre_entidad.touched">Este campo es obligatorio</div>
+            <!-- <div class="alert alert-danger" *ngIf="!myForm.controls.nombre_entidad.valid && myForm.controls.nombre_entidad.touched">Este campo es obligatorio</div> -->
             <input type="text" [(ngModel)]="updateProj.entidad.nombre" class="form-control" formControlName="nombre_entidad" placeholder="Nombre de la entidad">
           </div>
           <!--email-->
           <div class="col-md-6">
             <label class="required negrita">Email</label>
-            <div class="alert alert-danger" *ngIf="!myForm.controls.email_entidad.valid && myForm.controls.email_entidad.touched">Este campo es obligatorio</div>
+            <!-- <div class="alert alert-danger" *ngIf="!myForm.controls.email_entidad.valid && myForm.controls.email_entidad.touched">Este campo es obligatorio</div> -->
             <input type="email" [(ngModel)]="updateProj.entidad.email" class="form-control" formControlName="email_entidad" placeholder="Dirección de Email">
           </div>
         </div>
