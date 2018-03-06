@@ -9,7 +9,8 @@ import { Observable } from 'rxjs'; //se implementan los observables para manejar
 
 @Injectable()
 export class UserService {
-  private base_url = 'http://localhost:3567/api/user';
+  //private base_url = 'http://localhost:8080/api/user';
+  private base_url = '/api/user';
   auth: AuthService;
   constructor(
     private _http: Http,

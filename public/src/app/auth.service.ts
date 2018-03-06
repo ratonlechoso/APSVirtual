@@ -8,8 +8,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class AuthService {
 
-  //private base_url = 'http://127.0.0.1:4000/api/user';
-  private base_url = 'http://localhost:3567/api/user';
+  //private base_url = 'http://localhost:8080/api/user';
+  private base_url = 'api/user';
   
   token: string;
   private userSource = new Subject<User>();
