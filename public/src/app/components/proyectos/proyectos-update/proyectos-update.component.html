@@ -1,4 +1,4 @@
-<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>
+<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
 <div class="container">
   <div class="row">
     <ul class="breadcrumb">
@@ -92,7 +92,7 @@
           <div class="form-group col-md-6">
             <label class="required negrita">Provincia</label>
             <select class="form-control minimal" formControlName="provincia_entidad" [(ngModel)]="updateProjEntidadProvincia">
-              <option *ngFor="let provincia of provincias">
+              <option *ngFor="let provincia of provincias" [ngValue]="provincia">
                 {{ provincia.nombre }}
               </option>
             </select>
@@ -243,12 +243,12 @@
         </div>
         <div class="alert alert-danger" *ngIf="message">{{message}}</div>
       </div>
-<!-- 
+ 
       <div class="margin-20">
         <div>myForm details:-</div>
         <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
         <pre>form value: <br>{{myForm.value | json}}</pre>
-      </div> -->
+      </div> 
     </form>
 
 

@@ -26,7 +26,6 @@ const URL = 'api/exp/upload';
   styleUrls: ['./proyectos-update.component.css']
 })
 export class ProyectosUpdateComponent implements OnInit {
-  @Input() proj: Proyecto;
 
   public uploader: FileUploader = new FileUploader({ url: URL });
 
@@ -38,7 +37,8 @@ export class ProyectosUpdateComponent implements OnInit {
 
   rForm: FormGroup
   subscriptionToGetRoles: Subscription
-  updateProj: Proyecto
+  updateProj
+  proj: Proyecto
   roles
   estados
   provincias
@@ -64,18 +64,15 @@ export class ProyectosUpdateComponent implements OnInit {
     private authService: AuthService,
     private _expService: ExpService,
     private _projService: ProyectosService,
-    private router: Router,
+    private _router: Router,
     private _location: Location,
     private _fb: FormBuilder
   ) {
     this.updateProj = <Proyecto>JSON.parse(JSON.stringify(this._projService.proyecto))
-    console.log("updateProj: ", this.updateProj)
     this.idProj = this.updateProj.id
     this.adjuntos = this.updateProj.adjuntos
-    console.log("adjuntos: ", this.adjuntos)
     this.filesToUpload = []
     _projService.getEstados().subscribe((estadosList) => {
-      console.log("obteniendo estados")
       this.estados = estadosList
       this.estados.forEach(element => {
         if (element.id == this.updateProj.estado.id)
@@ -84,10 +81,8 @@ export class ProyectosUpdateComponent implements OnInit {
     })
     _projService.getProvincias().subscribe((provinciasList) => {
       this.provincias = provinciasList
-      console.log("Provincias: ", this.provincias)
       this.provincias.forEach(element => {
         if (element.id == this.updateProj.entidad.provincia_id) {
-          console.log("provincia SELECCIONADA: ", element)
           this.updateProjEntidadProvincia = element
         }
       })
@@ -97,7 +92,6 @@ export class ProyectosUpdateComponent implements OnInit {
       this.ambitos = ambitosList
       this.ambitos.forEach(element => {
         if (element.nombre == this.updateProj.ambito) {
-          console.log("ambito SELECCIONADO: ", element)
           this.updateProjAmbito = element
         }
       })
@@ -106,7 +100,6 @@ export class ProyectosUpdateComponent implements OnInit {
         this.especialidades.forEach(element => {
           if (element.nombre == this.updateProj.especialidad) {
             this.updateProjEspecialidad = element
-            console.log("element: ", element)
           }
         })
       })
@@ -120,22 +113,18 @@ export class ProyectosUpdateComponent implements OnInit {
     })
 
     if (this.updateProj.fecha_inicio != null) {
-      console.log("fecha: ", this.updateProj.fecha_inicio)
       this.model_ini = {
         year: moment(this.updateProj.fecha_inicio.toString(), "DD/MM/YYYY").year(),
         month: moment(this.updateProj.fecha_inicio.toString(), "DD/MM/YYYY").month() + 1, //Month is zero based!!!!
         day: moment(this.updateProj.fecha_inicio.toString(), "DD/MM/YYYY").date()
       }
-      console.log("fecha en Model: ", this.model_ini)
     }
     if (this.updateProj.fecha_fin != null) {
-      console.log("fecha: ", this.updateProj.fecha_fin)
       this.model_ini = {
         year: moment(this.updateProj.fecha_fin.toString(), "DD/MM/YYYY").year(),
         month: moment(this.updateProj.fecha_fin.toString(), "DD/MM/YYYY").month() + 1, //Month is zero based!!!!
         day: moment(this.updateProj.fecha_fin.toString(), "DD/MM/YYYY").date()
       }
-      console.log("fecha en Model: ", this.model_fin)
     }
 
 
@@ -232,16 +221,17 @@ export class ProyectosUpdateComponent implements OnInit {
 
   update(model: Proyecto) {
     console.log("salvando ...")
-    this.updateProj = this.myForm.value
-    this.updateProj.adjuntos = []
-    for (var i = this.updateProj.coordinadores.length - 1; i >= 0; i--) {
-      if (this.updateProj.coordinadores[i].nombre == null) {
-        this.updateProj.coordinadores.splice(i, 1);
+
+    this.proj = this.myForm.value
+    this.proj.adjuntos = []
+    for (var i = this.proj.coordinadores.length - 1; i >= 0; i--) {
+      if (this.proj.coordinadores[i].nombre == null) {
+        this.proj.coordinadores.splice(i, 1);
         break
       }
     }
     this.adjuntos.forEach(element => {
-      this.updateProj.adjuntos.push(element)
+      this.proj.adjuntos.push(element)
     });
     this.filesToUpload.forEach(element => {
       let campos = {
@@ -250,32 +240,32 @@ export class ProyectosUpdateComponent implements OnInit {
         descripcion: <string>null,
         proyecto_id: <number>this.idProj
       }
-      this.updateProj.adjuntos.push(campos)
+      this.proj.adjuntos.push(campos)
     });
-    this.updateProj.id = this.idProj
+    this.proj.id = this.idProj
 
     let formatDate = null
     let ngbDate = this.myForm.controls['fecha_inicio'].value;
     console.log("ngbDate: ", ngbDate);
     (ngbDate != null) ? formatDate = ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year : formatDate = null;
-    this.updateProj.fecha_inicio = formatDate
+    this.proj.fecha_inicio = formatDate
 
     ngbDate = this.myForm.controls['fecha_fin'].value;
     console.log("ngbDate para fin: ", ngbDate);
     (ngbDate != null) ? formatDate = ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year : formatDate = null;
-    this.updateProj.fecha_fin = formatDate
+    this.proj.fecha_fin = formatDate
+
     /***QUITAR ESTO CUANDO SE CONTROLE EL ESTADO y el */
-    this.updateProj.estado = {id : 1, nombre:'', descripcion: ''}
-
+    this.proj.estado = {id : 1, nombre:'', descripcion: ''}
     /******************************************/
-
-
-
+    console.log("entidad_id: ",this.updateProj.entidad.entidad_id)
+    this.proj.entidad = {id:-1, nombre:"", descripcion:"", provincia_id:"", municipio:"", tfno:"", email:""} 
+    this.proj.entidad.id = this.updateProj.entidad.entidad_id
     //this.newExp.fecha = 
-    console.log("proyecto: ", JSON.stringify(this.updateProj))
-    console.log("Modelo: ", model);
+    //console.log("proyecto: ", JSON.stringify(this.proj))
+    //console.log("Modelo: ", model);
 
-    this._projService.updateProyecto(this.updateProj).subscribe((res) => {
+    this._projService.updateProyecto(this.proj).subscribe((res) => {
       if (res['success'] == true) {
         this._projService.getProyecto(this.idProj).subscribe((res) => {
           console.log("respuesta de getProyectos: ", res)
@@ -288,6 +278,10 @@ export class ProyectosUpdateComponent implements OnInit {
           }
           //this._location.back();
         })
+          console.log("Grabado correctamente")
+          alert("Grabado correctamente")
+          this._router.navigate(['/proyectos'])
+  
       } else {
         console.log(res['message'])
         this.message = res['message']

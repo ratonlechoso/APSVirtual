@@ -10,9 +10,10 @@ module.exports = {
     schemaDbSql: process.env.SQLSCHEMA || 'yr3yzb75mbcq6uyw',
     userDbSql: process.env.SQLUSER || 'j2z8kee35yp9x63q',
     passwordDbSql: process.env.SQLPASSWORD || 'ipk19uqhwo0ocfsl',
-    portDbSql: process.env.SQLPORT || 3306
+    portDbSql: process.env.SQLPORT || 3306,
 
     //MAILER
-
-
+    emailUser: process.env.EMAILUSER || 'HARDCODEAR AQUI UN USUARIO',
+    emailPassword: process.env.EMAILPASSWORD || 'HARDCODEAR EL PASSWORD',
+    emailService: 'Gmail'
 }

@@ -124,7 +124,6 @@ export class ProyectosCreateComponent implements OnInit {
         console.log("Grabado correctamente")
         alert("Grabado correctamente")
         this._router.navigate(['/proyectos'])
-        
       }
       else {
         console.log(res['message'])

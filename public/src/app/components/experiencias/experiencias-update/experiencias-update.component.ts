@@ -251,6 +251,7 @@ export class ExperienciasUpdateComponent implements OnInit {
             let expFromService = <Experiencia>JSON.parse(JSON.stringify(this._expService.exp))
             console.log("Experiencia del servicio: ", expFromService)
           }
+          alert("Grabado correctamente")
           this._location.back();
         })
       } else {

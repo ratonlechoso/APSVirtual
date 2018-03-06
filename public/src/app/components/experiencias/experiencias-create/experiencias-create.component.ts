@@ -171,8 +171,11 @@ export class ExperienciasCreateComponent implements OnInit {
     console.log("experiencia: ", JSON.stringify(this.newExp))
     console.log("Modelo: ", model);
     this._expService.createExperiencia(this.newExp).subscribe((res) => {
-      if (res['success'] == true) console.log("Grabado correctamente")
-      else {
+      if (res['success'] == true){ 
+        alert("Grabado correctamente")
+        console.log("Grabado correctamente")
+        this._router.navigate(['/experiencias'])
+      } else {
         console.log(res['message'])
         this.message = res['message']
       }

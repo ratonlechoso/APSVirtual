@@ -207,7 +207,7 @@ router.put('/proyectos', (req, res) => {
             }
 
             async.waterfall([
-                insertar_entidad(reqProj, reqProj.id, sqlConn.pool),
+                actualizar_entidad(reqProj, reqProj.id, sqlConn.pool),
                 insertar_adjuntos(reqProj, reqProj.id, sqlConn.pool),
                 insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
                 insertar_alumnos(reqProj, reqProj.id, sqlConn.pool)
@@ -323,7 +323,7 @@ function insertar_entidad(reqProj, projId, db) {
                     })
                 })
             } else { //Ya existe la entidad. Se inserta su id en el proyecto
-                console.log("ya existe")
+                console.log("ya existe la ENTIDAD")
                 let entidadId = results[0].id
                 sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
                 db.query(sQuery, { entidad_id: entidadId }, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
@@ -338,6 +338,41 @@ function insertar_entidad(reqProj, projId, db) {
         }) //SELECT ENTIDADES
     }
 }
+
+function actualizar_entidad(reqProj, projId, db) {
+    return function (callback) {
+        console.log("REQPROJ en actalizar_entidad", reqProj)
+        //COMPROBAR SI EXISTE LA ENTIDAD
+        sQuery = "SELECT * FROM entidades where ? "
+        sqlConn.pool.query(sQuery, { 'id': reqProj.entidad.id }, function (err, results) { //SELECT ENTIDADES
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            if (results == "") {//No existe. Error
+                console.log("la entidad no existe")
+                throw err
+            } else { //ACTUALIZAR LA ENTIDAD
+                console.log("la entidad Existe")
+                let campos = {
+                    nombre: reqProj.nombre_entidad,
+                    email: reqProj.email_entidad,
+                    provincia_id: reqProj.provincia_entidad.id,
+                    municipio: reqProj.municipio_entidad
+                }
+                sQuery = "UPDATE `entidades` SET ?  WHERE  id = " + reqProj.entidad.id
+                db.query(sQuery, campos, function (err, entidad, fields) { //UPDATE ENTIDAD
+                    if (err) {
+                        console.log(err)
+                        throw err
+                    }
+                    callback(null);
+                })
+            }
+        })
+    }
+}
+
 
 function insertar_adjuntos(reqProj, projId, db) {
     return function (callback) {

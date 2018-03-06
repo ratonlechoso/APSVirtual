@@ -292,17 +292,17 @@ router.post('/forgot', function (req, res) {
       })
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
       var smtpTrans = nodemailer.createTransport({
-        service: 'Gmail',
+        service: config.emailService,
         auth: {
-          user: 'hectoram@gmail.com',
-          pass: 'Altair2011',
+          user: config.emailUser,
+          pass: config.emailPassword,
           tls: { rejectUnauthorized: false }
         }
       });
       console.log("enviando mensaje a", user.email)
       var mailOptions = {
         to: user.email,
-        from: 'hectoram@gmail.com',
+        from: '${config.emailUser}',
         subject: 'Portal sobre Aprendizaje-servicio. Restablecimiento de contraseña ',
         text: ' Hola ' + user.first_name + '. Estás recibiendo este mensaje porque tu (o algún otro) ha solicitado el restablecimiento de la contraseña.\n\n' +
           'Por favor, haz click en el siguiente link, o pegalo en tu navegador para completar el proceso:\n\n' +
