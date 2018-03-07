@@ -6,7 +6,7 @@ export interface Coordinador {
 
 export interface Adjunto {
     id: number
-    nombre_server: string
+    nombre_fichero: string
     descripcion: string
     proyecto_id: number
  }

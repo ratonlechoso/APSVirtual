@@ -341,7 +341,7 @@ function insertar_entidad(reqProj, projId, db) {
 
 function actualizar_entidad(reqProj, projId, db) {
     return function (callback) {
-        console.log("REQPROJ en actalizar_entidad", reqProj)
+        //console.log("REQPROJ en actalizar_entidad", reqProj)
         //COMPROBAR SI EXISTE LA ENTIDAD
         sQuery = "SELECT * FROM entidades where ? "
         sqlConn.pool.query(sQuery, { 'id': reqProj.entidad.id }, function (err, results) { //SELECT ENTIDADES
@@ -378,7 +378,7 @@ function insertar_adjuntos(reqProj, projId, db) {
     return function (callback) {
         /// INSERTAR ADJUNTOS
         sQuery = "DELETE FROM `adjuntos_proyectos` WHERE ?"
-        console.log("insertar_adjuntos")
+        console.log("insertar_adjuntos para: ", reqProj)
         db.query(sQuery, { 'proyecto_id': reqProj.id }, function (err, rows) { //DELETE ADJUNTOS
             if (err) throw err
             console.log("reqProj: ", reqProj)
@@ -386,10 +386,11 @@ function insertar_adjuntos(reqProj, projId, db) {
                 sQuery = "INSERT INTO `adjuntos_proyectos` " +
                     "SET ? "
                 campos = {
-                    nombre_fichero: element.nombre_server,
+                    nombre_fichero: element.nombre_fichero,
                     descripcion: "",
                     proyecto_id: projId
                 }
+                console.log("Campos para insertar adjuntos: ", campos )
                 db.query(sQuery, campos, function (err, newAdj, fields) { //INSERTAR ADJUNTOS
                     console.log("sql ", this.sql)
                     if (err) throw err

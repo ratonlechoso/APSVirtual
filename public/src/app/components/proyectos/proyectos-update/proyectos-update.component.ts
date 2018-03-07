@@ -151,7 +151,7 @@ export class ProyectosUpdateComponent implements OnInit {
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
       var jsonResponse = JSON.parse(response);
-      let campos = { nombre_local: item.file.name, nombre_server: jsonResponse.file }
+      let campos = { nombre_local: item.file.name, nombre_fichero: jsonResponse.file }
       this.filesToUpload.push(campos)
     };
   }
@@ -236,7 +236,7 @@ export class ProyectosUpdateComponent implements OnInit {
     this.filesToUpload.forEach(element => {
       let campos = {
         id: -1,
-        nombre_server: <string>element.nombre_server,
+        nombre_fichero: <string>element.nombre_fichero,
         descripcion: <string>null,
         proyecto_id: <number>this.idProj
       }
@@ -280,7 +280,7 @@ export class ProyectosUpdateComponent implements OnInit {
         })
           console.log("Grabado correctamente")
           alert("Grabado correctamente")
-          this._router.navigate(['/proyectos'])
+          this._location.back();
   
       } else {
         console.log(res['message'])
