@@ -21,7 +21,6 @@ export class ContactoComponent implements OnInit {
       'message': ['', Validators.required],
     });
     this.rForm.valueChanges.subscribe(data => {
-      console.log("data", data)
       if (data.name != null || data.email != null || data.message != null) 
         this.message = ""
     })

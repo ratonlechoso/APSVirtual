@@ -1476,7 +1476,6 @@ var ContactoComponent = /** @class */ (function () {
             'message': ['', forms_1.Validators.required],
         });
         this.rForm.valueChanges.subscribe(function (data) {
-            console.log("data", data);
             if (data.name != null || data.email != null || data.message != null)
                 _this.message = "";
         });
