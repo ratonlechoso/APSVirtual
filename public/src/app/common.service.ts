@@ -7,7 +7,8 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class CommonService {
-    private base_url = 'http://localhost:3567/api/common';
+    //private base_url = 'http://localhost:3567/api/common';
+    private base_url = 'api/common';
 
     constructor(public _http: Http) { }
 

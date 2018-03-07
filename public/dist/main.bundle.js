@@ -904,7 +904,8 @@ __webpack_require__("./node_modules/rxjs/_esm5/add/operator/map.js");
 var CommonService = /** @class */ (function () {
     function CommonService(_http) {
         this._http = _http;
-        this.base_url = 'http://localhost:3567/api/common';
+        //private base_url = 'http://localhost:3567/api/common';
+        this.base_url = 'api/common';
     }
     CommonService.prototype.contactEmail = function (params) {
         var _this = this;
