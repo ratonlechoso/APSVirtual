@@ -7,6 +7,7 @@ import { UserLoginComponent } from './components/user/user-login/user-login.comp
 import { UserRegisterComponent } from './components/user/user-register/user-register.component';
 import { UserUpdateComponent } from './components/user/user-update/user-update.component';
 import { UserViewProfileComponent } from './components/user/user-view-profile/user-view-profile.component';
+import { UsersManagerComponent } from './components/user/users-manager/users-manager.component';
 import { ResetPassComponent } from './components/user/reset-pass/reset-pass.component';
 
 import { ExperienciasComponent } from './components/experiencias/experiencias.component';
@@ -31,7 +32,6 @@ import { ContactoComponent } from './components/contacto/contacto.component';
 import { TermsComponent } from './components/terms/terms.component';
 import { PoliticsComponent } from './components/politics/politics.component';
 import { AuthGuard } from './components/tools/auth';
-import { AuthGuardForAdmin } from './components/tools/auth-admin';
 import { BiblioRecursosExternosComponent } from './components/biblio-recursos-externos/biblio-recursos-externos.component';
 
 //import { NoContentComponent } from './no-content';
@@ -69,6 +69,12 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard]
   },
   { 
+    path: 'usersManager', 
+    component: UsersManagerComponent,
+    canActivate: [AuthGuard],
+    data: {roles: [5]}
+  },
+  { 
     path: 'reset-pass', 
     component: ResetPassComponent
   },
@@ -88,12 +94,14 @@ const appRoutes: Routes = [
   { 
     path: 'experiencias-add', 
     component: ExperienciasCreateComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'experiencias-update', 
     component: ExperienciasUpdateComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'experiencias-detail', 
@@ -119,12 +127,14 @@ const appRoutes: Routes = [
   { 
     path: 'proyectos-add', 
     component: ProyectosCreateComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'proyectos-update', 
     component: ProyectosUpdateComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'proyectos-detail', 
@@ -141,17 +151,20 @@ const appRoutes: Routes = [
   { 
     path: 'universidades', 
     component: UniversidadesComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'ambitos', 
     component: AmbitosComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'especialidades', 
     component: EspecialidadesComponent,
-    canActivate: [AuthGuardForAdmin]
+    canActivate: [AuthGuard],
+    data: {roles: [4,5]}
   },
   { 
     path: 'biblio-recursos-externos', 

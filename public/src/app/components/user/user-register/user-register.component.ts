@@ -76,17 +76,21 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
 
   registerUser(user) {
     let rol = this.rForm.controls['rol'].value
-
     let rolNombre = rol.nombre
     user.roles = rol.id
+    user.pendiente = 0
+    if (user.roles > 2) {
+      this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificaciòn en su dirección de corre electronico"+ user.email
+      user.pendiente = 1
+    }
 
 
-    //Llamada al servicio
+//    Llamada al servicio
     this.authService.registerUser(user).subscribe( (res) => {
       if( res['success'] == true ) {
         res['user'].roles = rol.nombre
         this.authService.setUser(res['user']);
-        this.router.navigate(['']);
+      //  this.router.navigate(['']);
       } else {
         this.message = res['message'];
       }

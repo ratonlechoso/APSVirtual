@@ -24,7 +24,6 @@ import {AppRoutingModule} from "./app.routes"
 
 //GUARDAS 
 import { AuthGuard } from './components/tools/auth';
-import { AuthGuardForAdmin } from './components/tools/auth-admin';
 
 //CUSTOM PIPES
 import { PairsPipe } from './components/tools/pairs-pipe';
@@ -84,6 +83,7 @@ import { ProyectosUpdateComponent } from './components/proyectos/proyectos-updat
 import { NavigationMenuProyectosComponent } from './components/proyectos/navigation-menu-proyectos/navigation-menu-proyectos.component';
 import { ProyectosComponent } from './components/proyectos/proyectos.component';
 import { ProyectosDetailComponent } from './components/proyectos/proyectos-detail/proyectos-detail.component';
+import { UsersManagerComponent } from './components/user/users-manager/users-manager.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -140,7 +140,8 @@ import { ProyectosDetailComponent } from './components/proyectos/proyectos-detai
     ProyectosUpdateComponent,
     NavigationMenuProyectosComponent,
     ProyectosComponent,
-    ProyectosDetailComponent
+    ProyectosDetailComponent,
+    UsersManagerComponent,
   ],
   imports: [
     Angular2FontawesomeModule,
@@ -164,7 +165,6 @@ import { ProyectosDetailComponent } from './components/proyectos/proyectos-detai
     CommonService,
     BsModalService, 
     AuthGuard,
-    AuthGuardForAdmin,
     {provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}
   ],
   bootstrap: [AppComponent] 

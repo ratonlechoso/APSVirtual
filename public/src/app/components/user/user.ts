@@ -10,6 +10,7 @@ export class User {
         public signupDate: String = "",
         public lastLogin: String = "",
         public editable: boolean = false,
-        public roles: String = "" 
+        public roles: String = "", 
+        public pendiente: number = 0
     )  {}
 }

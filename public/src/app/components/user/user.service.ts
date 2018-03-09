@@ -28,9 +28,11 @@ export class UserService {
       .map(data => data.json()).toPromise()
   }
 
-  getUsers() {
-    return this._http.get('/users')
-      .map(data => data.json()).toPromise()
+  getUsers(): Observable<Object> {
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.get(`${this.base_url}/users`, options).map(res =>this.parseRes(res));
   }
 
   getRoles(): Observable<Object> {
@@ -46,7 +48,7 @@ export class UserService {
     //getUser(id: string) {
     // return this._http.get(`${this.base_url}/getUser/` + id)
     // .map(data => data.json()).toPromise()
-    console.log("pasa por getUseer")
+    console.log("pasa por getUser")
     let headers = new Headers({ 'x-access-token': id });
     let options = new RequestOptions({ headers: headers });
 

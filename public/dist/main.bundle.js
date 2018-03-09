@@ -393,7 +393,6 @@ var NgbDateCustomParserFormatter_1 = __webpack_require__("./src/app/components/t
 var app_routes_1 = __webpack_require__("./src/app/app.routes.ts");
 //GUARDAS 
 var auth_1 = __webpack_require__("./src/app/components/tools/auth.ts");
-var auth_admin_1 = __webpack_require__("./src/app/components/tools/auth-admin.ts");
 //CUSTOM PIPES
 var pairs_pipe_1 = __webpack_require__("./src/app/components/tools/pairs-pipe.ts");
 var array_sort_pipe_1 = __webpack_require__("./src/app/components/tools/array-sort-pipe.ts");
@@ -450,6 +449,7 @@ var proyectos_update_component_1 = __webpack_require__("./src/app/components/pro
 var navigation_menu_proyectos_component_1 = __webpack_require__("./src/app/components/proyectos/navigation-menu-proyectos/navigation-menu-proyectos.component.ts");
 var proyectos_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos.component.ts");
 var proyectos_detail_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-detail.component.ts");
+var users_manager_component_1 = __webpack_require__("./src/app/components/user/users-manager/users-manager.component.ts");
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -507,7 +507,8 @@ var AppModule = /** @class */ (function () {
                 proyectos_update_component_1.ProyectosUpdateComponent,
                 navigation_menu_proyectos_component_1.NavigationMenuProyectosComponent,
                 proyectos_component_1.ProyectosComponent,
-                proyectos_detail_component_1.ProyectosDetailComponent
+                proyectos_detail_component_1.ProyectosDetailComponent,
+                users_manager_component_1.UsersManagerComponent,
             ],
             imports: [
                 angular2_fontawesome_1.Angular2FontawesomeModule,
@@ -531,7 +532,6 @@ var AppModule = /** @class */ (function () {
                 common_service_1.CommonService,
                 ng2_bs3_modal_1.BsModalService,
                 auth_1.AuthGuard,
-                auth_admin_1.AuthGuardForAdmin,
                 { provide: ng_bootstrap_2.NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter_1.NgbDateCustomParserFormatter }
             ],
             bootstrap: [app_component_1.AppComponent]
@@ -564,6 +564,7 @@ var user_login_component_1 = __webpack_require__("./src/app/components/user/user
 var user_register_component_1 = __webpack_require__("./src/app/components/user/user-register/user-register.component.ts");
 var user_update_component_1 = __webpack_require__("./src/app/components/user/user-update/user-update.component.ts");
 var user_view_profile_component_1 = __webpack_require__("./src/app/components/user/user-view-profile/user-view-profile.component.ts");
+var users_manager_component_1 = __webpack_require__("./src/app/components/user/users-manager/users-manager.component.ts");
 var reset_pass_component_1 = __webpack_require__("./src/app/components/user/reset-pass/reset-pass.component.ts");
 var experiencias_component_1 = __webpack_require__("./src/app/components/experiencias/experiencias.component.ts");
 var experiencias_list_component_1 = __webpack_require__("./src/app/components/experiencias/experiencias-list/experiencias-list.component.ts");
@@ -585,7 +586,6 @@ var contacto_component_1 = __webpack_require__("./src/app/components/contacto/co
 var terms_component_1 = __webpack_require__("./src/app/components/terms/terms.component.ts");
 var politics_component_1 = __webpack_require__("./src/app/components/politics/politics.component.ts");
 var auth_1 = __webpack_require__("./src/app/components/tools/auth.ts");
-var auth_admin_1 = __webpack_require__("./src/app/components/tools/auth-admin.ts");
 var biblio_recursos_externos_component_1 = __webpack_require__("./src/app/components/biblio-recursos-externos/biblio-recursos-externos.component.ts");
 //import { NoContentComponent } from './no-content';
 var appRoutes = [
@@ -621,6 +621,12 @@ var appRoutes = [
         canActivate: [auth_1.AuthGuard]
     },
     {
+        path: 'usersManager',
+        component: users_manager_component_1.UsersManagerComponent,
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [5] }
+    },
+    {
         path: 'reset-pass',
         component: reset_pass_component_1.ResetPassComponent
     },
@@ -640,12 +646,14 @@ var appRoutes = [
     {
         path: 'experiencias-add',
         component: experiencias_create_component_1.ExperienciasCreateComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'experiencias-update',
         component: experiencias_update_component_1.ExperienciasUpdateComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'experiencias-detail',
@@ -671,12 +679,14 @@ var appRoutes = [
     {
         path: 'proyectos-add',
         component: proyectos_create_component_1.ProyectosCreateComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'proyectos-update',
         component: proyectos_update_component_1.ProyectosUpdateComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'proyectos-detail',
@@ -693,17 +703,20 @@ var appRoutes = [
     {
         path: 'universidades',
         component: universidades_component_1.UniversidadesComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'ambitos',
         component: ambitos_component_1.AmbitosComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'especialidades',
         component: especialidades_component_1.EspecialidadesComponent,
-        canActivate: [auth_admin_1.AuthGuardForAdmin]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [4, 5] }
     },
     {
         path: 'biblio-recursos-externos',
@@ -841,16 +854,16 @@ var AuthService = /** @class */ (function () {
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.get(this.base_url + "/check-state", options).map(function (res) { return _this.parseRes(res); });
     };
-    AuthService.prototype.verifyForRoles = function (id_rol) {
+    AuthService.prototype.verifyForRoles = function (roles) {
         var _this = this;
-        console.log("roles: ", id_rol);
+        console.log("roles: ", roles);
         console.log("user: ", this.user);
         var currUser = JSON.parse(localStorage.getItem('currentUser'));
         var token = (currUser && 'token' in currUser) ? currUser.token : this.token;
         var userId = (currUser && 'id' in currUser) ? currUser.id : null;
         console.log("userId en lS: ", userId);
         var headers = new http_1.Headers({ 'x-access-token': token });
-        headers.append('x-access-roles', id_rol);
+        headers.append('x-access-roles', roles);
         headers.append('x-access-id', userId);
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.get(this.base_url + "/check-state", options).map(function (res) { return _this.parseRes(res); });
@@ -3119,7 +3132,7 @@ module.exports = ".navbar  {\r\n    background: #4d4944; /* For browsers that do
 /***/ "./src/app/components/menu-bar/menu-bar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\r\n  <!-- NOMBRE Y LOGO -->\r\n  <img id=\"imgLogo\" src=\"assets/img/uned-logo.jpg\" width=\"50\" height=\"50\" class=\"d-inline-block align-top\" alt=\"\">\r\n  <a class=\"navbar-brand\" id=\"title\" [routerLink]=\"['home']\">\r\n    ApS Virtual\r\n  </a>\r\n  <!-- BOTON DE BARRA COLAPSADA -->\r\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\"\r\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <!-- DIV DE ELEMENTOS DE LA BARRA QUE COLAPSAN -->\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav mr-auto\">\r\n\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['experiencias']\">Experiencias desarrolladas</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n          <a class=\"nav-link\" [routerLink]=\"['proyectos']\">Nuevas iniciativas en ApS</a>\r\n      </li>\r\n      <li class=\"dropdown\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n          Bibliografía\r\n        </a>\r\n        <ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\r\n          <a class=\"dropdown-item disabled\" href=\"#\">Recursos bibliográficos</a>\r\n          <!-- <div class=\"dropdown-divider\"></div> -->\r\n          <a class=\"dropdown-item\" [routerLink]=\"['biblio-recursos-externos']\">Bibliografía externa</a>\r\n        </ul>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n          <a class=\"nav-link disabled\" href=\"#\">Videoteca</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Disabled (for testing)</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n          <a class=\"nav-link\" [routerLink]=\"['private']\">protected (for testing)</a>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"user\" class=\"nav navbar-nav navbar-right\">\r\n      <li class=\"dropdown\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"\r\n          id=\"log\">\r\n          <i class=\"fa fa-user-circle\"></i>\r\n          {{user.first_name}} {{user.last_name}}\r\n          <br>\r\n          <span class=\"rol-user\">({{user.roles}})</span>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"navbarDropdown\">\r\n          <a class=\"dropdown-item\" [routerLink]=\"['userViewProfile']\">\r\n            <i class=\"fa fa-pencil fa-fw\"></i>\r\n            Perfil de usuario\r\n          </a>\r\n          <div class=\"dropdown-divider\"></div>\r\n          <a class=\"dropdown-item pointer\" (click)=\"modal.open()\">\r\n            <i class=\"fa fa-sign-out fa-fw\"></i>\r\n            Salir\r\n          </a>\r\n        </ul>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"!user\" class=\"navbar-nav navbar-right\">\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['login']\">Login</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['register']\">Registrarse</a>\r\n      </li>\r\n    </ul>\r\n    <!-- <form class=\"form-inline my-2 my-lg-0 mr-0 ml-lg-auto\" >\r\n               <input class=\"form-control mr-sm-2\" type=\"search\" placeholder=\"buscar\" aria-label=\"Search\">\r\n               <button class=\"btn btn-outline-success my-2 my-sm-0 mr-auto\" type=\"submit\">buscar</button>\r\n             </form> -->\r\n    <!-- </div> -->\r\n  </div>\r\n</nav>\r\n\r\n<!-- ************************************************************************** -->\r\n<!-- MODAL -->\r\n<!-- ************************************************************************** -->\r\n\r\n<bs-modal   [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalClosed()\" (onDismiss)=\"modalDismissed()\"\r\n  (onOpen)=\"modalOpened()\" #modal>\r\n  <bs-modal-header>\r\n    <h4 class=\"modal-title\">APS Virtual</h4>\r\n  </bs-modal-header>\r\n  <bs-modal-body>\r\n    <p>¿Desea abandonar la aplicación?</p>\r\n  </bs-modal-body>\r\n  <bs-modal-footer>\r\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modal.close()\">\r\n      <i class=\"fa fa-check\"></i> ok\r\n    </button>\r\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modal.dismiss()\">\r\n      <i class=\"fa fa-times\"></i> Cancelar\r\n    </button>\r\n  </bs-modal-footer>\r\n</bs-modal>"
+module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\r\n  <!-- NOMBRE Y LOGO -->\r\n  <img id=\"imgLogo\" src=\"assets/img/uned-logo.jpg\" width=\"50\" height=\"50\" class=\"d-inline-block align-top\" alt=\"\">\r\n  <a class=\"navbar-brand\" id=\"title\" [routerLink]=\"['home']\">\r\n    ApS Virtual\r\n  </a>\r\n  <!-- BOTON DE BARRA COLAPSADA -->\r\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\"\r\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <!-- DIV DE ELEMENTOS DE LA BARRA QUE COLAPSAN -->\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav mr-auto\">\r\n\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['experiencias']\">Experiencias desarrolladas</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['proyectos']\">Nuevas iniciativas en ApS</a>\r\n      </li>\r\n      <li class=\"dropdown\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n          Bibliografía\r\n        </a>\r\n        <ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\r\n          <a class=\"dropdown-item disabled\" href=\"#\">Recursos bibliográficos</a>\r\n          <!-- <div class=\"dropdown-divider\"></div> -->\r\n          <a class=\"dropdown-item\" [routerLink]=\"['biblio-recursos-externos']\">Bibliografía externa</a>\r\n        </ul>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Videoteca</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Disabled (for testing)</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['private']\">protected (for testing)</a>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"user\" class=\"nav navbar-nav navbar-right\">\r\n      <li class=\"dropdown\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"\r\n          id=\"log\">\r\n          <i class=\"fa fa-user-circle\"></i>\r\n          {{user.first_name}} {{user.last_name}}\r\n          <br>\r\n          <span class=\"rol-user\">({{user.roles}})</span>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"navbarDropdown\">\r\n          <a *ngIf=\"user.roles == 'Administrador'\" class=\"dropdown-item\" [routerLink]=\"['usersManager']\">\r\n            <i class=\"fa fa-gear fa-fw\"></i>\r\n            Gestión de usuarios\r\n          </a>\r\n          <a class=\"dropdown-item\" [routerLink]=\"['userViewProfile']\">\r\n            <i class=\"fa fa-pencil fa-fw\"></i>\r\n            Perfil de usuario\r\n          </a>\r\n          <div class=\"dropdown-divider\"></div>\r\n          <a class=\"dropdown-item pointer\" (click)=\"modal.open()\">\r\n            <i class=\"fa fa-sign-out fa-fw\"></i>\r\n            Salir\r\n          </a>\r\n        </ul>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"!user\" class=\"navbar-nav navbar-right\">\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['login']\">Login</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['register']\">Registrarse</a>\r\n      </li>\r\n    </ul>\r\n    <!-- <form class=\"form-inline my-2 my-lg-0 mr-0 ml-lg-auto\" >\r\n               <input class=\"form-control mr-sm-2\" type=\"search\" placeholder=\"buscar\" aria-label=\"Search\">\r\n               <button class=\"btn btn-outline-success my-2 my-sm-0 mr-auto\" type=\"submit\">buscar</button>\r\n             </form> -->\r\n    <!-- </div> -->\r\n  </div>\r\n</nav>\r\n\r\n<!-- ************************************************************************** -->\r\n<!-- MODAL -->\r\n<!-- ************************************************************************** -->\r\n\r\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalClosed()\" (onDismiss)=\"modalDismissed()\"\r\n  (onOpen)=\"modalOpened()\" #modal>\r\n  <bs-modal-header>\r\n    <h4 class=\"modal-title\">APS Virtual</h4>\r\n  </bs-modal-header>\r\n  <bs-modal-body>\r\n    <p>¿Desea abandonar la aplicación?</p>\r\n  </bs-modal-body>\r\n  <bs-modal-footer>\r\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modal.close()\">\r\n      <i class=\"fa fa-check\"></i> ok\r\n    </button>\r\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modal.dismiss()\">\r\n      <i class=\"fa fa-times\"></i> Cancelar\r\n    </button>\r\n  </bs-modal-footer>\r\n</bs-modal>"
 
 /***/ }),
 
@@ -3180,6 +3193,7 @@ var MenuBarComponent = /** @class */ (function () {
                 _this.subscriptionToGetUser = _this._userService.getUser(id).subscribe(function (res) {
                     if (res['success'] == false) {
                         _this.user = null;
+                        localStorage.removeItem('currentUser');
                         _this.authService.setUser(_this.user);
                         return;
                     }
@@ -4468,61 +4482,6 @@ exports.OrderBy = OrderBy;
 
 /***/ }),
 
-/***/ "./src/app/components/tools/auth-admin.ts":
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
-// import the auth service here
-var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
-var AuthGuardForAdmin = /** @class */ (function () {
-    // add the service we need
-    function AuthGuardForAdmin(auth, router) {
-        this.auth = auth;
-        this.router = router;
-    }
-    AuthGuardForAdmin.prototype.canActivate = function (next, state) {
-        var _this = this;
-        return this.auth.verifyForRoles(1).map(function (res) {
-            if (res['success'] == true) {
-                console.log('permiso de enrutamiento', res['success']);
-                return true;
-            }
-            else {
-                // redirect the user
-                console.log("Ruta protegida. No tienes permiso. RES: ", res['success']);
-                _this.router.navigate(['/login']);
-                return false;
-            }
-            //  }).catch(() => {
-            //    this.router.navigate(['/login']);
-            //    return Observable.of(false);
-        });
-    };
-    AuthGuardForAdmin = __decorate([
-        core_1.Injectable(),
-        __metadata("design:paramtypes", [auth_service_1.AuthService,
-            router_1.Router])
-    ], AuthGuardForAdmin);
-    return AuthGuardForAdmin;
-}());
-exports.AuthGuardForAdmin = AuthGuardForAdmin;
-
-
-/***/ }),
-
 /***/ "./src/app/components/tools/auth.ts":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4550,7 +4509,9 @@ var AuthGuard = /** @class */ (function () {
     }
     AuthGuard.prototype.canActivate = function (next, state) {
         var _this = this;
-        return this.auth.verify().map(function (res) {
+        var roles = next.data["roles"];
+        console.log("roles en CanActivate: ", roles);
+        return this.auth.verifyForRoles([roles]).map(function (res) {
             if (res['success'] == true) {
                 console.log('permiso de enrutamiento', res['success']);
                 return true;
@@ -4561,9 +4522,6 @@ var AuthGuard = /** @class */ (function () {
                 _this.router.navigate(['/login']);
                 return false;
             }
-            //  }).catch(() => {
-            //    this.router.navigate(['/login']);
-            //    return Observable.of(false);
         });
     };
     AuthGuard = __decorate([
@@ -5456,6 +5414,10 @@ var UserLoginComponent = /** @class */ (function () {
         this.authService.loginUser(user).subscribe(function (res) {
             _this.user_status = res['success'];
             if (res['success'] == true) {
+                console.log("Pendientes: ", res['pendientes']);
+                if (res['pendientes'] != null) {
+                    alert("Hay usuarios pendientes de aprobar. Consular en la seccion de usuarios pendientes");
+                }
                 _this.authService.setUser(res['user']);
                 _this.router.navigate(['home']);
             }
@@ -5594,12 +5556,17 @@ var UserRegisterComponent = /** @class */ (function () {
         var rol = this.rForm.controls['rol'].value;
         var rolNombre = rol.nombre;
         user.roles = rol.id;
-        //Llamada al servicio
+        user.pendiente = 0;
+        if (user.roles > 2) {
+            this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificaciòn en su dirección de corre electronico" + user.email;
+            user.pendiente = 1;
+        }
+        //    Llamada al servicio
         this.authService.registerUser(user).subscribe(function (res) {
             if (res['success'] == true) {
                 res['user'].roles = rol.nombre;
                 _this.authService.setUser(res['user']);
-                _this.router.navigate(['']);
+                //  this.router.navigate(['']);
             }
             else {
                 _this.message = res['message'];
@@ -5981,8 +5948,11 @@ var UserService = /** @class */ (function () {
             .map(function (data) { return data.json(); }).toPromise();
     };
     UserService.prototype.getUsers = function () {
-        return this._http.get('/users')
-            .map(function (data) { return data.json(); }).toPromise();
+        var _this = this;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.get(this.base_url + "/users", options).map(function (res) { return _this.parseRes(res); });
     };
     UserService.prototype.getRoles = function () {
         var _this = this;
@@ -5998,7 +5968,7 @@ var UserService = /** @class */ (function () {
         //getUser(id: string) {
         // return this._http.get(`${this.base_url}/getUser/` + id)
         // .map(data => data.json()).toPromise()
-        console.log("pasa por getUseer");
+        console.log("pasa por getUser");
         var headers = new http_1.Headers({ 'x-access-token': id });
         var options = new http_1.RequestOptions({ headers: headers });
         return this._http.get(this.base_url + "/getUser", options)
@@ -6052,7 +6022,7 @@ exports.UserService = UserService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
-    function User(id, _id, first_name, last_name, email, password, avatar, signupDate, lastLogin, editable, roles) {
+    function User(id, _id, first_name, last_name, email, password, avatar, signupDate, lastLogin, editable, roles, pendiente) {
         if (id === void 0) { id = Math.floor(Math.random() * 10000); }
         if (_id === void 0) { _id = Math.floor(Math.random() * 10000); }
         if (first_name === void 0) { first_name = ""; }
@@ -6064,6 +6034,7 @@ var User = /** @class */ (function () {
         if (lastLogin === void 0) { lastLogin = ""; }
         if (editable === void 0) { editable = false; }
         if (roles === void 0) { roles = ""; }
+        if (pendiente === void 0) { pendiente = 0; }
         this.id = id;
         this._id = _id;
         this.first_name = first_name;
@@ -6075,10 +6046,90 @@ var User = /** @class */ (function () {
         this.lastLogin = lastLogin;
         this.editable = editable;
         this.roles = roles;
+        this.pendiente = pendiente;
     }
     return User;
 }());
 exports.User = User;
+
+
+/***/ }),
+
+/***/ "./src/app/components/user/users-manager/users-manager.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/components/user/users-manager/users-manager.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"container\">\n  <h2>Listado de usuarios</h2>\n  <br>\n  <div class=\"row\">\n    <div class=\"col-md-7\">\n      <input type=\"text\" [(ngModel)]=\"query\" name=\"query\" placeholder=\"Filtrar resultados por el nombre del usuario\">\n    </div>\n  </div>\n  <br>\n  <div class=\"row\">\n    <p class=\"col-md-2 negrita\">Nombre</p>\n    <p class=\"col-md-2 negrita\">Apellidos</p>\n    <p class=\"col-md-2 negrita\">Rol</p>\n    <p class=\"col-md-2 negrita\">Email</p>  \n  </div>\n  <div *ngFor=\"let user of users | search: 'first_name':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index\">\n\n    <div class=\"row\">\n      <p class=\"col-md-2\">{{user.first_name}} </p>\n      <p class=\"col-md-2\">{{user.last_name}} </p>\n      <p class=\"col-md-2\">{{user.rol_nombre}} </p>\n      <p class=\"col-md-4\">{{user.email}}\n        <span class=\"fa fa-ban pull-right pointer\"  [style.color]=\"'red'\" (click)=\"bloquear(user)\"></span>\n        <span class=\"fa fa-plus pull-right pointer color-blue \" (click)=\"activar(user)\"></span>\n      </p>\n    </div>\n  </div>\n  <br>\n  <br>\n  <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n    screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n  <br>\n</div>\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar usuario? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
+
+/***/ }),
+
+/***/ "./src/app/components/user/users-manager/users-manager.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var user_service_1 = __webpack_require__("./src/app/components/user/user.service.ts");
+var ng2_bs3_modal_1 = __webpack_require__("./node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.umd.js");
+var UsersManagerComponent = /** @class */ (function () {
+    function UsersManagerComponent(_userService) {
+        this._userService = _userService;
+        this.p = 1;
+        this.itemsPerPage = 25;
+        this.postsPerPage = [25, 50, 100];
+        this.addMode = false;
+        console.log("cargar usuarios ...");
+        this.sortingField = "nombre";
+        this.ascending = true;
+        this.nombreAsc = true;
+        this.query = "";
+        this.loadUsers();
+    }
+    UsersManagerComponent.prototype.ngOnInit = function () {
+    };
+    UsersManagerComponent.prototype.loadUsers = function () {
+        var _this = this;
+        this._userService.getUsers().subscribe(function (usersList) {
+            _this.users = usersList['usuarios'];
+        });
+    };
+    UsersManagerComponent.prototype.bloquear = function (user) {
+        alert("en desarrollo...");
+    };
+    UsersManagerComponent.prototype.activar = function (user) {
+        alert("en desarrollo...");
+    };
+    __decorate([
+        core_1.ViewChild('modal'),
+        __metadata("design:type", ng2_bs3_modal_1.BsModalComponent)
+    ], UsersManagerComponent.prototype, "modalDelete", void 0);
+    UsersManagerComponent = __decorate([
+        core_1.Component({
+            selector: 'app-users-manager',
+            template: __webpack_require__("./src/app/components/user/users-manager/users-manager.component.html"),
+            styles: [__webpack_require__("./src/app/components/user/users-manager/users-manager.component.css")]
+        }),
+        __metadata("design:paramtypes", [user_service_1.UserService])
+    ], UsersManagerComponent);
+    return UsersManagerComponent;
+}());
+exports.UsersManagerComponent = UsersManagerComponent;
 
 
 /***/ }),

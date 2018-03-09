@@ -79,15 +79,15 @@ export class AuthService {
     return this.http.get(`${this.base_url}/check-state`, options).map( res => this.parseRes(res) );
   }
 
-  verifyForRoles(id_rol): Observable<Object> {
-    console.log("roles: ", id_rol)
+  verifyForRoles(roles): Observable<Object> {
+    console.log("roles: ", roles)
     console.log("user: ", this.user)
     let currUser = JSON.parse(localStorage.getItem('currentUser')); 
     let token = ( currUser && 'token' in currUser) ? currUser.token : this.token;
     let userId = ( currUser && 'id' in currUser) ? currUser.id : null;
     console.log("userId en lS: ", userId)
     let headers = new Headers({ 'x-access-token': token });
-    headers.append('x-access-roles', id_rol )
+    headers.append('x-access-roles', roles )
     headers.append('x-access-id', userId )
     let options = new RequestOptions({ headers: headers });
     return this.http.get(`${this.base_url}/check-state`, options).map( res => this.parseRes(res) );

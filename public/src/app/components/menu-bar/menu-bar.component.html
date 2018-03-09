@@ -17,7 +17,7 @@
         <a class="nav-link" [routerLink]="['experiencias']">Experiencias desarrolladas</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="['proyectos']">Nuevas iniciativas en ApS</a>
+        <a class="nav-link" [routerLink]="['proyectos']">Nuevas iniciativas en ApS</a>
       </li>
       <li class="dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,13 +30,13 @@
         </ul>
       </li>
       <li class="nav-item">
-          <a class="nav-link disabled" href="#">Videoteca</a>
+        <a class="nav-link disabled" href="#">Videoteca</a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#">Disabled (for testing)</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" [routerLink]="['private']">protected (for testing)</a>
+        <a class="nav-link" [routerLink]="['private']">protected (for testing)</a>
       </li>
     </ul>
 
@@ -51,6 +51,10 @@
           <span class="rol-user">({{user.roles}})</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a *ngIf="user.roles == 'Administrador'" class="dropdown-item" [routerLink]="['usersManager']">
+            <i class="fa fa-gear fa-fw"></i>
+            Gestión de usuarios
+          </a>
           <a class="dropdown-item" [routerLink]="['userViewProfile']">
             <i class="fa fa-pencil fa-fw"></i>
             Perfil de usuario
@@ -85,7 +89,7 @@
 <!-- MODAL -->
 <!-- ************************************************************************** -->
 
-<bs-modal   [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalClosed()" (onDismiss)="modalDismissed()"
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalClosed()" (onDismiss)="modalDismissed()"
   (onOpen)="modalOpened()" #modal>
   <bs-modal-header>
     <h4 class="modal-title">APS Virtual</h4>

@@ -12,26 +12,23 @@ export class AuthGuard implements CanActivate {
   constructor(
     private auth: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-
-        return this.auth.verify().map(res =>{
-            if (res['success'] == true) {
-                console.log('permiso de enrutamiento',  res['success'])
-                return true;
-            } else {
-                // redirect the user
-                console.log("Ruta protegida. No tienes permiso. RES: ", res['success'])
-                this.router.navigate(['/login']);
-                return false;
-            }
-          //  }).catch(() => {
-          //    this.router.navigate(['/login']);
-          //    return Observable.of(false);
-        });
- 
+    let roles = next.data["roles"] as Array<Number>;
+    console.log("roles en CanActivate: ", roles)
+    return this.auth.verifyForRoles([roles]).map(res => {
+      if (res['success'] == true) {
+        console.log('permiso de enrutamiento', res['success'])
+        return true;
+      } else {
+        // redirect the user
+        console.log("Ruta protegida. No tienes permiso. RES: ", res['success'])
+        this.router.navigate(['/login']);
+        return false;
+      }
+    });
   }
 }

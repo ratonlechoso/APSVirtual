@@ -57,6 +57,7 @@ export class MenuBarComponent implements OnInit, OnDestroy {
         this.subscriptionToGetUser = this._userService.getUser(id).subscribe((res) => {
           if (res['success'] == false) {
             this.user = null
+            localStorage.removeItem('currentUser');
             this.authService.setUser(this.user)
             return
           }

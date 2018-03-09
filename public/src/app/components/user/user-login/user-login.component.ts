@@ -67,6 +67,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     this.authService.loginUser(user).subscribe(res => {
       this.user_status = res['success'];
       if (res['success'] == true) {
+        console.log("Pendientes: ", res['pendientes'])
+        if (res['pendientes'] != null) {//Se logea el admin y tiene usuarios pendientes de aprobar
+          alert("Hay usuarios pendientes de aprobar. Consular en la seccion de usuarios pendientes")
+        }
         this.authService.setUser(res['user']);
         this.router.navigate(['home']);
       } else {

@@ -13,6 +13,32 @@ var moment = require('moment')
 
 const sqlConn = require('../../DB/sqlConnection')
 
+router.get('/users', (req, res) => {
+  let sQuery = "SELECT r.nombre as rol_nombre, r.id as rol_id, u.*  " +
+    "FROM users u, roles r " +
+    "WHERE u.rol_id = r.id "
+
+  sqlConn.pool.query(sQuery, function (err, rows, fields) { //SELECT QUERY
+    if (err) {
+      console.log("error: ", err)
+      let content = {
+        success: false,
+        message: 'Error al realizar la petición a la BBDD',
+        err: err
+      };
+      return
+    }
+    let content = {
+      usuarios: rows,
+      success: true,
+      message: 'No existe el usuario'
+    };
+    res.send(content);
+    return;
+  })
+})
+
+
 router.get('/getUser', (req, res) => {
   let userId = req.body._id || req.query._id || req.headers['x-access-token'];
   var user = UserSqlSchema;
@@ -45,12 +71,11 @@ router.get('/getUser', (req, res) => {
 });
 
 router.get('/check-state', auth.verifyToken, (req, res) => {
-  let roles = []
   let userId = -1
   try {
-    privileged_rol = req.body.roles || req.query.roles || req.headers['x-access-roles'];
+    privileged_roles = req.body.roles || req.query.roles || req.headers['x-access-roles'];
     userId = req.body.userId || req.query.userId || req.headers['x-access-id'];
-    if (privileged_rol != undefined) {
+    if (privileged_roles != undefined) {
       var user = UserSqlSchema;
       let sQuery = "SELECT *  " +
         "FROM users " +
@@ -61,7 +86,7 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
           res.send({ success: false, message: 'privilegios insuficientes.' });
           return
         }
-        if (rows[0].rol_id != privileged_rol) {
+        if (privileged_roles != "" && privileged_roles.indexOf(rows[0].rol_id) === -1) {
           console.log("Privilegios insuficientes")
           res.send({ success: false, message: 'privilegios insuficientes.' });
           return
@@ -151,8 +176,11 @@ router.post('/register', (req, res) => {
           sign_up_date: moment().format().toString(),
           email: reqUser.email,
           password: pass,
-          rol_id: reqUser.roles
+          rol_id: reqUser.roles,
+          pendiente: reqUser.pendiente
         }
+        console.log("pendiente: ", reqUser.pendiente)
+
         console.log("password generado", pass)
         sqlConn.pool.query(sQuery, fields, function (err, results, fields) { //INSERT QUERY
           if (err) {
@@ -171,6 +199,8 @@ router.post('/register', (req, res) => {
             message: 'Has creado un nuevo usuario',
             token: token
           };
+          if (reqUser.pendiente == 1)
+            console.log("usuario pendiente de aprobación. Notificar al admin")
           res.send(content);
           return;
         })
@@ -178,7 +208,6 @@ router.post('/register', (req, res) => {
       return;
     })
   })
-
 });
 
 router.post('/login', (req, res) => {
@@ -226,17 +255,68 @@ router.post('/login', (req, res) => {
       let token = jwt.sign(user, config.secret, {
         expiresIn: 60 * 60 * 24 //1 dia
       });
-      console.log("usuario2: ", user)
-      let content = {
-        user: user,
-        success: true,
-        message: 'No estás logeado',
-        token: token
-      };
-      res.send(content);
+      if (user.roles == "Administrador") {
+        obtener_pendientes((pendientes) => { //Los datos se devuelven el callback. IO async
+          console.log("pendientes: ", pendientes)
+          let content = {
+            pendientes: pendientes,
+            user: user,
+            success: true,
+            message: 'No estás logeado',
+            token: token
+          };
+          res.send(content);
+        })
+      } else {
+        console.log("devolviendo datos de usuario no  admin", user.roles)
+        let content = {
+          user: user,
+          success: true,
+          message: 'No estás logeado',
+          token: token
+        };
+        res.send(content);
+      }
     })
   })
 });
+
+router.get('/pendientes', (req, res) => {
+  obtener_pendientes( (pendientes) => {
+    res.send(pendientes)
+    return;
+  })
+});
+
+function obtener_pendientes(cb) { //Devolver los datos de las funciones asincronas en un callback
+  let sQuery = "SELECT r.nombre as rol_nombre, r.id as rol_id, u.*  " +
+    "FROM users u, roles r " +
+    "WHERE u.rol_id = r.id and u.pendiente = 1"
+  sqlConn.pool.query(sQuery, function (err, rows, fields) { //SELECT QUERY
+    if (err) {
+      let content = {
+        success: false,
+        message: err
+      };
+      cb(content);
+    }
+    if (rows == "") {
+      let content = {
+        success: false,
+        message: 'No hay pendientes'
+      };
+      cb(content);
+    } else {
+      console.log("obtener_pendientes: ", rows)
+      let content = {
+        users: rows,
+        success: true,
+        message: 'Usuarios pendientes de aprobación'
+      };
+      cb(content);
+    }
+  })
+}
 
 
 router.post('/forgot', function (req, res) {
