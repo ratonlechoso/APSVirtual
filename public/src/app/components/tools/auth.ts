@@ -25,8 +25,10 @@ export class AuthGuard implements CanActivate {
         return true;
       } else {
         // redirect the user
-        console.log("Ruta protegida. No tienes permiso. RES: ", res['success'])
-        this.router.navigate(['/login']);
+
+        console.log("Ruta protegida. No tienes permiso. RES: ", res)
+        alert (res['message'])
+        //this.router.navigate(['/login']);
         return false;
       }
     });

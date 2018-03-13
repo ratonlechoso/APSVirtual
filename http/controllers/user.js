@@ -77,17 +77,21 @@ router.get('/getUser', (req, res) => {
 router.get('/check-state', auth.verifyToken, (req, res) => {
   let userId = -1
   try {
+    //privileged_roles = req.body.roles || req.query.roles || req.headers['x-access-roles'] || [1, 2, 3, 4, 5] ;
     privileged_roles = req.body.roles || req.query.roles || req.headers['x-access-roles'];
     userId = req.body.userId || req.query.userId || req.headers['x-access-id'];
-    console.log("User en check-State: ", user)
+
+    console.log("UserId: ", userId)
+
     if (privileged_roles != undefined) {
+      if (privileged_roles == "") privileged_roles = [1,2,3,4,5]
       var user = UserSqlSchema;
       let sQuery = "SELECT *  " +
         "FROM users " +
         "WHERE  ? "
       sqlConn.pool.query(sQuery, { 'id': userId }, function (err, rows, fields) { //SELECT QUERY
         if (err) {
-          console.log("Privilegios insuficientes")
+          console.log("Error en acceso a la tabla Users")
           res.send({ success: false, message: 'privilegios insuficientes.' });
           return
         }
@@ -98,11 +102,10 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
           return
         }
         //SI ESTÁ PENDIENTE DE ACTIVACION SU NIVEL DE PRIVILEGIOS ES 1 ó 2
-        if (rows[0].pendiente == 1) {
-          privileged_roles = [1, 2]
-        }
-        if (privileged_roles != "" && privileged_roles.indexOf(rows[0].rol_id) === -1) {
-          console.log("Privilegios insuficientes")
+        console.log ("PR", privileged_roles)
+        if ((rows[0].pendiente == 1 && privileged_roles.indexOf(1)=== -1 && privileged_roles.indexOf(2)=== -1) 
+          || (privileged_roles != "" && privileged_roles.indexOf(rows[0].rol_id) === -1)){
+          console.log("Privilegios insuficientes. Se necesita ", privileged_roles)
           res.send({ success: false, message: 'privilegios insuficientes.' });
           return
         }

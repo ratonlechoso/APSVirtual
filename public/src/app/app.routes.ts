@@ -66,7 +66,8 @@ const appRoutes: Routes = [
   { 
     path: 'userUpdate', 
     component: UserUpdateComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: {roles: [1,2,3,4,5]}
   },
   { 
     path: 'usersManager', 

@@ -618,7 +618,8 @@ var appRoutes = [
     {
         path: 'userUpdate',
         component: user_update_component_1.UserUpdateComponent,
-        canActivate: [auth_1.AuthGuard]
+        canActivate: [auth_1.AuthGuard],
+        data: { roles: [1, 2, 3, 4, 5] }
     },
     {
         path: 'usersManager',
@@ -4507,7 +4508,6 @@ var AuthGuard = /** @class */ (function () {
         this.router = router;
     }
     AuthGuard.prototype.canActivate = function (next, state) {
-        var _this = this;
         var roles = next.data["roles"];
         console.log("roles en CanActivate: ", roles);
         return this.auth.verifyForRoles([roles]).map(function (res) {
@@ -4517,8 +4517,9 @@ var AuthGuard = /** @class */ (function () {
             }
             else {
                 // redirect the user
-                console.log("Ruta protegida. No tienes permiso. RES: ", res['success']);
-                _this.router.navigate(['/login']);
+                console.log("Ruta protegida. No tienes permiso. RES: ", res);
+                alert(res['message']);
+                //this.router.navigate(['/login']);
                 return false;
             }
         });
@@ -5417,12 +5418,13 @@ var UserLoginComponent = /** @class */ (function () {
                 console.log("Pendientes: ", res['pendientes']);
                 if (res['pendientes'] != undefined) {
                     if (res['pendientes'].success == true && res['user'].pendiente == 0 && res['user'].bloqueado == 0) {
-                        console.log("pendientes: ", res['pendientes']);
                         alert("Hay usuarios pendientes de aprobar. Consular en la seccion de gestión de usuarios");
                     }
                 }
-                else
-                    console.log("pendientes undefined");
+                if (res['user'].pendiente == 1)
+                    alert("Su usuario está pendiente de activación. Sólo podrá acceder a las partes públicas de la aplicación");
+                if (res['user'].bloqueado == 1)
+                    alert("Su usuario está bloqueado. Sólo podrá acceder a las partes públicas de la aplicación");
                 _this.authService.setUser(res['user']);
                 _this.router.navigate(['home']);
             }

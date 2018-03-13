@@ -71,10 +71,13 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         console.log("Pendientes: ", res['pendientes'])
         if (res['pendientes'] != undefined) {
           if (res['pendientes'].success == true && res['user'].pendiente == 0 && res['user'].bloqueado == 0) {//Se logea el admin y tiene usuarios pendientes de aprobar
-            console.log("pendientes: ", res['pendientes'])
             alert("Hay usuarios pendientes de aprobar. Consular en la seccion de gestión de usuarios")
           }
-        } else console.log("pendientes undefined")
+        }
+        if (res['user'].pendiente == 1)
+          alert("Su usuario está pendiente de activación. Sólo podrá acceder a las partes públicas de la aplicación")
+        if (res['user'].bloqueado == 1)
+          alert("Su usuario está bloqueado. Sólo podrá acceder a las partes públicas de la aplicación")
         this.authService.setUser(res['user']);
         this.router.navigate(['home']);
       } else {
