@@ -81,7 +81,6 @@ export class AuthService {
 
   verifyForRoles(roles): Observable<Object> {
     console.log("roles: ", roles)
-    console.log("user: ", this.user)
     let currUser = JSON.parse(localStorage.getItem('currentUser')); 
     let token = ( currUser && 'token' in currUser) ? currUser.token : this.token;
     let userId = ( currUser && 'id' in currUser) ? currUser.id : null;

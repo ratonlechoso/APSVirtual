@@ -857,7 +857,6 @@ var AuthService = /** @class */ (function () {
     AuthService.prototype.verifyForRoles = function (roles) {
         var _this = this;
         console.log("roles: ", roles);
-        console.log("user: ", this.user);
         var currUser = JSON.parse(localStorage.getItem('currentUser'));
         var token = (currUser && 'token' in currUser) ? currUser.token : this.token;
         var userId = (currUser && 'id' in currUser) ? currUser.id : null;
@@ -3132,7 +3131,7 @@ module.exports = ".navbar  {\r\n    background: #4d4944; /* For browsers that do
 /***/ "./src/app/components/menu-bar/menu-bar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\r\n  <!-- NOMBRE Y LOGO -->\r\n  <img id=\"imgLogo\" src=\"assets/img/uned-logo.jpg\" width=\"50\" height=\"50\" class=\"d-inline-block align-top\" alt=\"\">\r\n  <a class=\"navbar-brand\" id=\"title\" [routerLink]=\"['home']\">\r\n    ApS Virtual\r\n  </a>\r\n  <!-- BOTON DE BARRA COLAPSADA -->\r\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\"\r\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <!-- DIV DE ELEMENTOS DE LA BARRA QUE COLAPSAN -->\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav mr-auto\">\r\n\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['experiencias']\">Experiencias desarrolladas</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['proyectos']\">Nuevas iniciativas en ApS</a>\r\n      </li>\r\n      <li class=\"dropdown\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n          Bibliografía\r\n        </a>\r\n        <ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\r\n          <a class=\"dropdown-item disabled\" href=\"#\">Recursos bibliográficos</a>\r\n          <!-- <div class=\"dropdown-divider\"></div> -->\r\n          <a class=\"dropdown-item\" [routerLink]=\"['biblio-recursos-externos']\">Bibliografía externa</a>\r\n        </ul>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Videoteca</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Disabled (for testing)</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['private']\">protected (for testing)</a>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"user\" class=\"nav navbar-nav navbar-right\">\r\n      <li class=\"dropdown\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"\r\n          id=\"log\">\r\n          <i class=\"fa fa-user-circle\"></i>\r\n          {{user.first_name}} {{user.last_name}}\r\n          <br>\r\n          <span class=\"rol-user\">({{user.roles}})</span>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"navbarDropdown\">\r\n          <a *ngIf=\"user.roles == 'Administrador'\" class=\"dropdown-item\" [routerLink]=\"['usersManager']\">\r\n            <i class=\"fa fa-gear fa-fw\"></i>\r\n            Gestión de usuarios\r\n          </a>\r\n          <a class=\"dropdown-item\" [routerLink]=\"['userViewProfile']\">\r\n            <i class=\"fa fa-pencil fa-fw\"></i>\r\n            Perfil de usuario\r\n          </a>\r\n          <div class=\"dropdown-divider\"></div>\r\n          <a class=\"dropdown-item pointer\" (click)=\"modal.open()\">\r\n            <i class=\"fa fa-sign-out fa-fw\"></i>\r\n            Salir\r\n          </a>\r\n        </ul>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"!user\" class=\"navbar-nav navbar-right\">\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['login']\">Login</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['register']\">Registrarse</a>\r\n      </li>\r\n    </ul>\r\n    <!-- <form class=\"form-inline my-2 my-lg-0 mr-0 ml-lg-auto\" >\r\n               <input class=\"form-control mr-sm-2\" type=\"search\" placeholder=\"buscar\" aria-label=\"Search\">\r\n               <button class=\"btn btn-outline-success my-2 my-sm-0 mr-auto\" type=\"submit\">buscar</button>\r\n             </form> -->\r\n    <!-- </div> -->\r\n  </div>\r\n</nav>\r\n\r\n<!-- ************************************************************************** -->\r\n<!-- MODAL -->\r\n<!-- ************************************************************************** -->\r\n\r\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalClosed()\" (onDismiss)=\"modalDismissed()\"\r\n  (onOpen)=\"modalOpened()\" #modal>\r\n  <bs-modal-header>\r\n    <h4 class=\"modal-title\">APS Virtual</h4>\r\n  </bs-modal-header>\r\n  <bs-modal-body>\r\n    <p>¿Desea abandonar la aplicación?</p>\r\n  </bs-modal-body>\r\n  <bs-modal-footer>\r\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modal.close()\">\r\n      <i class=\"fa fa-check\"></i> ok\r\n    </button>\r\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modal.dismiss()\">\r\n      <i class=\"fa fa-times\"></i> Cancelar\r\n    </button>\r\n  </bs-modal-footer>\r\n</bs-modal>"
+module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\r\n  <!-- NOMBRE Y LOGO -->\r\n  <img id=\"imgLogo\" src=\"assets/img/uned-logo.jpg\" width=\"50\" height=\"50\" class=\"d-inline-block align-top\" alt=\"\">\r\n  <a class=\"navbar-brand\" id=\"title\" [routerLink]=\"['home']\">\r\n    ApS Virtual\r\n  </a>\r\n  <!-- BOTON DE BARRA COLAPSADA -->\r\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\"\r\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n  <!-- DIV DE ELEMENTOS DE LA BARRA QUE COLAPSAN -->\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav mr-auto\">\r\n\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['experiencias']\">Experiencias desarrolladas</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['proyectos']\">Nuevas iniciativas en ApS</a>\r\n      </li>\r\n      <li class=\"dropdown\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n          Bibliografía\r\n        </a>\r\n        <ul class=\"dropdown-menu\" aria-labelledby=\"navbarDropdown\">\r\n          <a class=\"dropdown-item disabled\" href=\"#\">Recursos bibliográficos</a>\r\n          <!-- <div class=\"dropdown-divider\"></div> -->\r\n          <a class=\"dropdown-item\" [routerLink]=\"['biblio-recursos-externos']\">Bibliografía externa</a>\r\n        </ul>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Videoteca</a>\r\n      </li>\r\n      <li class=\"nav-item\">\r\n        <a class=\"nav-link disabled\" href=\"#\">Disabled (for testing)</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['private']\">protected (for testing)</a>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"user\" class=\"nav navbar-nav navbar-right\">\r\n      <li class=\"dropdown\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"\r\n          id=\"log\">\r\n          <i class=\"fa fa-user-circle\"></i>\r\n          {{user.first_name}} {{user.last_name}}\r\n          <br>\r\n\r\n          <span *ngIf=\"!user.bloqueado && !user.pendiente\" class=\"rol-user\">({{user.roles}})</span>\r\n          <span *ngIf=\"user.pendiente\" class=\"rol-user\" [style.color]=\"'red'\">(Pendiente de activar) </span>\r\n          <span *ngIf=\"user.bloqueado\" class=\"rol-user\" [style.color]=\"'red'\">(Bloqueado) </span>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-menu-right\" aria-labelledby=\"navbarDropdown\">\r\n          <a *ngIf=\"user.roles == 'Administrador' && user.pendiente == 0 && user.bloqueado == 0\" class=\"dropdown-item\" [routerLink]=\"['usersManager']\">\r\n            <i class=\"fa fa-gear fa-fw\"></i>\r\n            Gestión de usuarios\r\n          </a>\r\n          <a class=\"dropdown-item\" [routerLink]=\"['userViewProfile']\">\r\n            <i class=\"fa fa-pencil fa-fw\"></i>\r\n            Perfil de usuario\r\n          </a>\r\n          <div class=\"dropdown-divider\"></div>\r\n          <a class=\"dropdown-item pointer\" (click)=\"modal.open()\">\r\n            <i class=\"fa fa-sign-out fa-fw\"></i>\r\n            Salir\r\n          </a>\r\n        </ul>\r\n      </li>\r\n    </ul>\r\n\r\n\r\n    <ul *ngIf=\"!user\" class=\"navbar-nav navbar-right\">\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['login']\">Login</a>\r\n      </li>\r\n      <li class=\"nav-item\" routerLinkActive=\"active\">\r\n        <a class=\"nav-link\" [routerLink]=\"['register']\">Registrarse</a>\r\n      </li>\r\n    </ul>\r\n    <!-- <form class=\"form-inline my-2 my-lg-0 mr-0 ml-lg-auto\" >\r\n               <input class=\"form-control mr-sm-2\" type=\"search\" placeholder=\"buscar\" aria-label=\"Search\">\r\n               <button class=\"btn btn-outline-success my-2 my-sm-0 mr-auto\" type=\"submit\">buscar</button>\r\n             </form> -->\r\n    <!-- </div> -->\r\n  </div>\r\n</nav>\r\n\r\n<!-- ************************************************************************** -->\r\n<!-- MODAL -->\r\n<!-- ************************************************************************** -->\r\n\r\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalClosed()\" (onDismiss)=\"modalDismissed()\"\r\n  (onOpen)=\"modalOpened()\" #modal>\r\n  <bs-modal-header>\r\n    <h4 class=\"modal-title\">APS Virtual</h4>\r\n  </bs-modal-header>\r\n  <bs-modal-body>\r\n    <p>¿Desea abandonar la aplicación?</p>\r\n  </bs-modal-body>\r\n  <bs-modal-footer>\r\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modal.close()\">\r\n      <i class=\"fa fa-check\"></i> ok\r\n    </button>\r\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modal.dismiss()\">\r\n      <i class=\"fa fa-times\"></i> Cancelar\r\n    </button>\r\n  </bs-modal-footer>\r\n</bs-modal>"
 
 /***/ }),
 
@@ -5413,10 +5412,12 @@ var UserLoginComponent = /** @class */ (function () {
         this.loginUser.password = this.rForm.controls['password'].value;
         this.authService.loginUser(user).subscribe(function (res) {
             _this.user_status = res['success'];
+            console.log("res: ", res);
             if (res['success'] == true) {
                 console.log("Pendientes: ", res['pendientes']);
-                if (res['pendientes'] != null) {
-                    alert("Hay usuarios pendientes de aprobar. Consular en la seccion de usuarios pendientes");
+                if (res['pendientes'].success == true && res['user'].pendiente == 0 && res['user'].bloqueado == 0) {
+                    console.log("pendientes: ", res['pendientes']);
+                    alert("Hay usuarios pendientes de aprobar. Consular en la seccion de gestión de usuarios");
                 }
                 _this.authService.setUser(res['user']);
                 _this.router.navigate(['home']);
@@ -5558,7 +5559,7 @@ var UserRegisterComponent = /** @class */ (function () {
         user.roles = rol.id;
         user.pendiente = 0;
         if (user.roles > 2) {
-            this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificaciòn en su dirección de corre electronico" + user.email;
+            this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificación en su dirección de corréo electrónico: " + user.email;
             user.pendiente = 1;
         }
         //    Llamada al servicio
@@ -5991,13 +5992,22 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.update = function (user) {
         var _this = this;
+        console.log("usuario ", user);
         var body = JSON.stringify(user);
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
         var options = new http_1.RequestOptions({ headers: headers });
-        return this._http.put(this.base_url + "/update/" + user.id, body, options).map(function (res) { return _this.parseRes(res); });
+        return this._http.put(this.base_url + "/user/" + user.id, body, options).map(function (res) { return _this.parseRes(res); });
         // return this._http.put('/users/' + user.id, user)
         // .map(data => data.json()).toPromise()
+    };
+    UserService.prototype.notificarActivacion = function (user) {
+        var _this = this;
+        var body = JSON.stringify(user);
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.post(this.base_url + "/notify_activation", body, options).map(function (res) { return _this.parseRes(res); });
     };
     UserService.prototype.parseRes = function (res) {
         console.log("parseRes->res", res);
@@ -6065,7 +6075,7 @@ module.exports = ""
 /***/ "./src/app/components/user/users-manager/users-manager.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n  <h2>Listado de usuarios</h2>\n  <br>\n  <div class=\"row\">\n    <div class=\"col-md-7\">\n      <input type=\"text\" [(ngModel)]=\"query\" name=\"query\" placeholder=\"Filtrar resultados por el nombre del usuario\">\n    </div>\n  </div>\n  <br>\n  <div class=\"row\">\n    <p class=\"col-md-2 negrita\">Nombre</p>\n    <p class=\"col-md-2 negrita\">Apellidos</p>\n    <p class=\"col-md-2 negrita\">Rol</p>\n    <p class=\"col-md-2 negrita\">Email</p>  \n  </div>\n  <div *ngFor=\"let user of users | search: 'first_name':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index\">\n\n    <div class=\"row\">\n      <p class=\"col-md-2\">{{user.first_name}} </p>\n      <p class=\"col-md-2\">{{user.last_name}} </p>\n      <p class=\"col-md-2\">{{user.rol_nombre}} </p>\n      <p class=\"col-md-4\">{{user.email}}\n        <span class=\"fa fa-ban pull-right pointer\"  [style.color]=\"'red'\" (click)=\"bloquear(user)\"></span>\n        <span class=\"fa fa-plus pull-right pointer color-blue \" (click)=\"activar(user)\"></span>\n      </p>\n    </div>\n  </div>\n  <br>\n  <br>\n  <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n    screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n  <br>\n</div>\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar usuario? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
+module.exports = "<div class=\"container\">\n  <h2>Listado de usuarios</h2>\n  <br>\n  <div class=\"row\">\n    <div class=\"col-md-7\">\n      <input type=\"text\" [(ngModel)]=\"query\" name=\"query\" placeholder=\"Filtrar resultados por el nombre del usuario\">\n    </div>\n  </div>\n  <br>\n  <div class=\"row\">\n    <p class=\"col-md-3 negrita\">Nombre</p>\n    <p class=\"col-md-3 negrita\">Apellidos</p>\n    <p class=\"col-md-2 negrita\">Rol</p>\n    <p class=\"col-md-3 negrita\">Email</p>  \n  </div>\n  <div *ngFor=\"let user of users | search: 'first_name':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index\">\n\n    <div class=\"row\">\n      <p class=\"col-md-3\">{{user.first_name}} </p>\n      <p class=\"col-md-3\">{{user.last_name}} </p>\n      <p class=\"col-md-2\">{{user.rol_nombre}} </p>\n      <p class=\"col-md-3\">{{user.email}}\n        <span *ngIf=\"user.pendiente == 1\" class=\"fa fa-plus pull-right pointer color-blue \" (click)=\"activar(user)\" title = \"Activar usuario pendiente\"></span>\n        <span *ngIf=\"user.bloqueado == 0 && user.pendiente == 0\" class=\"fa fa-check-circle pull-right pointer\"  [style.color]=\"'green'\" (click)=\"bloquear(user)\" title = \"Bloquear usuario\"></span>\n        <span *ngIf=\"user.bloqueado == 1 && user.pendiente == 0\" class=\"fa fa-ban pull-right pointer\"  [style.color]=\"'red'\" (click)=\"bloquear(user)\" title = \"Desbloquear usuario\"></span>\n      </p>\n    </div>\n  </div>\n  <br>\n  <br>\n  <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n    screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n  <br>\n</div>\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalUpdateFlagsClosed()\" (onDismiss)=\"modalUpdateFlagsDismissed()\"\n  (onOpen)=\"modalUpdateFlagsOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>{{textoModal}}</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalUpdateFlags.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalUpdateFlags.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
 
 /***/ }),
 
@@ -6086,22 +6096,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var user_service_1 = __webpack_require__("./src/app/components/user/user.service.ts");
+var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
 var ng2_bs3_modal_1 = __webpack_require__("./node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.umd.js");
 var UsersManagerComponent = /** @class */ (function () {
-    function UsersManagerComponent(_userService) {
+    function UsersManagerComponent(_userService, _authService) {
         this._userService = _userService;
+        this._authService = _authService;
         this.p = 1;
         this.itemsPerPage = 25;
         this.postsPerPage = [25, 50, 100];
         this.addMode = false;
         console.log("cargar usuarios ...");
-        this.sortingField = "nombre";
-        this.ascending = true;
-        this.nombreAsc = true;
         this.query = "";
         this.loadUsers();
     }
     UsersManagerComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.user = this._authService.user;
+        this._authService.user$.subscribe(function (user) {
+            _this.user = user;
+        });
     };
     UsersManagerComponent.prototype.loadUsers = function () {
         var _this = this;
@@ -6110,22 +6124,65 @@ var UsersManagerComponent = /** @class */ (function () {
         });
     };
     UsersManagerComponent.prototype.bloquear = function (user) {
-        alert("en desarrollo...");
+        if (this.user.email == user.email) {
+            alert("Operación no permitida");
+            return;
+        }
+        user.password = "";
+        this.userToModify = JSON.parse(JSON.stringify(user));
+        console.log("usertomodify: ", this.userToModify);
+        this.userToModify.bloqueado = !this.userToModify.bloqueado;
+        ((user.bloqueado) ? this.textoModal = "Desbloquear usuario?" : this.textoModal = "¿Bloquear usuario?");
+        this.modalUpdateFlags.open();
     };
     UsersManagerComponent.prototype.activar = function (user) {
-        alert("en desarrollo...");
+        if (this.user.email == user.email) {
+            alert("Operación no permitida");
+            return;
+        }
+        user.password = "";
+        this.userToModify = JSON.parse(JSON.stringify(user));
+        this.userToModify.pendiente = !this.userToModify.pendiente;
+        this.textoModal = "¿Activar usuario?";
+        this.modalUpdateFlags.open();
+    };
+    UsersManagerComponent.prototype.modalUpdateFlagsDismissed = function () {
+        console.log("Modal cerrado sin acción");
+    };
+    UsersManagerComponent.prototype.modalUpdateFlagsOpened = function () {
+        /**No hacer nada*/
+    };
+    UsersManagerComponent.prototype.modalUpdateFlagsClosed = function () {
+        var _this = this;
+        this._userService.update(this.userToModify).subscribe(function (res) {
+            if (res['success'] == true) {
+                _this.userToModify.bloqueado = res['user'].bloqueado;
+                _this.users.forEach(function (element) {
+                    if (element.id == res['user'].id) {
+                        element.bloqueado = res['user'].bloqueado;
+                        if (element.pendiente != res['user'].pendiente) {
+                            _this._userService.notificarActivacion(_this.userToModify).subscribe(function (res) {
+                                element.pendiente = !element.pendiente;
+                                alert("Usuario activado. Se ha enviado una notificación a su dirección de email");
+                            });
+                        }
+                    }
+                });
+            }
+        });
     };
     __decorate([
         core_1.ViewChild('modal'),
         __metadata("design:type", ng2_bs3_modal_1.BsModalComponent)
-    ], UsersManagerComponent.prototype, "modalDelete", void 0);
+    ], UsersManagerComponent.prototype, "modalUpdateFlags", void 0);
     UsersManagerComponent = __decorate([
         core_1.Component({
             selector: 'app-users-manager',
             template: __webpack_require__("./src/app/components/user/users-manager/users-manager.component.html"),
             styles: [__webpack_require__("./src/app/components/user/users-manager/users-manager.component.css")]
         }),
-        __metadata("design:paramtypes", [user_service_1.UserService])
+        __metadata("design:paramtypes", [user_service_1.UserService,
+            auth_service_1.AuthService])
     ], UsersManagerComponent);
     return UsersManagerComponent;
 }());

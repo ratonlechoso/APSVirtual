@@ -13,6 +13,8 @@ module.exports = {
     roles: String,
     resetPasswordToken: String,
     resetPasswordExpires: String,
+    pendiente: Boolean,
+    bloqueado: Boolean,
 
 
     generateHash: function (password) {
@@ -37,8 +39,9 @@ module.exports = {
         this.last_name = user.last_name
         this.lastLogin = moment();
         this.signUpDate = user.sign_up_date
-        this.roles =user.rol_nombre
-
+        this.roles = user.rol_nombre
+        this.pendiente = user.pendiente | false
+        this.bloqueado = user.bloqueado | false
     }
 
 }

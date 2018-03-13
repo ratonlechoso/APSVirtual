@@ -74,15 +74,24 @@ export class UserService {
   }
 
   update(user: User): Observable<Object> {
+    console.log("usuario ", user)
     let body = JSON.stringify(user);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     let options = new RequestOptions({ headers: headers });
-    return this._http.put(`${this.base_url}/update/` + user.id, body, options).map((res) => this.parseRes(res));
+    return this._http.put(`${this.base_url}/user/` + user.id, body, options).map((res) => this.parseRes(res));
     // return this._http.put('/users/' + user.id, user)
     // .map(data => data.json()).toPromise()
   } 
 
+  notificarActivacion(user: User): Observable<Object> {
+    let body = JSON.stringify(user);
+    let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.post(`${this.base_url}/notify_activation`, body, options).map( (res) =>  this.parseRes(res) );
+  }
+  
   parseRes(res){
     console.log("parseRes->res", res) 
     let body = JSON.parse(res['_body']); 

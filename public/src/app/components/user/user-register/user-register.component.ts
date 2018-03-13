@@ -80,7 +80,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     user.roles = rol.id
     user.pendiente = 0
     if (user.roles > 2) {
-      this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificaciòn en su dirección de corre electronico"+ user.email
+      this.message = "Se enviará una petición al administrador para que valide su alta en el sistema. Cuando esto suceda recibirá una notificación en su dirección de corréo electrónico: "+ user.email
       user.pendiente = 1
     }
 

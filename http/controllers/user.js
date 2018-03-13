@@ -13,11 +13,14 @@ var moment = require('moment')
 
 const sqlConn = require('../../DB/sqlConnection')
 
+
+
+
 router.get('/users', (req, res) => {
   let sQuery = "SELECT r.nombre as rol_nombre, r.id as rol_id, u.*  " +
     "FROM users u, roles r " +
-    "WHERE u.rol_id = r.id "
-
+    "WHERE u.rol_id = r.id " +
+    "ORDER BY pendiente desc, nombre"
   sqlConn.pool.query(sQuery, function (err, rows, fields) { //SELECT QUERY
     if (err) {
       console.log("error: ", err)
@@ -31,12 +34,13 @@ router.get('/users', (req, res) => {
     let content = {
       usuarios: rows,
       success: true,
-      message: 'No existe el usuario'
+      message: 'No existen usuarios en la BD'
     };
     res.send(content);
     return;
   })
 })
+
 
 
 router.get('/getUser', (req, res) => {
@@ -75,6 +79,7 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
   try {
     privileged_roles = req.body.roles || req.query.roles || req.headers['x-access-roles'];
     userId = req.body.userId || req.query.userId || req.headers['x-access-id'];
+    console.log("User en check-State: ", user)
     if (privileged_roles != undefined) {
       var user = UserSqlSchema;
       let sQuery = "SELECT *  " +
@@ -85,6 +90,16 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
           console.log("Privilegios insuficientes")
           res.send({ success: false, message: 'privilegios insuficientes.' });
           return
+        }
+        //COMPROBAR QUE NO ESTE BLOQUEADO EL USUARIO
+        if (rows[0].bloqueado == 1) { 
+          console.log("Usuario bloqueado")
+          res.send({ success: false, message: 'usuario bloqueado.' });
+          return
+        }
+        //SI ESTÁ PENDIENTE DE ACTIVACION SU NIVEL DE PRIVILEGIOS ES 1 ó 2
+        if (rows[0].pendiente == 1) {
+          privileged_roles = [1, 2]
         }
         if (privileged_roles != "" && privileged_roles.indexOf(rows[0].rol_id) === -1) {
           console.log("Privilegios insuficientes")
@@ -106,24 +121,40 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
   }
 });
 
-router.put('/update/:id', (req, res) => {
+router.put('/user/:id', (req, res) => {
   try {
     var reqUser = req.body;
     let userId = req.params.id
     let content;
     var updateUser = UserSqlSchema;
     sQuery = "UPDATE USERS SET ? WHERE id = " + userId
+    console.log("password en update: ", reqUser.password)
     let pass = updateUser.generateHash(reqUser.password)
-    let fields = {
-      first_name: reqUser.first_name,
-      last_name: reqUser.last_name,
-      email: reqUser.email,
-      password: pass,
-      rol_id: reqUser.roles
+    let fields;
+    if (reqUser.password != "") {
+      let pass = updateUser.generateHash(reqUser.password)
+      fields = {
+        first_name: reqUser.first_name,
+        last_name: reqUser.last_name,
+        email: reqUser.email,
+        password: pass,
+        rol_id: reqUser.roles | reqUser.rol_id,
+        bloqueado: reqUser.bloqueado | '0',
+        pendiente: reqUser.pendiente | '0'
+      }
+    } else {
+      fields = {
+        first_name: reqUser.first_name,
+        last_name: reqUser.last_name,
+        email: reqUser.email,
+        rol_id: reqUser.roles | reqUser.rol_id,
+        bloqueado: reqUser.bloqueado | '0',
+        pendiente: reqUser.pendiente | '0'
+      }
     }
 
-    console.log("updateQuery: ", sQuery)
     sqlConn.pool.query(sQuery, fields, function (err, results) { //UPDATE QUERY
+      console.log("update: ", this.sql)
       if (err) {
         console.log("Error insertando usuario", err)
         res.send(content);
@@ -282,7 +313,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/pendientes', (req, res) => {
-  obtener_pendientes( (pendientes) => {
+  obtener_pendientes((pendientes) => {
     res.send(pendientes)
     return;
   })
@@ -317,6 +348,50 @@ function obtener_pendientes(cb) { //Devolver los datos de las funciones asincron
     }
   })
 }
+
+router.post('/notify_activation', (req, res) => {
+  try {
+    var reqUser = req.body;
+    console.log("Notificando activacion de : ", reqUser.email)
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    var smtpTrans = nodemailer.createTransport({
+      service: config.emailService,
+      auth: {
+        user: config.emailUser,
+        pass: config.emailPassword,
+        tls: { rejectUnauthorized: false }
+      }
+    });
+    var mailOptions = {
+      to: reqUser.email,
+      from: '${config.emailUser}',
+      subject: 'Portal sobre Aprendizaje-servicio. Activación de cuenta de usuario ',
+      text: ' Hola ' + reqUser.email + '. Nos complace informarle de que su usuario ha sido activado.\n\n' +
+        ' Reciba un cordial saludo.\n'
+    };
+    smtpTrans.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        let content = {
+          success: false,
+          message: 'Error al enviar el correo de reseteo de contraseña.',
+        }
+        console.log(err)
+        res.send(content)
+        return
+      }
+      let content = {
+        success: true,
+        message: 'Email enviado',
+      }
+      console.log(info) //enviado
+      res.send(content)
+      return
+    });
+  } catch (err) {
+    console.log("Error enviando notificación de activacion: ", err)
+  }
+
+})
 
 
 router.post('/forgot', function (req, res) {
