@@ -280,7 +280,7 @@ router.post('/login', (req, res) => {
     }
     sqlConn.pool.query(sQuery, campos, function (err, results) { //UPDATE last_login QUERY
       if (err) {
-        console.log("Error actualizando users.last_login", err)
+        console.log("Error actualizando users.last_login", err) 
         res.status(404).send(err)
       }
       let token = jwt.sign(user, config.secret, {
@@ -288,7 +288,6 @@ router.post('/login', (req, res) => {
       });
       if (user.roles == "Administrador") {
         obtener_pendientes((pendientes) => { //Los datos se devuelven el callback. IO async
-          console.log("pendientes: ", pendientes)
           let content = {
             pendientes: pendientes,
             user: user,
@@ -299,7 +298,6 @@ router.post('/login', (req, res) => {
           res.send(content);
         })
       } else {
-        console.log("devolviendo datos de usuario no  admin", user.roles)
         let content = {
           user: user,
           success: true,

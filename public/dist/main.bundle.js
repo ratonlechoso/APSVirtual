@@ -5415,10 +5415,14 @@ var UserLoginComponent = /** @class */ (function () {
             console.log("res: ", res);
             if (res['success'] == true) {
                 console.log("Pendientes: ", res['pendientes']);
-                if (res['pendientes'].success == true && res['user'].pendiente == 0 && res['user'].bloqueado == 0) {
-                    console.log("pendientes: ", res['pendientes']);
-                    alert("Hay usuarios pendientes de aprobar. Consular en la seccion de gestión de usuarios");
+                if (res['pendientes'] != undefined) {
+                    if (res['pendientes'].success == true && res['user'].pendiente == 0 && res['user'].bloqueado == 0) {
+                        console.log("pendientes: ", res['pendientes']);
+                        alert("Hay usuarios pendientes de aprobar. Consular en la seccion de gestión de usuarios");
+                    }
                 }
+                else
+                    console.log("pendientes undefined");
                 _this.authService.setUser(res['user']);
                 _this.router.navigate(['home']);
             }
@@ -6143,8 +6147,8 @@ var UsersManagerComponent = /** @class */ (function () {
         user.password = "";
         this.userToModify = JSON.parse(JSON.stringify(user));
         this.userToModify.pendiente = !this.userToModify.pendiente;
-        this.textoModal = "¿Activar usuario?";
-        this.modalUpdateFlags.open();
+        this.textoModal = "¿Activar usuario?" +
+            this.modalUpdateFlags.open();
     };
     UsersManagerComponent.prototype.modalUpdateFlagsDismissed = function () {
         console.log("Modal cerrado sin acción");
