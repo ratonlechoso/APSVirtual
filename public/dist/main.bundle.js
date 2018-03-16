@@ -4302,7 +4302,9 @@ var ProyectosUpdateComponent = /** @class */ (function () {
         (ngbDate != null) ? formatDate = ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year : formatDate = null;
         this.proj.fecha_fin = formatDate;
         /***QUITAR ESTO CUANDO SE CONTROLE EL ESTADO y el */
-        this.proj.estado = { id: 1, nombre: '', descripcion: '' };
+        //this.proj.estado = {id : 1, nombre:'', descripcion: ''}
+        this.proj.estado = this.updateProj.estado;
+        console.log("estado: ", this.proj.estado);
         /******************************************/
         console.log("entidad_id: ", this.updateProj.entidad.entidad_id);
         this.proj.entidad = { id: -1, nombre: "", descripcion: "", provincia_id: "", municipio: "", tfno: "", email: "" };

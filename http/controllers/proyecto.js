@@ -210,7 +210,7 @@ router.put('/proyectos', (req, res) => {
                 }
 
                 async.waterfall([
-                    actualizar_entidad(reqProj, reqProj.id, sqlConn.pool),
+                    insertar_entidad(reqProj, reqProj.id, sqlConn.pool),
                     insertar_adjuntos(reqProj, reqProj.id, sqlConn.pool),
                     insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
                     insertar_alumnos(reqProj, reqProj.id, sqlConn.pool)
@@ -339,7 +339,7 @@ function insertar_entidad(reqProj, projId, db) {
                 let campos = {
                     nombre: reqProj.nombre_entidad,
                     email: reqProj.email_entidad,
-                    provincia_id: reqProj.provincia_entidad,
+                    provincia_id: reqProj.provincia_entidad.id,
                     municipio: reqProj.municipio_entidad
                 }
                 sQuery = "INSERT INTO `entidades` SET ?"
@@ -359,24 +359,39 @@ function insertar_entidad(reqProj, projId, db) {
                         callback(null);
                     })
                 })
-            } else { //Ya existe la entidad. Se inserta su id en el proyecto
-                console.log("ya existe la ENTIDAD")
-                let entidadId = results[0].id
-                sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
-                db.query(sQuery, { entidad_id: entidadId }, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+            } else { //Ya existe la entidad. Se actualiza a través de su id
+                //SI YA EXISTE LA ENTIDAD Y QUIERO MODIFICAR ALGUNO DE SUS CAMPOS DEBO HACER UPDATE DE ELLA    
+                let campos = {
+                    nombre: reqProj.nombre_entidad,
+                    email: reqProj.email_entidad,
+                    provincia_id: reqProj.provincia_entidad.id,
+                    municipio: reqProj.municipio_entidad
+                }
+                sQuery = "UPDATE `entidades` SET ?  WHERE  id = " + reqProj.entidad.id
+                db.query(sQuery, campos, function (err, entidad, fields) { //UPDATE ENTIDAD
                     if (err) {
                         console.log(err)
                         throw err
                     }
-                    console.log("lanzo callback")
                     callback(null);
                 })
+                // console.log("ya existe la ENTIDAD")
+                // let entidadId = results[0].id
+                // sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
+                // db.query(sQuery, { entidad_id: entidadId }, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+                //     if (err) {
+                //         console.log(err)
+                //         throw err
+                //     }
+                //     console.log("lanzo callback")
+                //     callback(null);
+                // })
             }
         }) //SELECT ENTIDADES
     }
 }
 
-function actualizar_entidad(reqProj, projId, db) {
+function actualizar_entidad(reqProj, projId, db) { 
     return function (callback) {
         //console.log("REQPROJ en actalizar_entidad", reqProj)
         //COMPROBAR SI EXISTE LA ENTIDAD
@@ -415,10 +430,9 @@ function insertar_adjuntos(reqProj, projId, db) {
     return function (callback) {
         /// INSERTAR ADJUNTOS
         sQuery = "DELETE FROM `adjuntos_proyectos` WHERE ?"
-        console.log("insertar_adjuntos para: ", reqProj)
+        //console.log("insertar_adjuntos para: ", reqProj)
         db.query(sQuery, { 'proyecto_id': reqProj.id }, function (err, rows) { //DELETE ADJUNTOS
             if (err) throw err
-            console.log("reqProj: ", reqProj)
             async.eachSeries(reqProj.adjuntos, (element, cb) => {
                 sQuery = "INSERT INTO `adjuntos_proyectos` " +
                     "SET ? "
@@ -427,7 +441,7 @@ function insertar_adjuntos(reqProj, projId, db) {
                     descripcion: "",
                     proyecto_id: projId
                 }
-                console.log("Campos para insertar adjuntos: ", campos)
+                //console.log("Campos para insertar adjuntos: ", campos)
                 db.query(sQuery, campos, function (err, newAdj, fields) { //INSERTAR ADJUNTOS
                     console.log("sql ", this.sql)
                     if (err) throw err
@@ -436,7 +450,7 @@ function insertar_adjuntos(reqProj, projId, db) {
                 })
             }, function (err) {
                 if (err) throw err
-                console.log("fin de eachseries")
+                //console.log("fin de eachseries")
                 callback(null);
             })
         })
