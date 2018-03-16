@@ -186,43 +186,63 @@ router.get('/proyectos', (req, res) => {
 
 router.put('/proyectos', (req, res) => {
     var reqProj = req.body;
-    try {
-        let campos = {
-            nombre: reqProj.nombre,
-            descripcion: reqProj.descripcion,
-            fecha_inicio: reqProj.fecha_inicio,
-            fecha_fin: reqProj.fecha_fin,
-            estado_id: reqProj.estado.id,
-            cupo_estudiantes: reqProj.cupo_estudiantes,
-            ambito_id: reqProj.ambito.id,
-            especialidad_id: (reqProj.especialidad != null) ? reqProj.especialidad.id : null,
-            universidad_id: (reqProj.universidad != null) ? reqProj.universidad.id : null
-        }
-        let sQuery = "UPDATE `proyectos` " +
-            "SET ?  WHERE id = " + reqProj.id
-        sqlConn.pool.query(sQuery, campos, function (err, proj) { //UPDATE proyectos
-            if (err) {
-                console.log("error al actualizar el proyecto: ", err)
-                throw err
+    var upd_action = req.headers['x-access-upd-action'];
+    console.log("acción : ", upd_action)
+    if (upd_action == 0) {
+        try {
+            let campos = {
+                nombre: reqProj.nombre,
+                descripcion: reqProj.descripcion,
+                fecha_inicio: reqProj.fecha_inicio,
+                fecha_fin: reqProj.fecha_fin,
+                estado_id: reqProj.estado.id,
+                cupo_estudiantes: reqProj.cupo_estudiantes,
+                ambito_id: reqProj.ambito.id,
+                especialidad_id: (reqProj.especialidad != null) ? reqProj.especialidad.id : null,
+                universidad_id: (reqProj.universidad != null) ? reqProj.universidad.id : null
             }
+            let sQuery = "UPDATE `proyectos` " +
+                "SET ?  WHERE id = " + reqProj.id
+            sqlConn.pool.query(sQuery, campos, function (err, proj) { //UPDATE proyectos
+                if (err) {
+                    console.log("error al actualizar el proyecto: ", err)
+                    throw err
+                }
 
-            async.waterfall([
-                actualizar_entidad(reqProj, reqProj.id, sqlConn.pool),
-                insertar_adjuntos(reqProj, reqProj.id, sqlConn.pool),
-                insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
-                insertar_alumnos(reqProj, reqProj.id, sqlConn.pool)
-            ], function (error, success) {
-                if (error) { console.log('Algo ha ido mal!'); }
-                let content = {
-                    success: true,
-                    message: 'ok'
-                };
-                res.send(content)
-                return
-            });
-        })
-    } catch (err) {
-        console.log("ERROR: ", err)
+                async.waterfall([
+                    actualizar_entidad(reqProj, reqProj.id, sqlConn.pool),
+                    insertar_adjuntos(reqProj, reqProj.id, sqlConn.pool),
+                    insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
+                    insertar_alumnos(reqProj, reqProj.id, sqlConn.pool)
+                ], function (error, success) {
+                    if (error) { console.log('Algo ha ido mal!'); }
+                    let content = {
+                        success: true,
+                        message: 'ok'
+                    };
+                    res.send(content)
+                    return
+                });
+            })
+        } catch (err) {
+            console.log("ERROR: ", err)
+        }
+    } else if (upd_action == 1) {
+        //console.log("instar coordinadores", reqProj)
+        async.waterfall([
+            insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
+            apadrinar(reqProj, reqProj.id, sqlConn.pool)
+            //insertar_adjuntos(reqProj, projId, db)
+        ], function (error, success) {
+            if (error) { console.log('Algo ha ido mal!'); }
+            console.log("Hecho!")
+            let content = {
+                success: true,
+                message: 'ok'
+            };
+            res.send(content)
+            return
+        });
     }
 });
 
@@ -286,6 +306,23 @@ router.post('/proyectos', (req, res) => {
         console.log("ERROR: ", err)
     }
 })
+
+function apadrinar(reqProj, projId, db) {
+    return function (callback) {
+        //INSERTAR ENTIDAD
+        let campos = {
+            estado_id: 2
+        }
+        let sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
+        db.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            callback(null);
+        })
+    }
+}
 
 function insertar_entidad(reqProj, projId, db) {
     return function (callback) {
@@ -390,7 +427,7 @@ function insertar_adjuntos(reqProj, projId, db) {
                     descripcion: "",
                     proyecto_id: projId
                 }
-                console.log("Campos para insertar adjuntos: ", campos )
+                console.log("Campos para insertar adjuntos: ", campos)
                 db.query(sQuery, campos, function (err, newAdj, fields) { //INSERTAR ADJUNTOS
                     console.log("sql ", this.sql)
                     if (err) throw err
@@ -426,65 +463,73 @@ function insertar_adjuntos(reqProj, projId, db) {
 
 function insertar_coordinadores(reqProj, projId, db) {
     return function (callback) {
-        console.log("coordiandores: ", reqProj.alumnos)
-        if (reqProj.coordinadores == null) {
-            console.log("no hay coordiandores")
-            callback(null)
-        }
-        sQuery = "DELETE FROM  `proyecto_coordinador` WHERE  ? "
-        db.query(sQuery, { 'proyecto_id': reqProj.id }, function (err, rows) { //DELETE proyecto_coordinador
-            if (err) throw err
-            ////////////////RECORRER COORDINADORES ...
-            async.eachSeries(reqProj.coordinadores, (element, eachCallback) => {
-                sQuery = "SELECT * FROM coordinadores where ? "
-                db.query(sQuery, { 'email': element.email }, function (err, results) { //SELECT COORDINADORES
-                    if (err) throw err
-                    if (results == "") { //Se crea el coordinador y la entrada en la tabla intermedia
+        try {
+            console.log("coordiandores: ", reqProj.coordinadores)
+            if (reqProj.coordinadores == null) {
+                console.log("no hay coordiandores")
+                callback(null)
+            }
+            sQuery = "DELETE FROM  `proyecto_coordinador` WHERE  ? "
+            db.query(sQuery, { 'proyecto_id': reqProj.id }, function (err, rows) { //DELETE proyecto_coordinador
+                if (err) throw err
+                ////////////////RECORRER COORDINADORES ...
+                async.eachSeries(reqProj.coordinadores, (element, eachCallback) => {
+                    sQuery = "SELECT * FROM coordinadores where ? "
+                    db.query(sQuery, { 'email': element.email }, function (err, results) { //SELECT COORDINADORES
+                        console.log("sql: ", this.sql)
+                        if (err) throw err
+                        if (results == "") { //Se crea el  coordinador y la entrada en la tabla intermedia
 
-                        sQuery = "INSERT INTO `coordinadores` " +
-                            "SET ? "
-                        campos = {
-                            nombre: element.nombre,
-                            email: element.email
-                            // ,universidad_id: reqProj.universidad
-                        }
-                        db.query(sQuery, campos, function (err, newCoord, fields) { //INSERTAR COORDINADORES
-                            if (err) throw err
-                            let coordId = newCoord.insertId
+                            sQuery = "INSERT INTO `coordinadores` " +
+                                "SET ? "
+                            campos = {
+                                nombre: element.nombre,
+                                email: element.email
+                                // ,universidad_id: reqProj.universidad
+                            }
+                            db.query(sQuery, campos, function (err, newCoord, fields) { //INSERTAR COORDINADORES
+                                console.log("sql: ", this.sql)
+                                if (err) throw err
+                                let coordId = newCoord.insertId
+                                sQuery = "INSERT INTO proyecto_coordinador " +
+                                    "SET ?"
+                                campos = {
+                                    coordinador_id: coordId,
+                                    proyecto_id: reqProj.id
+                                }
+                                db.query(sQuery, campos, function (err, results, fields) { //INSERTAR PROYECTO_COORDINADOR
+                                    console.log("insertando en tabla proyecto_coordinador 1 ...")
+                                    if (err) throw err
+                                    eachCallback(null)
+                                })
+                            })
+                        } else {//solo la entrada en la tabla intermedia proyecto_coordinador
+                            console.log("coordinador ya existente. Se asocia en la tabla intermedia: ", results[0])
                             sQuery = "INSERT INTO proyecto_coordinador " +
                                 "SET ?"
                             campos = {
-                                coordinador_id: coordId,
+                                coordinador_id: results[0].id,
                                 proyecto_id: reqProj.id
                             }
                             db.query(sQuery, campos, function (err, results, fields) { //INSERTAR PROYECTO_COORDINADOR
-                                console.log("insertando en tabla proyecto_coordinador 1 ...")
+                                console.log("sql: ", this.sql)
+                                console.log("insertando en tabla proyecto_coordinador 2 ...")
                                 if (err) throw err
                                 eachCallback(null)
                             })
-                        })
-                    } else {//solo la entrada en la tabla intermedia proyecto_coordinador
-                        console.log("coordinador ya existente. Se asocia en la tabla intermedia: ", results[0])
-                        sQuery = "INSERT INTO proyecto_coordinador " +
-                            "SET ?"
-                        campos = {
-                            coordinador_id: results[0].id,
-                            proyecto_id: reqProj.id
-                        }
-                        db.query(sQuery, campos, function (err, results, fields) { //INSERTAR PROYECTO_COORDINADOR
-                            console.log("insertando en tabla proyecto_coordinador 2 ...")
-                            if (err) throw err
-                            eachCallback(null)
-                        })
-                    } //else
+                        } //else
 
-                }) //SELECT COORDINADORES
-            }, function (err) {
-                if (err) throw err
-                console.log("fin de eachseries de coordinadores")
-                callback(null);
+                    }) //SELECT COORDINADORES
+                }, function (err) {
+                    if (err) throw err
+                    console.log("fin de eachseries de coordinadores")
+                    callback(null);
+                })
             })
-        })
+        } catch (err) {
+            console.log(err)
+
+        }
     }
 }
 

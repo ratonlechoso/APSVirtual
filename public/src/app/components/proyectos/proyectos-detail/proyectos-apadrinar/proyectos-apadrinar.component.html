@@ -1,0 +1,126 @@
+<div class="container" [style.backgroundColor]="'#999999'">
+  <hr>
+  <h2 [style.color]="'#333333'">Apadrinar proyecto</h2>
+  <div class="alert alert-info"> Mediante el siguiente formulario, usted como docente o representante de una universidad, podrá apadrinar este proyecto
+    de ApS. Una vez apadrinado por uno o varios coordinadores, permanecerá en una fase de estudio previo o anteproyecto hasta
+    que se proceda a ofrecerlo a la comunidad estudiantil. </div>
+  <hr>
+  <form [formGroup]="myForm" novalidate (ngSubmit)="update(myForm)">
+    <div class="row">
+      <!-- AMBITO -->
+      <div class="form-group col-md-4">
+        <label class="required negrita">Ambito</label>
+        <select class="form-control minimal" formControlName="ambito" [(ngModel)]="updateProjAmbito" (change)="onChangeAmbito($event.target.value) ">
+          <option *ngFor="let ambito of ambitos" [ngValue]="ambito">
+            {{ ambito.nombre }}
+          </option>
+        </select>
+      </div>
+      <!-- ESPECIALIDAD -->
+      <div class="form-group col-md-4">
+        <label class="required negrita">Especialidad</label>
+        <select class="form-control minimal" formControlName="especialidad" [(ngModel)]="updateProjEspecialidad">
+          <option *ngFor="let especialidad of especialidades" [ngValue]="especialidad">
+            {{ especialidad.nombre }}
+          </option>
+        </select>
+      </div>
+      <!-- UNIVERSIDAD -->
+      <div class="form-group col-md-4">
+        <label class="required negrita">Universidad</label>
+        <select class="form-control minimal" formControlName="universidad" [(ngModel)]="updateProjUniversidad">
+          <option *ngFor="let universidad of universidades" [ngValue]="universidad">
+            {{ universidad.nombre }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <hr>
+    <!-- COORDINADORES(ARRAY) -->
+    <div>
+      <div formArrayName="coordinadores">
+        <div *ngFor="let coordinador of myForm.controls.coordinadores.controls; let i=index">
+          <div>
+            <label class="negrita">Coordinador (#{{i + 1}})</label>
+            <span class="fa fa-remove pull-right" *ngIf="myForm.controls.coordinadores.controls.length > 1" (click)="removeCoordinador(i, myForm.controls.coordinadores.controls[i].controls.email)"></span>
+          </div>
+          <div class="form-group row" [formGroupName]="i">
+            <div class="col-md-1"></div>
+            <!--NOMBRE-->
+            <div class="col-md-5">
+              <label class="required">Nombre</label>
+              <div class="alert alert-danger" *ngIf="!myForm.controls.coordinadores.controls[i].controls.nombre.valid && myForm.controls.coordinadores.controls[i].controls.nombre.touched">Este campo es obligatorio</div>
+              <input type="text" [(ngModel)]="updateProj.coordinadores[i].nombre" class="form-control" formControlName="nombre" placeholder="Nombre del coordinador">
+            </div>
+            <!--EMAIL-->
+            <div class="col-md-6">
+              <label class="required">Email</label>
+              <div class="alert alert-danger" *ngIf="!myForm.controls.coordinadores.controls[i].controls.email.valid && myForm.controls.coordinadores.controls[i].controls.email.touched">Este campo es obligatorio</div>
+              <input type="email" [(ngModel)]="updateProj.coordinadores[i].email" class="form-control" formControlName="email" placeholder="Dirección de Email">
+            </div>
+          </div>
+        </div>
+        <div class="row tab">
+          <div class="col-md-1"></div>
+          <button type="button" class="button btn-form mt0" (click)="addCoordinador()">
+            <i class="fa fa-plus"></i> Añadir otro coordinador
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- CUPO_ESTUDIANTES -->
+    <!-- <div class="form-group col-md-2">
+      <label class="required negrita">Cupo de estudiantes</label>
+      <input type="number" width="12" [(ngModel)]="updateProj.cupo_estudiantes" formControlName="cupo_estudiantes" placeholder="Número máximo de estudiantes"
+        class="form-control" [ngClass]="{
+      'has-danger': myForm.controls.cupo_estudiantes.invalid && myForm.controls.cupo_estudiantes.dirty,
+      'has-success': myForm.controls.cupo_estudiantes.valid && myForm.controls.cupo_estudiantes.dirty
+      }">
+    </div> -->
+
+
+    <!-- BOTONES -->
+    <div class="row">
+      <div class="col-md-3">
+        <button type="submit" class="button submit" [disabled]="!myForm.valid">
+          <i class="fa fa-check"></i> Aceptar cambios
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="button cancel" (click)=cancel();>
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+      <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+    </div>
+    <!-- <div class="margin-20">
+    <div>myForm details:-</div>
+    <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
+    <pre>form value: <br>{{myForm.value | json}}</pre>
+  </div> -->
+
+  </form>
+  <hr>
+</div>
+
+<!-- ************************************************************************** -->
+<!-- MODAL apadrinar -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalApadrinarClosed()" (onDismiss)="modalApadrinarDismissed()"
+  (onOpen)="modalApadrinarOpened()" #modalApadrinar>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>¿Esta a punto de apadrinar este proyecto. Desea continuar?</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalApadrinar.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalApadrinar.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

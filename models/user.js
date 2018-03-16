@@ -11,6 +11,7 @@ module.exports = {
     signUpDate: String,
     lastLogin: String,
     roles: String,
+    rol_id: Number,
     resetPasswordToken: String,
     resetPasswordExpires: String,
     pendiente: Boolean,
@@ -40,6 +41,7 @@ module.exports = {
         this.lastLogin = moment();
         this.signUpDate = user.sign_up_date
         this.roles = user.rol_nombre
+        this.rol_id = user.rol_id
         this.pendiente = user.pendiente | false
         this.bloqueado = user.bloqueado | false
     }

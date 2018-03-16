@@ -450,6 +450,7 @@ var navigation_menu_proyectos_component_1 = __webpack_require__("./src/app/compo
 var proyectos_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos.component.ts");
 var proyectos_detail_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-detail.component.ts");
 var users_manager_component_1 = __webpack_require__("./src/app/components/user/users-manager/users-manager.component.ts");
+var proyectos_apadrinar_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.ts");
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -509,6 +510,7 @@ var AppModule = /** @class */ (function () {
                 proyectos_component_1.ProyectosComponent,
                 proyectos_detail_component_1.ProyectosDetailComponent,
                 users_manager_component_1.UsersManagerComponent,
+                proyectos_apadrinar_component_1.ProyectosApadrinarComponent,
             ],
             imports: [
                 angular2_fontawesome_1.Angular2FontawesomeModule,
@@ -648,13 +650,13 @@ var appRoutes = [
         path: 'experiencias-add',
         component: experiencias_create_component_1.ExperienciasCreateComponent,
         canActivate: [auth_1.AuthGuard],
-        data: { roles: [4, 5] }
+        data: { roles: [3, 4, 5] }
     },
     {
         path: 'experiencias-update',
         component: experiencias_update_component_1.ExperienciasUpdateComponent,
         canActivate: [auth_1.AuthGuard],
-        data: { roles: [4, 5] }
+        data: { roles: [3, 4, 5] }
     },
     {
         path: 'experiencias-detail',
@@ -668,11 +670,6 @@ var appRoutes = [
         path: 'proyectos',
         component: proyectos_component_1.ProyectosComponent
     },
-    // {
-    //   path: 'experiencias-list', 
-    //   component: ExperienciasListComponent,
-    //   outlet: 'sidebar'
-    // },
     {
         path: 'proyectos-list',
         component: proyectos_list_component_1.ProyectosListComponent
@@ -681,7 +678,7 @@ var appRoutes = [
         path: 'proyectos-add',
         component: proyectos_create_component_1.ProyectosCreateComponent,
         canActivate: [auth_1.AuthGuard],
-        data: { roles: [4, 5] }
+        data: { roles: [2, 4, 5] }
     },
     {
         path: 'proyectos-update',
@@ -3552,6 +3549,193 @@ exports.ProyectosCreateComponent = ProyectosCreateComponent;
 
 /***/ }),
 
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"container\" [style.backgroundColor]=\"'#999999'\">\n  <hr>\n  <h2 [style.color]=\"'#333333'\">Apadrinar proyecto</h2>\n  <div class=\"alert alert-info\"> Mediante el siguiente formulario, usted como docente o representante de una universidad, podrá apadrinar este proyecto\n    de ApS. Una vez apadrinado por uno o varios coordinadores, permanecerá en una fase de estudio previo o anteproyecto hasta\n    que se proceda a ofrecerlo a la comunidad estudiantil. </div>\n  <hr>\n  <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"update(myForm)\">\n    <div class=\"row\">\n      <!-- AMBITO -->\n      <div class=\"form-group col-md-4\">\n        <label class=\"required negrita\">Ambito</label>\n        <select class=\"form-control minimal\" formControlName=\"ambito\" [(ngModel)]=\"updateProjAmbito\" (change)=\"onChangeAmbito($event.target.value) \">\n          <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito\">\n            {{ ambito.nombre }}\n          </option>\n        </select>\n      </div>\n      <!-- ESPECIALIDAD -->\n      <div class=\"form-group col-md-4\">\n        <label class=\"required negrita\">Especialidad</label>\n        <select class=\"form-control minimal\" formControlName=\"especialidad\" [(ngModel)]=\"updateProjEspecialidad\">\n          <option *ngFor=\"let especialidad of especialidades\" [ngValue]=\"especialidad\">\n            {{ especialidad.nombre }}\n          </option>\n        </select>\n      </div>\n      <!-- UNIVERSIDAD -->\n      <div class=\"form-group col-md-4\">\n        <label class=\"required negrita\">Universidad</label>\n        <select class=\"form-control minimal\" formControlName=\"universidad\" [(ngModel)]=\"updateProjUniversidad\">\n          <option *ngFor=\"let universidad of universidades\" [ngValue]=\"universidad\">\n            {{ universidad.nombre }}\n          </option>\n        </select>\n      </div>\n    </div>\n    <hr>\n    <!-- COORDINADORES(ARRAY) -->\n    <div>\n      <div formArrayName=\"coordinadores\">\n        <div *ngFor=\"let coordinador of myForm.controls.coordinadores.controls; let i=index\">\n          <div>\n            <label class=\"negrita\">Coordinador (#{{i + 1}})</label>\n            <span class=\"fa fa-remove pull-right\" *ngIf=\"myForm.controls.coordinadores.controls.length > 1\" (click)=\"removeCoordinador(i, myForm.controls.coordinadores.controls[i].controls.email)\"></span>\n          </div>\n          <div class=\"form-group row\" [formGroupName]=\"i\">\n            <div class=\"col-md-1\"></div>\n            <!--NOMBRE-->\n            <div class=\"col-md-5\">\n              <label class=\"required\">Nombre</label>\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.nombre.valid && myForm.controls.coordinadores.controls[i].controls.nombre.touched\">Este campo es obligatorio</div>\n              <input type=\"text\" [(ngModel)]=\"updateProj.coordinadores[i].nombre\" class=\"form-control\" formControlName=\"nombre\" placeholder=\"Nombre del coordinador\">\n            </div>\n            <!--EMAIL-->\n            <div class=\"col-md-6\">\n              <label class=\"required\">Email</label>\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.email.valid && myForm.controls.coordinadores.controls[i].controls.email.touched\">Este campo es obligatorio</div>\n              <input type=\"email\" [(ngModel)]=\"updateProj.coordinadores[i].email\" class=\"form-control\" formControlName=\"email\" placeholder=\"Dirección de Email\">\n            </div>\n          </div>\n        </div>\n        <div class=\"row tab\">\n          <div class=\"col-md-1\"></div>\n          <button type=\"button\" class=\"button btn-form mt0\" (click)=\"addCoordinador()\">\n            <i class=\"fa fa-plus\"></i> Añadir otro coordinador\n          </button>\n        </div>\n      </div>\n    </div>\n    <!-- CUPO_ESTUDIANTES -->\n    <!-- <div class=\"form-group col-md-2\">\n      <label class=\"required negrita\">Cupo de estudiantes</label>\n      <input type=\"number\" width=\"12\" [(ngModel)]=\"updateProj.cupo_estudiantes\" formControlName=\"cupo_estudiantes\" placeholder=\"Número máximo de estudiantes\"\n        class=\"form-control\" [ngClass]=\"{\n      'has-danger': myForm.controls.cupo_estudiantes.invalid && myForm.controls.cupo_estudiantes.dirty,\n      'has-success': myForm.controls.cupo_estudiantes.valid && myForm.controls.cupo_estudiantes.dirty\n      }\">\n    </div> -->\n\n\n    <!-- BOTONES -->\n    <div class=\"row\">\n      <div class=\"col-md-3\">\n        <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\n          <i class=\"fa fa-check\"></i> Aceptar cambios\n        </button>\n      </div>\n      <div class=\"col-md-3\">\n        <button type=\"button\" class=\"button cancel\" (click)=cancel();>\n          <i class=\"fa fa-times\"></i> Cancelar\n        </button>\n      </div>\n      <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n    </div>\n    <!-- <div class=\"margin-20\">\n    <div>myForm details:-</div>\n    <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\n    <pre>form value: <br>{{myForm.value | json}}</pre>\n  </div> -->\n\n  </form>\n  <hr>\n</div>\n\n<!-- ************************************************************************** -->\n<!-- MODAL apadrinar -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalApadrinarClosed()\" (onDismiss)=\"modalApadrinarDismissed()\"\n  (onOpen)=\"modalApadrinarOpened()\" #modalApadrinar>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Esta a punto de apadrinar este proyecto. Desea continuar?</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalApadrinar.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalApadrinar.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
+
+/***/ }),
+
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var ng2_bs3_modal_1 = __webpack_require__("./node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.umd.js");
+var proyectos_service_1 = __webpack_require__("./src/app/components/proyectos/proyectos.service.ts");
+var exp_service_1 = __webpack_require__("./src/app/components/experiencias/exp.service.ts");
+var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
+var ProyectosApadrinarComponent = /** @class */ (function () {
+    function ProyectosApadrinarComponent(_projService, _expService, _fb, authService) {
+        var _this = this;
+        this._projService = _projService;
+        this._expService = _expService;
+        this._fb = _fb;
+        this.authService = authService;
+        this.apadrinar = new core_1.EventEmitter();
+        this.updateProj = JSON.parse(JSON.stringify(this._projService.proyecto));
+        this.user = this.authService.user;
+        this.authService.user$.subscribe(function (user) {
+            _this.user = user;
+        });
+        var coordinador = {
+            nombre: this.user.first_name + " " + this.user.last_name,
+            email: this.user.email
+        };
+        this.updateProj.coordinadores = [];
+        this.updateProj.cupo_estudiantes = 0;
+        this.updateProj.coordinadores.push(coordinador);
+        this.updateProj.coord;
+        console.log("updateProj: ", this.updateProj);
+        _expService.getAmbitos().subscribe(function (ambitosList) {
+            _this.ambitos = ambitosList;
+            _this.ambitos.forEach(function (element) {
+                if (element.nombre == _this.updateProj.ambito) {
+                    _this.updateProjAmbito = element;
+                }
+            });
+            _expService.getEspecialidades(_this.updateProjAmbito.id).subscribe(function (especialidadesList) {
+                _this.especialidades = especialidadesList;
+                _this.especialidades.forEach(function (element) {
+                    if (element.nombre == _this.updateProj.especialidad) {
+                        _this.updateProjEspecialidad = element;
+                    }
+                });
+            });
+        });
+        _expService.getUniversidades().subscribe(function (universidadesList) {
+            _this.universidades = universidadesList;
+            _this.universidades.forEach(function (element) {
+                if (element.nombre == _this.updateProj.universidad)
+                    _this.updateProjUniversidad = element;
+            });
+        });
+        this.myForm = _fb.group({
+            'ambito': [this.updateProjAmbito, forms_1.Validators.required],
+            'especialidad': [null, forms_1.Validators.required],
+            'universidad': [null, forms_1.Validators.required],
+            // 'cupo_estudiantes' : [null, [Validators.required, Validators.min(1), Validators.max(100)]],
+            'coordinadores': this._fb.array([
+                this.initCoordinador(),
+            ]),
+        });
+    }
+    ProyectosApadrinarComponent.prototype.ngOnInit = function () {
+    };
+    ProyectosApadrinarComponent.prototype.ngOnDestroy = function () {
+        if (this.subscriptionToApadrinarProj != null)
+            this.subscriptionToApadrinarProj.unsubscribe();
+    };
+    ProyectosApadrinarComponent.prototype.initCoordinador = function () {
+        return this._fb.group({
+            'nombre': null,
+            'email': null
+        });
+    };
+    ProyectosApadrinarComponent.prototype.addCoordinador = function () {
+        //console.log("Despues de borrar el cordinador: ", JSON.stringify(this.updateExp.coordinadores))
+        var control = this.myForm.controls['coordinadores'];
+        this.updateProj.coordinadores.push({ id: 0, nombre: '', email: '' });
+        control.push(this.initCoordinador());
+    };
+    ProyectosApadrinarComponent.prototype.removeCoordinador = function (i, email) {
+        var control = this.myForm.controls['coordinadores'];
+        control.removeAt(i);
+        this.updateProj.coordinadores = this.updateProj.coordinadores.filter(function (el) {
+            return el.email !== email.value;
+        });
+    };
+    ProyectosApadrinarComponent.prototype.onChangeAmbito = function (value) {
+        var _this = this;
+        console.log("pasa por change con indice ", parseInt(value));
+        var idx = parseInt(value);
+        //if (idx == 0) return
+        this._expService.getEspecialidades(idx + 1).subscribe(function (especialidadesList) {
+            console.log("Reload Especialidades");
+            _this.especialidades = especialidadesList;
+            _this.updateProjEspecialidad = "";
+        });
+    };
+    ProyectosApadrinarComponent.prototype.cancel = function () {
+        console.log("pasa1");
+        this.apadrinar.emit(false); //Emitter
+    };
+    ProyectosApadrinarComponent.prototype.update = function (form) {
+        console.log("Formulario ", form);
+        this.modalApadrinar.open();
+    };
+    ProyectosApadrinarComponent.prototype.modalApadrinarDismissed = function () {
+        console.log("Modal cerrado sin acción");
+    };
+    ProyectosApadrinarComponent.prototype.modalApadrinarOpened = function () {
+        /**No hacer nada*/
+    };
+    ProyectosApadrinarComponent.prototype.modalApadrinarClosed = function () {
+        var _this = this;
+        this.updateProj.especialidad = this.updateProjEspecialidad;
+        this.updateProj.universidad = this.updateProjUniversidad;
+        console.log("Apadrinar", this.updateProj);
+        console.log("Proyecto en Detail", this.proyecto);
+        this.subscriptionToApadrinarProj = this._projService.apadrinarProyecto(this.updateProj).subscribe(function (res) {
+            if (res['success'] == true) {
+                _this.apadrinar.emit(_this.updateProj); //Emitter
+                alert("proyecto apadrinado");
+            }
+            else {
+                _this.apadrinar.emit(false); //Emitter
+                alert("Algo ha ido mal");
+            }
+        });
+    };
+    __decorate([
+        core_1.ViewChild('modalApadrinar'),
+        __metadata("design:type", ng2_bs3_modal_1.BsModalComponent)
+    ], ProyectosApadrinarComponent.prototype, "modalApadrinar", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Object)
+    ], ProyectosApadrinarComponent.prototype, "proyecto", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], ProyectosApadrinarComponent.prototype, "apadrinar", void 0);
+    ProyectosApadrinarComponent = __decorate([
+        core_1.Component({
+            selector: 'app-proyectos-apadrinar',
+            template: __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.html"),
+            styles: [__webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component.css")]
+        }),
+        __metadata("design:paramtypes", [proyectos_service_1.ProyectosService,
+            exp_service_1.ExpService,
+            forms_1.FormBuilder,
+            auth_service_1.AuthService])
+    ], ProyectosApadrinarComponent);
+    return ProyectosApadrinarComponent;
+}());
+exports.ProyectosApadrinarComponent = ProyectosApadrinarComponent;
+
+
+/***/ }),
+
 /***/ "./src/app/components/proyectos/proyectos-detail/proyectos-detail.component.css":
 /***/ (function(module, exports) {
 
@@ -3562,7 +3746,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos-detail/proyectos-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos-list', {ambito_id: ambito_id, estado_id: estado_id}]\">\n            Listado\n          </a>\n        </li>\n        <li>Detalle de proyecto</li>\n    </ul>\n  </div>\n  <br>\n  <div class=\"container-experiencias\">\n    <h3>{{proyecto.nombre}}\n      <div *ngIf=\"user\">\n        <span title=\"Eliminar la experiencia\" class=\"fa fa-remove pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\"\n          (click)=\"borrar()\"></span>\n        <span title=\"Actualizar datos\" class=\"fa fa-edit pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\" (click)=\"update(proyecto.id)\"></span>\n      </div>\n    </h3>\n    <h3>{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</h3>\n    <h4>Estado actual del proyecto: </h4>\n    <p> {{proyecto.estado.nombre}}</p>\n    <div *ngIf=\"proyecto.coordinadores!= null\">\n      <h4 *ngIf=\"proyecto.coordinadores.length > 1\">Coordinadores</h4>\n      <h4 *ngIf=\"proyecto.coordinadores.length == 1\">Coordinador</h4>\n      <div *ngFor=\"let coordinador of proyecto.coordinadores\">\n        <p>{{coordinador.nombre}} ({{coordinador.email}})</p>\n      </div>\n    </div>\n    <h4>Descripción:</h4>\n    <p>{{proyecto.descripcion}}</p>\n    <br>\n    <hr>\n    <br>\n    <div *ngFor=\"let image of proyecto.adjuntos \">\n\n      <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n      <p></p>\n    </div>\n  </div>\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa-times\"></i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal  [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar proyecto? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <!-- <div class=\"row\"> -->\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos-list', {ambito_id: ambito_id, estado_id: estado_id}]\">\n            Listado\n          </a>\n        </li> \n        <li>Detalle de proyecto</li>\n    </ul>\n  <!-- </div> -->\n  <br>\n  <!-- <div class=\"container-experiencias\"> -->\n    <h3>Nombre del proyecto:</h3>\n    <h1>{{proyecto.nombre}}\n      <div *ngIf=\"user\">\n        <span title=\"Eliminar el proyecto\" class=\"fa fa-remove pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"borrar()\"></span>\n        <span title=\"Actualizar datos\" class=\"fa fa-edit pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"update(proyecto.id)\"></span>\n        <span title=\"Apadrinar proyecto\" class=\"fa fa-graduation-cap pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 2 && proyecto.estado.id == 1\" (click)=\"apadrinar(proyecto.id)\"></span>  \n      </div>\n    </h1>\n    <h3> Entidad demandante del proyecto: </h3>\n    <p class=\"negrita\">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>\n    <app-proyectos-apadrinar *ngIf=\"updAction==1\" [proyecto]=\"proyecto\" (apadrinar)=\"apadrinarReceiver($event)\"></app-proyectos-apadrinar> \n    <h4>Estado actual del proyecto: </h4>\n    <p class=\"negrita\"> {{proyecto.estado.nombre}}</p>\n    <div *ngIf=\"proyecto.coordinadores!= null\">\n      <h4 *ngIf=\"proyecto.coordinadores.length > 1\">Coordinadores</h4>\n      <h4 *ngIf=\"proyecto.coordinadores.length == 1\">Coordinador</h4>\n      <div *ngFor=\"let coordinador of proyecto.coordinadores\">\n        <p>{{coordinador.nombre}} ({{coordinador.email}})</p>\n      </div>\n    </div>\n    <h4>Descripción:</h4>\n    <p>{{proyecto.descripcion}}</p>\n    <br>\n    <hr>\n    <br>\n    <div *ngFor=\"let image of proyecto.adjuntos \">\n\n      <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n      <p></p>\n    </div>\n  <!-- </div> -->\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa-times\"></i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL Borrar -->\n<!-- ************************************************************************** -->\n\n<bs-modal  [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modalDelete>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar proyecto? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>\n\n"
 
 /***/ }),
 
@@ -3594,6 +3778,7 @@ var ProyectosDetailComponent = /** @class */ (function () {
         this.activatedRoute = activatedRoute;
         this._location = _location;
         this.authService = authService;
+        this.updAction = 0;
     }
     ProyectosDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -3610,6 +3795,12 @@ var ProyectosDetailComponent = /** @class */ (function () {
         });
         window.scrollTo(0, 0);
     };
+    ProyectosDetailComponent.prototype.ngOnDestroy = function () {
+        if (this.subscriptionToGetProj != null)
+            this.subscriptionToGetProj.unsubscribe();
+        if (this.subscriptionToDeleteProj != null)
+            this.subscriptionToDeleteProj.unsubscribe();
+    };
     ProyectosDetailComponent.prototype.goback = function () {
         this._location.back();
     };
@@ -3620,9 +3811,18 @@ var ProyectosDetailComponent = /** @class */ (function () {
     ProyectosDetailComponent.prototype.update = function (projId) {
         this.projId = projId;
         var proyecto;
-        //Obtener experiencia con id expId
+        //Obtener experiencia con id expId 
         this.router.navigate(['proyectos-update']);
     };
+    ProyectosDetailComponent.prototype.apadrinar = function (projId) {
+        console.log("Apadrinando ...");
+        (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0;
+    };
+    ProyectosDetailComponent.prototype.apadrinarReceiver = function (event) {
+        console.log("datos del evento 'apadrinar': ", event);
+        (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0;
+    };
+    /*** MODALS ***/
     ProyectosDetailComponent.prototype.modalDeleteDismissed = function () {
         console.log("Modal cerrado sin acción");
     };
@@ -3638,7 +3838,7 @@ var ProyectosDetailComponent = /** @class */ (function () {
         });
     };
     __decorate([
-        core_1.ViewChild('modal'),
+        core_1.ViewChild('modalDelete'),
         __metadata("design:type", ng2_bs3_modal_1.BsModalComponent)
     ], ProyectosDetailComponent.prototype, "modalDelete", void 0);
     ProyectosDetailComponent = __decorate([
@@ -3670,7 +3870,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos-list/proyectos-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li>Listado</li>\n    </ul>\n  </div>\n\n  <div class=\"container-experiencias\">\n    <h2>{{nombreLista}}</h2>\n    <br>\n    <div *ngIf=\"proyectos.length > 0\">\n      <div class=\"experiencia-detalle\" *ngFor=\"let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index\">\n        <h2>{{proyecto.nombre}}</h2>\n        <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>\n        <h4><span title = \"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(proyecto.id)\"></span></h4>\n        <br>\n        <br>\n        <br>\n      </div>\n    </div>\n    <div *ngIf=\"proyectos.length == 0\">\n      <h3>NO HAY NINGUN PROYECTO EN ESTE AMBITO</h3>\n    </div>\n    <br>\n    <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n      screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n    <br>\n  </div>\n</div>\n\n"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li>Listado</li>\n    </ul>\n  </div>\n\n  <div class=\"container-experiencias\">\n    <h1>{{nombreLista}}</h1>\n    <br>\n    <div *ngIf=\"proyectos.length > 0\">\n      <div class=\"experiencia-detalle\" *ngFor=\"let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index\">\n        <h2>{{proyecto.nombre}}</h2>\n        <h5>Estado: </h5>\n        <h4>{{proyecto.estado.nombre}}</h4>\n        <h5>Entidad demandante: </h5>\n        <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>\n        <h4>\n          <span title=\"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(proyecto.id)\"></span>\n        </h4>\n        <br>\n        <br>\n        <br>\n      </div>\n    </div>\n    <div *ngIf=\"proyectos.length == 0\">\n      <h3>NO HAY NINGUN PROYECTO</h3>\n    </div>\n    <br>\n    <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n      screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n    <br>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -3695,12 +3895,17 @@ var proyectos_service_1 = __webpack_require__("./src/app/components/proyectos/pr
 var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
 var ProyectosListComponent = /** @class */ (function () {
     function ProyectosListComponent(_proyectosService, router, activatedRoute, authService) {
+        var _this = this;
         this._proyectosService = _proyectosService;
         this.router = router;
         this.activatedRoute = activatedRoute;
         this.p = 1;
         this.itemsPerPage = 25;
         this.postsPerPage = [25, 50, 100];
+        this.user = authService.user;
+        authService.user$.subscribe(function (user) {
+            _this.user = user;
+        });
     }
     ProyectosListComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -3729,7 +3934,22 @@ var ProyectosListComponent = /** @class */ (function () {
         var id = this.ambitoId + this.estadoId;
         this.subscriptionToGetProj = this._proyectosService.getProyectos(id).subscribe(function (res) {
             if (res['success'] == true) {
-                _this.proyectos = res['proj'];
+                //this.proyectos = res['proj']
+                //Mostrar solo los proyectos con estado visible por el usuario actual
+                if (_this.estadoId > 0)
+                    _this.proyectos = res['proj'];
+                else {
+                    var i_1 = 0;
+                    res['proj'].forEach(function (element) {
+                        if ((_this.user.rol_id == 1 && (_this.estadoId == 3 || _this.estadoId == 4 || _this.estadoId == 5)) || //Usuario Alumno
+                            (_this.user.rol_id == 2) || //Usuario Profesor
+                            (_this.user.rol_id == 1 && (_this.estadoId == 3 || _this.estadoId == 4 || _this.estadoId == 5)) || //Usuario Entidad
+                            (_this.user.rol_id == 4) || //Usuario Universidad
+                            (_this.user.rol_id == 5))
+                            _this.proyectos.push(res['proj'][i_1]);
+                        i_1++;
+                    });
+                }
                 console.log("Proyectos: ", _this.proyectos);
             }
         });
@@ -4143,7 +4363,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n      </li>\n      <li>Proyectos APS</li>\n    </ul>\n  </div>\n\n  <ul class = \"ambitos\">\n    <h2>Proyectos de Aprendizaje-Servicio en curso</h2>\n    <br>\n    <div class=\"row\">\n      <div class=\"col-md 5\">\n        <p class=\"negrita\">Buscar por estado actual del proyecto</p>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 1}]\">\n            <span class=\"fa fa-bank fa-fw\"></span> Solicitado por entidad externa.</a>\n\n          <p class=\"tab\">Proyectos en ApS solicitados por una entidad u organización externa al ambito educativo y que se encuentran pendientes\n            de ser atendidos por algún docente.</p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 2}]\">\n            <span class=\"fa fa-handshake-o fa-fw\"></span> Apadrinado por algún docente. </a>\n          <p class=\"tab\">Proyectos que cuentan con el respaldo de algún docente para ser llevados a cabo.</p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 3}]\">\n            <span class=\"fa fa-users fa-fw\"></span> Aceptando candidatos</a>\n          <p class=\"tab\">Proyectos en fase de aceptación de candidaturas de alumnos.</p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 4}]\">\n            <span class=\"fa fa-gear fa-fw\"></span> En curso</a>\n          <p class=\"tab\">Proyectos en fase de desarrollo. </p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 5}]\">\n            <span class=\"fa fa-hourglass-end fa-fw\"></span> Finalizado</a>\n          <p class=\"tab\">Proyectos ya finalizados. </p>\n        </li>\n      </div>\n\n      <div class=\"col-md 5\">\n        <p class=\"negrita\">Buscar por ambito de conocimiento</p>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 1}]\">\n            <span class=\"fa fa-bank fa-lg fa-fw\"></span> Artes y Humanidades</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 2}]\">\n            <span class=\"fa fa-flask fa-lg fa-fw\"></span> Ciencias</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 3}]\">\n            <span class=\"fa fa-heartbeat fa-lg fa-fw\"></span> Ciencias de la Salud</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 4}]\">\n            <span class=\"fa fa-balance-scale fa-lg fa-fw\"></span> Ciencias Sociales y Políticas</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 5}]\">\n            <span class=\"fa fa-gear fa-lg fa-fw\"></span> Arquitectura e Ingeniería</a>\n        </li>\n      </div>\n    </div>\n  </ul>\n</div>"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n      </li>\n      <li>Proyectos APS</li>\n    </ul>\n  </div>\n\n  <ul class = \"ambitos\">\n    <h2>Proyectos de Aprendizaje-Servicio en curso</h2>\n    <br>\n    <div class=\"row\">\n      <div class=\"col-md 5\">\n        <p class=\"negrita\">Buscar por estado actual del proyecto</p>\n        <li class=\"ambitos\" *ngIf=\"user.rol_id == 2 || user.rol_id == 4 || user.rol_id == 5\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 1}]\">\n            <span class=\"fa fa-bank fa-fw\"></span> Solicitado por entidad externa.</a>\n\n          <p class=\"tab\">Proyectos en ApS solicitados por una entidad u organización externa al ambito educativo y que se encuentran pendientes\n            de ser atendidos por algún docente.</p>\n        </li>\n        <li class=\"ambitos\" *ngIf=\"user.rol_id == 2 || user.rol_id == 4 || user.rol_id == 5\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 2}]\">\n            <span class=\"fa fa-handshake-o fa-fw\"></span> Apadrinado por algún docente. </a>\n          <p class=\"tab\">Proyectos que cuentan con el respaldo de algún docente para ser llevados a cabo.</p>\n        </li>\n        <li class=\"ambitos\" *ngIf=\"user.rol_id == 2 || user.rol_id == 4 || user.rol_id == 5\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 3}]\">\n            <span class=\"fa fa-users fa-fw\"></span> Aceptando candidatos</a>\n          <p class=\"tab\">Proyectos en fase de aceptación de candidaturas de alumnos.</p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 4}]\">\n            <span class=\"fa fa-gear fa-fw\"></span> En curso</a>\n          <p class=\"tab\">Proyectos en fase de desarrollo. </p>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 5}]\">\n            <span class=\"fa fa-hourglass-end fa-fw\"></span> Finalizado</a>\n          <p class=\"tab\">Proyectos ya finalizados. </p>\n        </li>\n        <li class=\"ambitos\" *ngIf=\"user.rol_id == 4 || user.rol_id == 5\">\n            <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {estado_id: 5}]\">\n              <span class=\"fa fa-hourglass-end fa-fw\"></span> Finalizado</a>\n            <p class=\"tab\">Proyectos cancelados. </p>\n          </li>\n  \n      </div>\n\n      <div class=\"col-md 5\">\n        <p class=\"negrita\">Buscar por ambito de conocimiento</p>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 1}]\">\n            <span class=\"fa fa-bank fa-lg fa-fw\"></span> Artes y Humanidades</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 2}]\">\n            <span class=\"fa fa-flask fa-lg fa-fw\"></span> Ciencias</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 3}]\">\n            <span class=\"fa fa-heartbeat fa-lg fa-fw\"></span> Ciencias de la Salud</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 4}]\">\n            <span class=\"fa fa-balance-scale fa-lg fa-fw\"></span> Ciencias Sociales y Políticas</a>\n        </li>\n        <li class=\"ambitos\">\n          <a class=\"ambitos\" [routerLink]=\"['/proyectos-list', {ambito_id: 5}]\">\n            <span class=\"fa fa-gear fa-lg fa-fw\"></span> Arquitectura e Ingeniería</a>\n        </li>\n      </div>\n    </div>\n  </ul>\n</div>"
 
 /***/ }),
 
@@ -4163,10 +4383,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
 var ProyectosComponent = /** @class */ (function () {
-    function ProyectosComponent() {
+    function ProyectosComponent(authService) {
+        this.authService = authService;
     }
     ProyectosComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.user = this.authService.user;
+        this.authService.user$.subscribe(function (user) {
+            _this.user = user;
+        });
     };
     ProyectosComponent = __decorate([
         core_1.Component({
@@ -4174,7 +4401,7 @@ var ProyectosComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/components/proyectos/proyectos.component.html"),
             styles: [__webpack_require__("./src/app/components/proyectos/proyectos.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [auth_service_1.AuthService])
     ], ProyectosComponent);
     return ProyectosComponent;
 }());
@@ -4263,9 +4490,21 @@ var ProyectosService = /** @class */ (function () {
         console.log(proyecto);
         var body = JSON.stringify(proyecto);
         var headers = new http_1.Headers();
+        headers.append('x-access-upd-action', "0"); //Codifico el "0" para la acción de actualizar generico
         headers.append('Content-Type', 'application/json');
         var options = new http_1.RequestOptions({ headers: headers });
         return this._http.put(this.base_url + "/proyectos", body, options).map(function (res) { return _this.parseRes(res); });
+    };
+    ProyectosService.prototype.apadrinarProyecto = function (proyecto) {
+        var _this = this;
+        console.log(proyecto);
+        var body = JSON.stringify(proyecto);
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('x-access-upd-action', "1"); //Codifico el "1" para la acción de apadrinar
+        var options = new http_1.RequestOptions({ headers: headers });
+        /****PASAR EN EL HEADER LA ACCION DE ACTUALIACION (APADRINAR) */
+        return this._http.put(this.base_url + "/proyectos/", body, options).map(function (res) { return _this.parseRes(res); });
     };
     ProyectosService.prototype.deleteProyecto = function (id) {
         var _this = this;
@@ -6038,7 +6277,7 @@ exports.UserService = UserService;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
-    function User(id, _id, first_name, last_name, email, password, avatar, signupDate, lastLogin, editable, roles, pendiente) {
+    function User(id, _id, first_name, last_name, email, password, avatar, signupDate, lastLogin, editable, roles, rol_id, pendiente) {
         if (id === void 0) { id = Math.floor(Math.random() * 10000); }
         if (_id === void 0) { _id = Math.floor(Math.random() * 10000); }
         if (first_name === void 0) { first_name = ""; }
@@ -6050,6 +6289,7 @@ var User = /** @class */ (function () {
         if (lastLogin === void 0) { lastLogin = ""; }
         if (editable === void 0) { editable = false; }
         if (roles === void 0) { roles = ""; }
+        if (rol_id === void 0) { rol_id = 0; }
         if (pendiente === void 0) { pendiente = 0; }
         this.id = id;
         this._id = _id;
@@ -6062,6 +6302,7 @@ var User = /** @class */ (function () {
         this.lastLogin = lastLogin;
         this.editable = editable;
         this.roles = roles;
+        this.rol_id = rol_id;
         this.pendiente = pendiente;
     }
     return User;

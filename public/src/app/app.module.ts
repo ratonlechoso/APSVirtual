@@ -84,6 +84,7 @@ import { NavigationMenuProyectosComponent } from './components/proyectos/navigat
 import { ProyectosComponent } from './components/proyectos/proyectos.component';
 import { ProyectosDetailComponent } from './components/proyectos/proyectos-detail/proyectos-detail.component';
 import { UsersManagerComponent } from './components/user/users-manager/users-manager.component';
+import { ProyectosApadrinarComponent } from './components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -142,6 +143,7 @@ import { UsersManagerComponent } from './components/user/users-manager/users-man
     ProyectosComponent,
     ProyectosDetailComponent,
     UsersManagerComponent,
+    ProyectosApadrinarComponent,
   ],
   imports: [
     Angular2FontawesomeModule,

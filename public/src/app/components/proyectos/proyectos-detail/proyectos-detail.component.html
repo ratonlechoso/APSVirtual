@@ -1,6 +1,6 @@
 <app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
 <div class="container">
-  <div class="row">
+  <!-- <div class="row"> -->
     <ul class="breadcrumb">
       <li routerLinkActive="active">
         <a [routerLink]="['/home']">
@@ -15,22 +15,25 @@
           <a [routerLink]="['/proyectos-list', {ambito_id: ambito_id, estado_id: estado_id}]">
             Listado
           </a>
-        </li>
+        </li> 
         <li>Detalle de proyecto</li>
     </ul>
-  </div>
+  <!-- </div> -->
   <br>
-  <div class="container-experiencias">
-    <h3>{{proyecto.nombre}}
+  <!-- <div class="container-experiencias"> -->
+    <h3>Nombre del proyecto:</h3>
+    <h1>{{proyecto.nombre}}
       <div *ngIf="user">
-        <span title="Eliminar la experiencia" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'"
-          (click)="borrar()"></span>
-        <span title="Actualizar datos" class="fa fa-edit pull-right pointer icon-blue" *ngIf="user.roles == 'Administrador'" (click)="update(proyecto.id)"></span>
+        <span title="Eliminar el proyecto" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="borrar()"></span>
+        <span title="Actualizar datos" class="fa fa-edit pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="update(proyecto.id)"></span>
+        <span title="Apadrinar proyecto" class="fa fa-graduation-cap pull-right pointer icon-blue" *ngIf="user.rol_id > 2 && proyecto.estado.id == 1" (click)="apadrinar(proyecto.id)"></span>  
       </div>
-    </h3>
-    <h3>{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</h3>
+    </h1>
+    <h3> Entidad demandante del proyecto: </h3>
+    <p class="negrita">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>
+    <app-proyectos-apadrinar *ngIf="updAction==1" [proyecto]="proyecto" (apadrinar)="apadrinarReceiver($event)"></app-proyectos-apadrinar> 
     <h4>Estado actual del proyecto: </h4>
-    <p> {{proyecto.estado.nombre}}</p>
+    <p class="negrita"> {{proyecto.estado.nombre}}</p>
     <div *ngIf="proyecto.coordinadores!= null">
       <h4 *ngIf="proyecto.coordinadores.length > 1">Coordinadores</h4>
       <h4 *ngIf="proyecto.coordinadores.length == 1">Coordinador</h4>
@@ -48,7 +51,7 @@
       <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
       <p></p>
     </div>
-  </div>
+  <!-- </div> -->
   <!-- BOTONES -->
   <div class="row">
     <div class="col-md-6">
@@ -64,11 +67,11 @@
 
 
 <!-- ************************************************************************** -->
-<!-- MODAL -->
+<!-- MODAL Borrar -->
 <!-- ************************************************************************** -->
 
 <bs-modal  [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
-  (onOpen)="modalDeleteOpened()" #modal>
+  (onOpen)="modalDeleteOpened()" #modalDelete>
   <bs-modal-header>
     <h4 class="modal-title">APS Virtual</h4>
   </bs-modal-header>
@@ -84,3 +87,4 @@
     </button>
   </bs-modal-footer>
 </bs-modal>
+

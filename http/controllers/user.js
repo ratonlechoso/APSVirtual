@@ -13,9 +13,6 @@ var moment = require('moment')
 
 const sqlConn = require('../../DB/sqlConnection')
 
-
-
-
 router.get('/users', (req, res) => {
   let sQuery = "SELECT r.nombre as rol_nombre, r.id as rol_id, u.*  " +
     "FROM users u, roles r " +
@@ -40,8 +37,6 @@ router.get('/users', (req, res) => {
     return;
   })
 })
-
-
 
 router.get('/getUser', (req, res) => {
   let userId = req.body._id || req.query._id || req.headers['x-access-token'];

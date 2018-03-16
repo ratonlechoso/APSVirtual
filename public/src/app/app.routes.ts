@@ -96,13 +96,13 @@ const appRoutes: Routes = [
     path: 'experiencias-add', 
     component: ExperienciasCreateComponent,
     canActivate: [AuthGuard],
-    data: {roles: [4,5]}
+    data: {roles: [3,4,5]}
   },
   { 
     path: 'experiencias-update', 
     component: ExperienciasUpdateComponent,
     canActivate: [AuthGuard],
-    data: {roles: [4,5]}
+    data: {roles: [3,4,5]}
   },
   { 
     path: 'experiencias-detail', 
@@ -116,11 +116,6 @@ const appRoutes: Routes = [
     path: 'proyectos', 
     component: ProyectosComponent
   },
-  // {
-  //   path: 'experiencias-list', 
-  //   component: ExperienciasListComponent,
-  //   outlet: 'sidebar'
-  // },
   { 
     path: 'proyectos-list', 
     component: ProyectosListComponent
@@ -129,7 +124,7 @@ const appRoutes: Routes = [
     path: 'proyectos-add', 
     component: ProyectosCreateComponent,
     canActivate: [AuthGuard],
-    data: {roles: [4,5]}
+    data: {roles: [2,4,5]}
   },
   { 
     path: 'proyectos-update', 

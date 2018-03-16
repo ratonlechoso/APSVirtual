@@ -3,7 +3,9 @@ import { Component, OnInit, OnDestroy, EventEmitter, ViewChild } from '@angular/
 import { ProyectosService } from '../proyectos.service';
 import { Proyecto } from '../proyecto'
 import { Subscription } from 'rxjs/Subscription';
+import { User } from './../../user/user';
 import { AuthService } from './../../../auth.service';
+import { forEach } from '@angular/router/src/utils/collection';
 
 
 @Component({
@@ -17,6 +19,7 @@ export class ProyectosListComponent implements OnInit {
   proyectoId: String
   ambitoId: number
   estadoId: number
+  user:User
   subscriptionToGetProj: Subscription
   subscriptionToDeleteProj: Subscription
   p: number = 1;
@@ -31,7 +34,12 @@ export class ProyectosListComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     authService: AuthService
-  ) { }
+  ) { 
+    this.user = authService.user;
+    authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+  }
 
   ngOnInit() {
     // subscribe to router event
@@ -62,7 +70,22 @@ export class ProyectosListComponent implements OnInit {
     let id = this.ambitoId + this.estadoId
     this.subscriptionToGetProj = this._proyectosService.getProyectos(id).subscribe((res) => {
       if (res['success'] == true) {
-        this.proyectos = res['proj']
+        //this.proyectos = res['proj']
+        //Mostrar solo los proyectos con estado visible por el usuario actual
+        if (this.estadoId >0)
+          this.proyectos = res['proj']
+        else {  
+          let i= 0
+          res['proj'].forEach(element => {
+            if ((this.user.rol_id == 1 && (this.estadoId == 3  || this.estadoId == 4 || this.estadoId == 5 ))  || //Usuario Alumno
+                (this.user.rol_id == 2 ) || //Usuario Profesor
+                (this.user.rol_id == 1 && (this.estadoId == 3  || this.estadoId == 4 || this.estadoId == 5 ))  || //Usuario Entidad
+                (this.user.rol_id == 4 ) || //Usuario Universidad
+                (this.user.rol_id == 5 )) //Usuario Administrador
+            this.proyectos.push(res['proj'][i])
+            i++
+          });
+        }
         console.log("Proyectos: ", this.proyectos)
       }
     })

@@ -11,6 +11,7 @@ export class User {
         public lastLogin: String = "",
         public editable: boolean = false,
         public roles: String = "", 
+        public rol_id: number = 0,
         public pendiente: number = 0
     )  {}
 }

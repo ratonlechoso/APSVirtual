@@ -39,7 +39,7 @@ export interface Proyecto {
     nombre: string
     descripcion: string
     coordinadores: Coordinador []
-    cupo_alumnos: number,
+    cupo_estudiantes: number,
     alumnos: Alumno []
     entidad: Entidad
     adjuntos: Adjunto []

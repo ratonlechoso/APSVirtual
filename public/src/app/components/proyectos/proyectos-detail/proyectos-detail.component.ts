@@ -15,11 +15,18 @@ import { AuthService } from './../../../auth.service';
   templateUrl: './proyectos-detail.component.html',
   styleUrls: ['./proyectos-detail.component.css']
 })
-export class ProyectosDetailComponent implements OnInit {
-  @ViewChild('modal')
+export class ProyectosDetailComponent implements OnInit, OnDestroy {
+  
+  @ViewChild('modalDelete')
   modalDelete: BsModalComponent;
+  // modalDelete: BsModalComponent;
+  // modalApadrinar: BsModalComponent;
   subscriptionToGetProj: Subscription
   subscriptionToDeleteProj: Subscription
+  subscriptionToApadrinarProj: Subscription
+
+  updAction: number = 0
+
   user: User
   proyecto: Proyecto
   projId: String
@@ -35,16 +42,22 @@ export class ProyectosDetailComponent implements OnInit {
   ngOnInit() {
     try {
       this.proyecto = <Proyecto>JSON.parse(JSON.stringify(this._projService.proyecto))
-      } catch (err) {
-        this.router.navigate(['proyectos']);
-        return
-      }
-      this.user = this.authService.user;
-      this.authService.user$.subscribe((user) => {
-        this.user = user;
-      });
-  
-      window.scrollTo(0, 0)
+    } catch (err) {
+      this.router.navigate(['proyectos']);
+      return
+    }
+    this.user = this.authService.user;
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+    window.scrollTo(0, 0)
+  }
+
+  ngOnDestroy() {
+    if (this.subscriptionToGetProj != null)
+      this.subscriptionToGetProj.unsubscribe();
+    if (this.subscriptionToDeleteProj != null)
+      this.subscriptionToDeleteProj.unsubscribe();
   }
 
   goback() {
@@ -55,19 +68,34 @@ export class ProyectosDetailComponent implements OnInit {
     console.log("El id de exp es:  ", this.proyecto.id)
     this.modalDelete.open()
   }
+
   update(projId) {
     this.projId = projId
     let proyecto: Proyecto
-    //Obtener experiencia con id expId
+    //Obtener experiencia con id expId 
     this.router.navigate(['proyectos-update']);
   }
 
+  apadrinar(projId) {
+    console.log("Apadrinando ...");
+    (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0
+  }
+
+  apadrinarReceiver(event) { 
+    console.log("datos del evento 'apadrinar': ", event);
+    (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0
+  }
+
+
+/*** MODALS ***/
   modalDeleteDismissed() {
     console.log("Modal cerrado sin acción")
   }
+
   modalDeleteOpened() {
     /**No hacer nada*/
   }
+
   modalDeleteClosed() {
     this.subscriptionToDeleteProj = this._projService.deleteProyecto(this.proyecto.id).subscribe((res) => {
       if (res['success'] == true) {
@@ -75,7 +103,5 @@ export class ProyectosDetailComponent implements OnInit {
       }
     })
   }
-
-
 
 }
