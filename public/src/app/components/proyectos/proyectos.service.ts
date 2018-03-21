@@ -68,25 +68,14 @@ export class ProyectosService {
         return this._http.post(`${this.base_url}/proyectos`, body, options).map((res) => this.parseRes(res));
     }
 
-    updateProyecto(proyecto: Proyecto): Observable<Object> {
+    updateProyecto(proyecto: Proyecto, accion): Observable<Object> {
         console.log(proyecto)
         let body = JSON.stringify(proyecto);
         let headers = new Headers();
-        headers.append('x-access-upd-action', "0" )                 //Codifico el "0" para la acción de actualizar generico
+        headers.append('x-access-upd-action', accion )                 //Codifico el "0" para la acción de actualizar generico
         headers.append('Content-Type', 'application/json');
         let options = new RequestOptions({ headers: headers });
         return this._http.put(`${this.base_url}/proyectos`, body, options).map((res) => this.parseRes(res));
-    }
-
-    apadrinarProyecto(proyecto): Observable<Object> {
-        console.log(proyecto)
-        let body = JSON.stringify(proyecto);
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('x-access-upd-action', "1" )                 //Codifico el "1" para la acción de apadrinar
-        let options = new RequestOptions({ headers: headers });
-        /****PASAR EN EL HEADER LA ACCION DE ACTUALIACION (APADRINAR) */
-        return this._http.put(`${this.base_url}/proyectos/`, body, options).map((res) => this.parseRes(res));
     }
 
     deleteProyecto(id): Observable<Object> {
@@ -104,6 +93,7 @@ export class ProyectosService {
         console.log("Accediendo al endpoint GET ambitos")
         return this._http.get(`${this.base_url}/estados`, options).map(res => this.parseRes(res));
       }
+      
     /******************* PROVINCIAS ***************************************/    
     getProvincias(): Observable<Object> {
         let headers = new Headers();

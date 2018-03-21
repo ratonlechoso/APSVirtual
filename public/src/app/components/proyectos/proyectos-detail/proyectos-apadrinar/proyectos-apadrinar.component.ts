@@ -160,8 +160,9 @@ export class ProyectosApadrinarComponent implements OnInit , OnDestroy {
     console.log("Apadrinar", this.updateProj)
     console.log("Proyecto en Detail", this.proyecto)
 
-     this.subscriptionToApadrinarProj = this._projService.apadrinarProyecto(this.updateProj).subscribe((res) => {
+     this.subscriptionToApadrinarProj = this._projService.updateProyecto(this.updateProj, 1).subscribe((res) => {
       if (res['success'] == true) {
+        this.updateProj.estado = {id: 2, nombre: "apadrinado"}
         this.apadrinar.emit(this.updateProj) //Emitter
         alert("proyecto apadrinado")
       } else {

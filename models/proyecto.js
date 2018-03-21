@@ -5,6 +5,7 @@ module.exports = {
     nombre: String,
     descripcion: String,
     cupo_estudiantes: Number,
+    plazas: Number,
     estado: {
         id: Number,
         nombre: String,
@@ -55,6 +56,7 @@ module.exports = {
         this.estado.id = proyecto.id_estado
         this.estado.nombre = proyecto.nombre_estado
         this.cupo_estudiantes = proyecto.cupo_estudiantes
+        this.plazas = proyecto.plazas
         this.ambito = proyecto.nombre_ambito
         this.ambito_id = proyecto.ambito_id
         this.especialidad = proyecto.nombre_especialidad

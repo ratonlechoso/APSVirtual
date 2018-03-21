@@ -85,6 +85,11 @@ import { ProyectosComponent } from './components/proyectos/proyectos.component';
 import { ProyectosDetailComponent } from './components/proyectos/proyectos-detail/proyectos-detail.component';
 import { UsersManagerComponent } from './components/user/users-manager/users-manager.component';
 import { ProyectosApadrinarComponent } from './components/proyectos/proyectos-detail/proyectos-apadrinar/proyectos-apadrinar.component';
+import { ProyectosIniciarReclutamientoComponent } from './components/proyectos/proyectos-detail/proyectos-iniciar-reclutamiento/proyectos-iniciar-reclutamiento.component';
+import { ProyectosAlistarComponent } from './components/proyectos/proyectos-detail/proyectos-alistar/proyectos-alistar.component';
+import { ProyectosArrancarComponent } from './components/proyectos/proyectos-detail/proyectos-arrancar/proyectos-arrancar.component';
+import { ProyectosFinalizarComponent } from './components/proyectos/proyectos-detail/proyectos-finalizar/proyectos-finalizar.component';
+import { ProyectosCancelarComponent } from './components/proyectos/proyectos-detail/proyectos-cancelar/proyectos-cancelar.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -144,6 +149,11 @@ import { ProyectosApadrinarComponent } from './components/proyectos/proyectos-de
     ProyectosDetailComponent,
     UsersManagerComponent,
     ProyectosApadrinarComponent,
+    ProyectosIniciarReclutamientoComponent,
+    ProyectosAlistarComponent,
+    ProyectosArrancarComponent,
+    ProyectosFinalizarComponent,
+    ProyectosCancelarComponent,
   ],
   imports: [
     Angular2FontawesomeModule,

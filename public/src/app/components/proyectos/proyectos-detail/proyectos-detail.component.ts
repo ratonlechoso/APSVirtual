@@ -16,7 +16,7 @@ import { AuthService } from './../../../auth.service';
   styleUrls: ['./proyectos-detail.component.css']
 })
 export class ProyectosDetailComponent implements OnInit, OnDestroy {
-  
+
   @ViewChild('modalDelete')
   modalDelete: BsModalComponent;
   // modalDelete: BsModalComponent;
@@ -46,6 +46,7 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
       this.router.navigate(['proyectos']);
       return
     }
+    console.log("proyecto ", this.proyecto)
     this.user = this.authService.user;
     this.authService.user$.subscribe((user) => {
       this.user = user;
@@ -81,13 +82,59 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
     (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0
   }
 
-  apadrinarReceiver(event) { 
+  apadrinarReceiver(event) {
     console.log("datos del evento 'apadrinar': ", event);
+    this.proyecto = <Proyecto>event;
     (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0
   }
 
+  iniciar_reclutamiento(projId) {
+    console.log("Iniciar reclutamiento ...");
+    (this.updAction != 2) ? this.updAction = 2 : this.updAction = 0
+  }
 
-/*** MODALS ***/
+  iniciar_reclutamientoReceiver(event) {
+    console.log("datos del evento 'iniciar_reclutamiento': ", event);
+    this.proyecto = <Proyecto>event;
+    (this.updAction != 2) ? this.updAction = 2 : this.updAction = 0
+  }
+
+  alistar(projId) {
+    console.log("Alistar ...");
+    (this.updAction != 3) ? this.updAction = 3 : this.updAction = 0
+  }
+
+  alistarReceiver(event) {
+    (this.updAction != 3) ? this.updAction = 3 : this.updAction = 0
+    if (event == false) return
+    this.proyecto = <Proyecto>event;
+    console.log("Proyecto despues de alistar': ", this.proyecto);
+  }
+
+  arrancar(prokId) {
+    console.log("Arrancar ...");
+    (this.updAction != 4) ? this.updAction = 4 : this.updAction = 0
+  }
+  arrancarReceiver(event) {
+    (this.updAction != 4) ? this.updAction = 4 : this.updAction = 0
+    if (event == false) return
+    this.proyecto = <Proyecto>event;
+    console.log("Proyecto despues de arrancar': ", this.proyecto);
+  }
+
+  finalizar(prokId) {
+    console.log("Arrancar ...");
+    (this.updAction != 5) ? this.updAction = 5 : this.updAction = 0
+  }
+  finalizarReceiver(event) {
+    (this.updAction != 5) ? this.updAction = 5 : this.updAction = 0
+    if (event == false) return
+    this.proyecto = <Proyecto>event;
+    console.log("Proyecto despues de finalizar': ", this.proyecto);
+  }
+
+
+  /*** MODALS ***/
   modalDeleteDismissed() {
     console.log("Modal cerrado sin acción")
   }

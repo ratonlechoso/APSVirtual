@@ -1,0 +1,64 @@
+<div class="container" [style.backgroundColor]="'#999999'">
+  <hr>
+  <h2 [style.color]="'#333333'">Iniciar reclutamiento de alumnos para el proyecto</h2>
+  <div class="alert alert-info"> Mediante el siguiente formulario, usted como docente o representante de una universidad, podrá dar por iniciada la fase de 
+    reclutamiento de alumnos para el proyecto de ApS. Esto quiere decir que a partir del establecimiento de este estado, se podrán subscribir al proyecto un número de alumnos 
+    no superior al estipulado en el campo de cupo de estudiantes. Este fase se concluye cuando el equipo docente estime pasar a la fase de "Proyecto arrancado"
+ </div>
+  <hr>
+  <form [formGroup]="myForm" novalidate (ngSubmit)="update(myForm)">
+    <div class="row">
+      <!-- CUPO_ESTUDIANTES -->
+      <div class="form-group col-md-2">
+        <label class="required negrita">Cupo de estudiantes</label>
+        <input type="number" width="12" [(ngModel)]="updateProj.cupo_estudiantes" formControlName="cupo_estudiantes" placeholder="Número máximo de estudiantes"
+          class="form-control" [ngClass]="{
+        'has-danger': myForm.controls.cupo_estudiantes.invalid && myForm.controls.cupo_estudiantes.dirty,
+        'has-success': myForm.controls.cupo_estudiantes.valid && myForm.controls.cupo_estudiantes.dirty
+        }">
+      </div>
+    </div>
+    <!-- BOTONES -->
+    <div class="row">
+      <div class="col-md-3">
+        <button type="submit" class="button submit" [disabled]="!myForm.valid">
+          <i class="fa fa-check"></i> Aceptar cambios
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="button cancel" (click)=cancel();>
+          <i class="fa fa-times"></i> Cancelar
+        </button>
+      </div>
+      <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+    </div>
+    <!-- <div class="margin-20">
+      <div>myForm details:-</div>
+      <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
+      <pre>form value: <br>{{myForm.value | json}}</pre>
+    </div> -->
+  </form>
+  <hr>
+</div>
+
+<!-- ************************************************************************** -->
+<!-- MODAL apadrinar -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalIniciarReclutamientoClosed()" (onDismiss)="modalIniciarReclutamientoDismissed()"
+  (onOpen)="modalIniciarReclutamientoOpened()" #modalIniciarReclutamiento>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>¿Esta a punto de inicar el reclutamiento de alumnos para este proyecto. Desea continuar?</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalIniciarReclutamiento.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalIniciarReclutamiento.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

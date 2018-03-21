@@ -1,0 +1,53 @@
+<div class="container" [style.backgroundColor]="'#999999'">
+  <hr>
+  <h2 [style.color]="'#333333'"> Inscripción en proyecto de ApS</h2>
+  <div class="alert {{typeAlert}}"> {{messageHead}}
+  </div>
+  <hr>
+  <!-- ALUMNO-->
+  <!--NOMBRE-->
+
+  <div>
+    <p> <span class="negrita">Nombre del alumno: </span>{{user.first_name}} {{user.last_name}} ({{user.email}})</p>
+    <p><span class="negrita">Número máximo de alumnos para este proyecto: </span> {{updateProj.cupo_estudiantes}}</p>
+    <p><span class="negrita">Actualmente inscritos: </span>{{inscritos}}</p>
+    <p><span class="negrita">Plazas vacantes: </span>{{updateProj.plazas}}</p>
+  </div>
+  <!-- BOTONES -->
+  <div class="row">
+    <div class="col-md-3"  *ngIf="accion != 2">
+      <button type="submit" class="button submit" (click)=update();>
+        <i class="fa fa-check"></i> {{accionMsg}}
+      </button>
+    </div>
+    <div class="col-md-3">
+      <button type="button" class="button cancel" (click)=cancel();>
+        <i class="fa fa-times"></i> Cancelar
+      </button>
+    </div>
+    <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+  </div>
+  <hr>
+</div>
+
+<!-- ************************************************************************** -->
+<!-- MODAL apadrinar -->
+<!-- ************************************************************************** -->
+
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalAlistarClosed()" (onDismiss)="modalAlistarDismissed()"
+  (onOpen)="modalAlistarOpened()" #modalAlistar>
+  <bs-modal-header>
+    <h4 class="modal-title">APS Virtual</h4>
+  </bs-modal-header>
+  <bs-modal-body>
+    <p>{{modalMsg}}</p>
+  </bs-modal-body>
+  <bs-modal-footer>
+    <button type="button" class="button expanded submit" (click)="modalAlistar.close()">
+      <i class="fa fa-check"></i> ok
+    </button>
+    <button type="button" data-dismiss="modal" class="button expanded cancel" (click)="modalAlistar.dismiss()">
+      <i class="fa fa-times"></i> Cancelar
+    </button>
+  </bs-modal-footer>
+</bs-modal>

@@ -25,6 +25,10 @@
         <h4>{{proyecto.estado.nombre}}</h4>
         <h5>Entidad demandante: </h5>
         <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>
+        <div *ngIf="proyecto.universidad != null">
+          <h5>Universidad: </h5>
+          <h4>{{proyecto.universidad}}</h4>
+        </div>
         <h4>
           <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"></span>
         </h4>

@@ -19,7 +19,7 @@ export class ProyectosListComponent implements OnInit {
   proyectoId: String
   ambitoId: number
   estadoId: number
-  user:User
+  user: User
   subscriptionToGetProj: Subscription
   subscriptionToDeleteProj: Subscription
   p: number = 1;
@@ -34,7 +34,7 @@ export class ProyectosListComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     authService: AuthService
-  ) { 
+  ) {
     this.user = authService.user;
     authService.user$.subscribe((user) => {
       this.user = user;
@@ -72,25 +72,26 @@ export class ProyectosListComponent implements OnInit {
       if (res['success'] == true) {
         //this.proyectos = res['proj']
         //Mostrar solo los proyectos con estado visible por el usuario actual
-        if (this.estadoId >0)
+        if (this.estadoId > 0)
           this.proyectos = res['proj']
-        else {  
-          let i= 0
+        else {
           res['proj'].forEach(element => {
-            if ((this.user.rol_id == 1 && (this.estadoId == 3  || this.estadoId == 4 || this.estadoId == 5 ))  || //Usuario Alumno
-                (this.user.rol_id == 2 ) || //Usuario Profesor
-                (this.user.rol_id == 1 && (this.estadoId == 3  || this.estadoId == 4 || this.estadoId == 5 ))  || //Usuario Entidad
-                (this.user.rol_id == 4 ) || //Usuario Universidad
-                (this.user.rol_id == 5 )) //Usuario Administrador
-            this.proyectos.push(res['proj'][i])
-            i++
+            if (this.user == null) {
+              if ((element.estado.id == 3 || element.estado.id == 4 || element.estado.id == 5) && this.ambitoId == element.ambito_id)
+                this.proyectos.push(element)
+            } else if ((this.user.rol_id == 1 && (this.estadoId == 3 || this.estadoId == 4 || this.estadoId == 5)) || //Usuario Alumno
+              (this.user.rol_id == 2) || //Usuario Profesor
+              (this.user.rol_id == 1 && (this.estadoId == 3 || this.estadoId == 4 || this.estadoId == 5)) || //Usuario Entidad
+              (this.user.rol_id == 4) || //Usuario Universidad
+              (this.user.rol_id == 5)) //Usuario Administrador
+              this.proyectos.push(element)
           });
         }
         console.log("Proyectos: ", this.proyectos)
       }
     })
     console.log("estado", this.estadoId)
-    
+
 
     switch (this.estadoId.toString()) {
       case "1":
@@ -132,20 +133,20 @@ export class ProyectosListComponent implements OnInit {
     }
   }
 
-  showDetail (projId) {
-    this.proyectoId = projId 
+  showDetail(projId) {
+    this.proyectoId = projId
     let proyecto: Proyecto
     //Obtener experiencia con id expId
-    this.subscriptionToGetProj = this._proyectosService.getProyecto(projId).subscribe( (res) => {
-      console.log("respuesta de getExperiencias: ", res)
+    this.subscriptionToGetProj = this._proyectosService.getProyecto(projId).subscribe((res) => {
+      console.log("respuesta de getProyectos: ", res)
       if (res['success'] == true) {
         proyecto = res['proj']
         this._proyectosService.setProj(proyecto)
         //console.log("Probando geter para la experiencia seteada en el servicio:  ", expId)
         let projFromService = <Proyecto>JSON.parse(JSON.stringify(this._proyectosService.proyecto))
-        console.log("Experiencia del servicio: ",projFromService)
+        console.log("Proyecto del servicio: ", projFromService)
         this.router.navigate(['proyectos-detail']);
-      } 
+      }
     })
   }
 

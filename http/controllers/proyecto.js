@@ -59,45 +59,62 @@ router.get('/proyecto', (req, res) => {
         "LEFT JOIN universidades on proyectos.universidad_id = universidades.id  " +
         "LEFT JOIN provincias on entidades.provincia_id = provincias.id  " +
         "WHERE proyectos.id = " + projId
-
     //CALLBACK HELL !!!! (Se debería evitar esta construcción mediante herramientas de sincronización)
 
     sqlConn.pool.query(sQuery, function (err, proj, fields) { //SELECT PROYECTOS
+        console.log("SQL: ", this.sql)
         if (err) {
             console.log("error al obtener proyectos: ", err)
             res.send(err)
             return;
         }
+        let sQuery = "SELECT cupo_estudiantes - count(*) as 'plazas' " +
+            "FROM proyectos " +
+            "INNER JOIN proyecto_alumno ON proyectos.id = proyecto_alumno.proyecto_id " +
+            "WHERE proyectos.id = " + projId
         var proyecto = projSchema;
-        proyecto.setProyecto(proj[0])
-        let sQuery = "SELECT coordinadores.id, nombre, email " +
-            "FROM coordinadores " +
-            "INNER JOIN proyecto_coordinador ON coordinadores.id = proyecto_coordinador.coordinador_id " +
-            "WHERE ?";
-        sqlConn.pool.query(sQuery, { 'proyecto_id': projId }, function (err, coord, fields) { //SELECT COORDINADORES
-            if (err) res.send(err)
-            proyecto.setCoordinadores(coord)
-            let sQuery = "SELECT * FROM `adjuntos_proyectos` WHERE ?"
-            sqlConn.pool.query(sQuery, { proyecto_id: projId }, function (err, adj, fields) { //SELECT ADJUNTOS
+        sqlConn.pool.query(sQuery, function (err, plazas, fields) { //SELECT PLAZAS
+            if (err) {
+                console.log("error al obtener proyectos: ", err)
+                res.send(err)
+                return;
+            }
+            proyecto.setProyecto(proj[0])
+            proyecto.plazas = plazas[0].plazas
+
+            //console.log("proyecto: ", proyecto)
+            sQuery = "SELECT coordinadores.id, nombre, email " +
+                "FROM coordinadores " +
+                "INNER JOIN proyecto_coordinador ON coordinadores.id = proyecto_coordinador.coordinador_id " +
+                "WHERE ?";
+            sqlConn.pool.query(sQuery, { 'proyecto_id': projId }, function (err, coord, fields) { //SELECT COORDINADORES
                 if (err) res.send(err)
-                proyecto.setAdjuntos(adj)
-
-                let sQuery = "SELECT * FROM `proyecto_alumno` WHERE ?"
-                sqlConn.pool.query(sQuery, { proyecto_id: projId }, function (err, alumnos, fields) { //SELECT ALUMNOS
+                proyecto.setCoordinadores(coord)
+                let sQuery = "SELECT * FROM `adjuntos_proyectos` WHERE ?"
+                sqlConn.pool.query(sQuery, { proyecto_id: projId }, function (err, adj, fields) { //SELECT ADJUNTOS
                     if (err) res.send(err)
-                    console.log("Alumnos: ", alumnos)
-                    proyecto.setAlumnos(alumnos)
+                    proyecto.setAdjuntos(adj)
 
-                    let content = {
-                        proj: (proyecto),
-                        success: true,
-                        message: 'ok'
-                    };
-                    res.send(content)
-                    return
-                }) //SELECT alumnos
-            }) //SELECT adjuntos
-        }) //SELECT coordinadores
+                    let sQuery = "SELECT alumnos.id, nombre, email, universidad_id " +
+                        "FROM `alumnos` " +
+                        "INNER JOIN `proyecto_alumno` on proyecto_alumno.alumno_id = alumnos.id " +
+                        "WHERE proyecto_alumno.proyecto_id = " + projId
+                    sqlConn.pool.query(sQuery, function (err, alumnos, fields) { //SELECT ALUMNOS
+                        if (err) return res.send(err)
+                        console.log("Alumnos: ", alumnos)
+                        proyecto.setAlumnos(alumnos)
+
+                        let content = {
+                            proj: (proyecto),
+                            success: true,
+                            message: 'ok'
+                        };
+                        res.send(content)
+                        return
+                    }) //SELECT alumnos
+                }) //SELECT adjuntos
+            }) //SELECT coordinadores
+        }) //SELECT plazas
     }) //SELECT proyectos
 }); //metodo
 
@@ -164,6 +181,7 @@ router.get('/proyectos', (req, res) => {
             sqlConn.pool.query(sQuery, { 'proyecto_id': element.idProj }, function (err, coord, fields) { //SELECT COORDINADORES
                 if (err) eachCallback(err)
                 proyecto.setProyecto(element)
+                console.log("nombre_uni: ", proyecto.universidad)
                 proyecto.setCoordinadores(coord)
                 proyectos.push(JSON.parse(JSON.stringify(proyecto)))
                 eachCallback(null, proyectos)
@@ -196,7 +214,7 @@ router.put('/proyectos', (req, res) => {
                 fecha_inicio: reqProj.fecha_inicio,
                 fecha_fin: reqProj.fecha_fin,
                 estado_id: reqProj.estado.id,
-                cupo_estudiantes: reqProj.cupo_estudiantes,
+                //cupo_estudiantes: reqProj.cupo_estudiantes,  
                 ambito_id: reqProj.ambito.id,
                 especialidad_id: (reqProj.especialidad != null) ? reqProj.especialidad.id : null,
                 universidad_id: (reqProj.universidad != null) ? reqProj.universidad.id : null
@@ -233,6 +251,72 @@ router.put('/proyectos', (req, res) => {
             insertar_coordinadores(reqProj, reqProj.id, sqlConn.pool),
             apadrinar(reqProj, reqProj.id, sqlConn.pool)
             //insertar_adjuntos(reqProj, projId, db)
+        ], function (error, success) {
+            if (error) { console.log('Algo ha ido mal!'); }
+            console.log("Hecho!")
+            let content = {
+                success: true,
+                message: 'ok'
+            };
+            res.send(content)
+            return
+        });
+    } else if (upd_action == 2) {  //Asignar cupo de estudiantes y estado de reclutamiento de alumnos
+        try {
+            console.log("upd2")
+            let campos = {
+                cupo_estudiantes: reqProj.cupo_estudiantes,
+                estado_id: 3
+            }
+            let sQuery = "UPDATE proyectos SET ? WHERE  id = " + reqProj.id
+            sqlConn.pool.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+                if (err) {
+                    console.log(err)
+                    throw err
+                }
+                console.log("Hecho!")
+                let content = {
+                    success: true,
+                    message: 'ok'
+                };
+                res.send(content)
+                return
+            })
+        } catch (err) {
+            console.log("upd2 error: ", err)
+        }
+    } else if (upd_action == 3) {  //Asignar alumno en estado de reclutamiento de alumnos y actualizar numero de plazas
+        console.log("PASA")
+        async.waterfall([
+            insertar_alumnos(reqProj, reqProj.id, sqlConn.pool)
+        ], function (error, success) {
+            if (error) { console.log('Algo ha ido mal!'); }
+            console.log("Hecho!")
+            let content = {
+                success: true,
+                message: 'ok'
+            };
+            res.send(content)
+            return
+        });
+    } else if (upd_action == 4) {  //Asignar alumno en estado de reclutamiento de alumnos y actualizar numero de plazas
+        console.log("PASA 4")
+        async.waterfall([
+            iniciar_proyecto(reqProj, reqProj.id, sqlConn.pool)
+        ], function (error, success) {
+            if (error) { console.log('Algo ha ido mal!'); }
+            console.log("Hecho!")
+            let content = {
+                success: true,
+                message: 'ok'
+            };
+            res.send(content)
+            return
+        });
+    } else if (upd_action == 5) {  //Asignar alumno en estado de reclutamiento de alumnos y actualizar numero de plazas
+        console.log("PASA 5")
+        async.waterfall([
+            finalizar_proyecto(reqProj, reqProj.id, sqlConn.pool)
         ], function (error, success) {
             if (error) { console.log('Algo ha ido mal!'); }
             console.log("Hecho!")
@@ -309,7 +393,7 @@ router.post('/proyectos', (req, res) => {
 
 function apadrinar(reqProj, projId, db) {
     return function (callback) {
-        //INSERTAR ENTIDAD
+        //ACTUALIZAR ESTADO
         let campos = {
             estado_id: 2
         }
@@ -323,6 +407,43 @@ function apadrinar(reqProj, projId, db) {
         })
     }
 }
+
+function iniciar_proyecto(reqProj, projId, db) {
+    return function (callback) {
+        //ACTUALIZAR ESTADO
+        let campos = {
+            estado_id: 4,
+            fecha_inicio: moment().format().toString()
+        }
+        let sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
+        db.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            callback(null);
+        })
+    }
+}
+
+function finalizar_proyecto(reqProj, projId, db) {
+    return function (callback) {
+        //ACTUALIZAR ESTADO
+        let campos = {
+            estado_id: 5,
+            fecha_fin: moment().format().toString()
+        }
+        let sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
+        db.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            callback(null);
+        })
+    }
+}
+
 
 function insertar_entidad(reqProj, projId, db) {
     return function (callback) {
@@ -391,7 +512,7 @@ function insertar_entidad(reqProj, projId, db) {
     }
 }
 
-function actualizar_entidad(reqProj, projId, db) { 
+function actualizar_entidad(reqProj, projId, db) {
     return function (callback) {
         //console.log("REQPROJ en actalizar_entidad", reqProj)
         //COMPROBAR SI EXISTE LA ENTIDAD
@@ -549,11 +670,8 @@ function insertar_coordinadores(reqProj, projId, db) {
 
 function insertar_alumnos(reqProj, projId, db) {
     return function (callback) {
-        if (reqProj.alumnos == "")
-            callback(null)
-
         sQuery = "DELETE FROM  `proyecto_alumno` WHERE  ? "
-        sqlConn.pool.query(sQuery, { 'alumno_id': reqProj.id }, function (err, rows) { //DELETE proyecto_alumno
+        sqlConn.pool.query(sQuery, { 'proyecto_id': reqProj.id }, function (err, rows) { //DELETE proyecto_alumno
             if (err) throw err
             ////////////////RECORRER ALUMNOS ...
             async.eachSeries(reqProj.alumnos, (element, eachCallback) => {
@@ -573,7 +691,7 @@ function insertar_alumnos(reqProj, projId, db) {
                         }
                         sqlConn.pool.query(sQuery, campos, function (err, newAlumno, fields) { //INSERTAR ALUMNOS
                             if (err) throw err
-                            let AlumnoId = newAlumno.insertId
+                            let alumnoId = newAlumno.insertId
                             sQuery = "INSERT INTO proyecto_alumno " +
                                 "SET ?"
                             campos = {
@@ -600,8 +718,7 @@ function insertar_alumnos(reqProj, projId, db) {
                             eachCallback(null)
                         })
                     } //else
-
-                }) //SELECT COORDINADORES
+                }) //SELECT ALUMNOS
             }, function (err) {
                 console.log("fin de eachseries")
                 callback(null)

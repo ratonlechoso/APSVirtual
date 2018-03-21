@@ -267,7 +267,7 @@ export class ProyectosUpdateComponent implements OnInit {
     //console.log("proyecto: ", JSON.stringify(this.proj))
     //console.log("Modelo: ", model);
 
-    this._projService.updateProyecto(this.proj).subscribe((res) => {
+    this._projService.updateProyecto(this.proj, 0).subscribe((res) => {
       if (res['success'] == true) {
         this._projService.getProyecto(this.idProj).subscribe((res) => {
           console.log("respuesta de getProyectos: ", res)

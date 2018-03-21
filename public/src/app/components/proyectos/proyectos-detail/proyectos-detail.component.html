@@ -1,56 +1,72 @@
 <app-navigation-menu-proyectos> </app-navigation-menu-proyectos>
 <div class="container">
   <!-- <div class="row"> -->
-    <ul class="breadcrumb">
+  <ul class="breadcrumb">
+    <li routerLinkActive="active">
+      <a [routerLink]="['/home']">
+        <i class="fa fa-home"> Home </i>
+      </a>
       <li routerLinkActive="active">
-        <a [routerLink]="['/home']">
-          <i class="fa fa-home"> Home </i>
+        <a [routerLink]="['/proyectos']">
+          Proyectos ApS
         </a>
-        <li routerLinkActive="active">
-          <a [routerLink]="['/proyectos']">
-            Proyectos ApS
-          </a>
-        </li>
-        <li routerLinkActive="active">
-          <a [routerLink]="['/proyectos-list', {ambito_id: ambito_id, estado_id: estado_id}]">
-            Listado
-          </a>
-        </li> 
-        <li>Detalle de proyecto</li>
-    </ul>
+      </li>
+      <li routerLinkActive="active">
+        <a (click)=goback();>
+          Listado
+        </a>
+      </li>
+      <li>Detalle de proyecto</li>
+  </ul>
   <!-- </div> -->
   <br>
   <!-- <div class="container-experiencias"> -->
-    <h3>Nombre del proyecto:</h3>
-    <h1>{{proyecto.nombre}}
-      <div *ngIf="user">
-        <span title="Eliminar el proyecto" class="fa fa-remove pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="borrar()"></span>
-        <span title="Actualizar datos" class="fa fa-edit pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="update(proyecto.id)"></span>
-        <span title="Apadrinar proyecto" class="fa fa-graduation-cap pull-right pointer icon-blue" *ngIf="user.rol_id > 2 && proyecto.estado.id == 1" (click)="apadrinar(proyecto.id)"></span>  
-      </div>
-    </h1>
-    <h3> Entidad demandante del proyecto: </h3>
-    <p class="negrita">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>
-    <app-proyectos-apadrinar *ngIf="updAction==1" [proyecto]="proyecto" (apadrinar)="apadrinarReceiver($event)"></app-proyectos-apadrinar> 
-    <h4>Estado actual del proyecto: </h4>
-    <p class="negrita"> {{proyecto.estado.nombre}}</p>
-    <div *ngIf="proyecto.coordinadores!= null">
-      <h4 *ngIf="proyecto.coordinadores.length > 1">Coordinadores</h4>
-      <h4 *ngIf="proyecto.coordinadores.length == 1">Coordinador</h4>
-      <div *ngFor="let coordinador of proyecto.coordinadores">
-        <p>{{coordinador.nombre}} ({{coordinador.email}})</p>
-      </div>
+  <h3>Nombre del proyecto:</h3>
+  <h1>{{proyecto.nombre}}
+    <div *ngIf="user">
+      <span title="Eliminar el proyecto" class="fa  fa-remove pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="borrar()"></span>
+      <span title="Actualizar datos" class="fa fa-edit  pull-right pointer icon-blue" *ngIf="user.rol_id > 3" (click)="update(proyecto.id)"></span>
+      <span title="Apadrinar proyecto" class="fa fa-graduation-cap pull-right pointer icon-green" *ngIf="user.rol_id > 2 && proyecto.estado.id == 1"
+        (click)="apadrinar(proyecto.id)"></span>
+      <span title="Iniciar reclutamiento" class="fa fa-university pull-right pointer icon-green" *ngIf="user.rol_id > 2 && proyecto.estado.id == 2"
+        (click)="iniciar_reclutamiento(proyecto.id)"></span>
+      <span title="Alistarse al proyecto" class="fa fa-plus-square pull-right pointer icon-green" *ngIf="user.rol_id == 1 && proyecto.estado.id == 3"
+        (click)="alistar(proyecto.id)"></span>
+      <span title="Arrancar el proyecto" class="fa fa-arrow-circle-right pull-right pointer icon-green" *ngIf="(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 3"
+        (click)="arrancar(proyecto.id)"></span>
+      <span title="Finalizar el proyecto" class="fa fa-calendar pull-right pointer icon-green" *ngIf="(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 4"
+        (click)="finalizar(proyecto.id)"></span>
     </div>
-    <h4>Descripción:</h4>
-    <p>{{proyecto.descripcion}}</p>
-    <br>
-    <hr>
-    <br>
-    <div *ngFor="let image of proyecto.adjuntos ">
+  </h1>
+  <h3> Entidad demandante del proyecto: </h3>
+  <p class="negrita">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>
+  <h4>Estado actual del proyecto: </h4>
+  <p class="negrita"> {{proyecto.estado.nombre}}</p>
+  <div *ngIf="proyecto.coordinadores!= null">
+    <h4 *ngIf="proyecto.coordinadores.length > 1">Coordinadores</h4>
+    <h4 *ngIf="proyecto.coordinadores.length == 1">Coordinador</h4>
+    <div *ngFor="let coordinador of proyecto.coordinadores">
+      <p class="negrita" >{{coordinador.nombre}} ({{coordinador.email}})</p>
+    </div>
+  </div>
 
-      <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
-      <p></p>
-    </div>
+
+  <app-proyectos-apadrinar *ngIf="updAction==1" [proyecto]="proyecto" (apadrinar)="apadrinarReceiver($event)"></app-proyectos-apadrinar>
+  <app-proyectos-iniciar-reclutamiento *ngIf="updAction==2" [proyecto]="proyecto" (iniciar_reclutamiento)="iniciar_reclutamientoReceiver($event)"></app-proyectos-iniciar-reclutamiento>
+  <app-proyectos-alistar *ngIf="updAction==3" [proyecto]="proyecto" (alistar)="alistarReceiver($event)"></app-proyectos-alistar>
+  <app-proyectos-arrancar *ngIf="updAction==4" [proyecto]="proyecto" (arrancar)="arrancarReceiver($event)"></app-proyectos-arrancar>
+  <app-proyectos-finalizar *ngIf="updAction==5" [proyecto]="proyecto" (finalizar)="finalizarReceiver($event)"></app-proyectos-finalizar>
+
+  <h4>Descripción:</h4>
+  <p>{{proyecto.descripcion}}</p>
+  <br>
+  <hr>
+  <br>
+  <div *ngFor="let image of proyecto.adjuntos ">
+
+    <img src="/assets/uploads/{{image.nombre_fichero}}" width="500" height="400" class="d-inline-block align-top" alt="" />
+    <p></p>
+  </div>
   <!-- </div> -->
   <!-- BOTONES -->
   <div class="row">
@@ -70,7 +86,7 @@
 <!-- MODAL Borrar -->
 <!-- ************************************************************************** -->
 
-<bs-modal  [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
+<bs-modal [animation]="animation" [keyboard]="keyboard" [backdrop]="backdrop" (onClose)="modalDeleteClosed()" (onDismiss)="modalDeleteDismissed()"
   (onOpen)="modalDeleteOpened()" #modalDelete>
   <bs-modal-header>
     <h4 class="modal-title">APS Virtual</h4>
@@ -87,4 +103,3 @@
     </button>
   </bs-modal-footer>
 </bs-modal>
-

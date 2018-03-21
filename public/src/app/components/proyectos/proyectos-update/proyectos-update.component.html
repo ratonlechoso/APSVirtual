@@ -37,7 +37,7 @@
       </div>
 
       <!-- COORDINADORES(ARRAY) -->
-      <div *ngIf="coordinadores != null">
+      <!-- <div *ngIf="coordinadores != null"> -->
         <div *ngIf="updateProj.coordinadores" formArrayName="coordinadores">
           <div *ngFor="let coordinador of myForm.controls.coordinadores.controls; let i=index">
             <div>
@@ -67,7 +67,7 @@
             </button>
           </div>
         </div>
-      </div>
+      <!-- </div> -->
 
       <!-- ENTIDAD -->
       <div class="form-group" id="div_entidad">

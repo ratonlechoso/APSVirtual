@@ -89,8 +89,10 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
     this.authService.registerUser(user).subscribe( (res) => {
       if( res['success'] == true ) {
         res['user'].roles = rol.nombre
+        res['user'].rol_id = rol.id
         this.authService.setUser(res['user']);
-      //  this.router.navigate(['']);
+        alert("Bienvenido " + user.first_name  + " " + user.last_name + ". Se ha registrado satisfactoriamente en la aplicación con el rol de '"+ rolNombre + "'. A continuación se le redigirá a la página principal")
+        this.router.navigate(['home']);
       } else {
         this.message = res['message'];
       }

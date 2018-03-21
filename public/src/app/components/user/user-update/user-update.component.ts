@@ -99,6 +99,7 @@ export class UserUpdateComponent implements OnInit, OnDestroy {
     console.log("userID: ", this.idUser)
 
     this.updateUser.roles = rol.id
+    this.updateUser.rol_id = rol.id
     this._userService.update(this.updateUser).subscribe((res) => {
       if (res['success'] == true) {
         console.log("actualizado: ", JSON.stringify(res['user']))

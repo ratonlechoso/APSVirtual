@@ -286,6 +286,10 @@ ul.breadcrumb li a:hover {
     color: rgb(1, 33, 92);
 }
 
+.icon-green, .color-green {
+    color: rgb(25, 77, 23);
+}
+
 /* PAGINACION */
 
 ul.ngx-pagination {
