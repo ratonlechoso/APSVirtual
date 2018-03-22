@@ -222,6 +222,7 @@ router.post('/register', (req, res) => {
           });
           console.log("registrando usuario", newUser)
           newUser.setUser(reqUser)
+          newUser.id = results.insertId
           let content = {
             user: newUser,
             success: true,
