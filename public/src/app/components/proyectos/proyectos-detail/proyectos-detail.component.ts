@@ -123,7 +123,7 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
   }
 
   finalizar(prokId) {
-    console.log("Arrancar ...");
+    console.log("finalizar ...");
     (this.updAction != 5) ? this.updAction = 5 : this.updAction = 0
   }
   finalizarReceiver(event) {
@@ -132,6 +132,19 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
     this.proyecto = <Proyecto>event;
     console.log("Proyecto despues de finalizar': ", this.proyecto);
   }
+
+  reactivar(prokId) {
+    console.log("Reactivar ...");
+    (this.updAction != 6) ? this.updAction = 6 : this.updAction = 0
+  }
+  
+  reactivarReceiver(event) {
+    (this.updAction != 6) ? this.updAction = 6 : this.updAction = 0
+    if (event == false) return
+    this.proyecto = <Proyecto>event;
+    console.log("Proyecto despues de reactivar': ", this.proyecto);
+  }
+
 
 
   /*** MODALS ***/

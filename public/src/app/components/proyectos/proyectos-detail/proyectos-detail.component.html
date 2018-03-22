@@ -36,6 +36,9 @@
         (click)="arrancar(proyecto.id)"></span>
       <span title="Finalizar el proyecto" class="fa fa-calendar pull-right pointer icon-green" *ngIf="(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 4"
         (click)="finalizar(proyecto.id)"></span>
+      <span title="Reactivar el proyecto" class="fa fa-backward pull-right pointer icon-green" *ngIf="(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 5"
+        (click)="reactivar(proyecto.id)"></span>
+
     </div>
   </h1>
   <h3> Entidad demandante del proyecto: </h3>
@@ -56,6 +59,7 @@
   <app-proyectos-alistar *ngIf="updAction==3" [proyecto]="proyecto" (alistar)="alistarReceiver($event)"></app-proyectos-alistar>
   <app-proyectos-arrancar *ngIf="updAction==4" [proyecto]="proyecto" (arrancar)="arrancarReceiver($event)"></app-proyectos-arrancar>
   <app-proyectos-finalizar *ngIf="updAction==5" [proyecto]="proyecto" (finalizar)="finalizarReceiver($event)"></app-proyectos-finalizar>
+  <app-proyectos-reactivar *ngIf="updAction==6" [proyecto]="proyecto" (reactivar)="reactivarReceiver($event)"></app-proyectos-reactivar>
 
   <h4>Descripción:</h4>
   <p>{{proyecto.descripcion}}</p>

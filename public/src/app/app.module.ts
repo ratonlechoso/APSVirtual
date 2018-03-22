@@ -90,6 +90,7 @@ import { ProyectosAlistarComponent } from './components/proyectos/proyectos-deta
 import { ProyectosArrancarComponent } from './components/proyectos/proyectos-detail/proyectos-arrancar/proyectos-arrancar.component';
 import { ProyectosFinalizarComponent } from './components/proyectos/proyectos-detail/proyectos-finalizar/proyectos-finalizar.component';
 import { ProyectosCancelarComponent } from './components/proyectos/proyectos-detail/proyectos-cancelar/proyectos-cancelar.component';
+import { ProyectosReactivarComponent } from './components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component';
 
 
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
@@ -154,6 +155,7 @@ import { ProyectosCancelarComponent } from './components/proyectos/proyectos-det
     ProyectosArrancarComponent,
     ProyectosFinalizarComponent,
     ProyectosCancelarComponent,
+    ProyectosReactivarComponent,
   ],
   imports: [
     Angular2FontawesomeModule,

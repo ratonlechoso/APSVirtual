@@ -7,25 +7,24 @@ import { User } from './../../../user/user';
 import { Proyecto } from '../../proyecto';
 
 @Component({
-  selector: 'app-proyectos-finalizar',
-  templateUrl: './proyectos-finalizar.component.html',
-  styleUrls: ['./proyectos-finalizar.component.css']
+  selector: 'app-proyectos-reactivar',
+  templateUrl: './proyectos-reactivar.component.html',
+  styleUrls: ['./proyectos-reactivar.component.css']
 })
-export class ProyectosFinalizarComponent implements OnInit, OnDestroy {
+export class ProyectosReactivarComponent implements OnInit, OnDestroy {
 
   @ViewChild('modalArrancar')
   modalArrancar: BsModalComponent;
 
   @Input() proyecto: any;
   @Output()
-  finalizar: EventEmitter<any> = new EventEmitter<any>();
+  reactivar: EventEmitter<any> = new EventEmitter<any>();
 
   subscriptionToArrancar: Subscription
 
   inscritos: Number
   updateProj: any
   user: User
-
 
   constructor(
     private _projService: ProyectosService,
@@ -42,8 +41,9 @@ export class ProyectosFinalizarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
   }
+
   cancel() {
-    this.finalizar.emit(false) //Emitter
+    this.reactivar.emit(false) //Emitter
   }
 
   update(form) {
@@ -57,15 +57,16 @@ export class ProyectosFinalizarComponent implements OnInit, OnDestroy {
   modalArrancarOpened() {
     /**No hacer nada*/
   }
+
   modalArrancarClosed() {
-    this.subscriptionToArrancar = this._projService.updateProyecto(this.updateProj, 5).subscribe((res) => {
+    this.subscriptionToArrancar = this._projService.updateProyecto(this.updateProj, 6).subscribe((res) => {
       if (res['success'] == true) {
-        this.updateProj.estado = { id: 5, nombre: "Proyecto finalizado" }
+        this.updateProj.estado = { id: 4, nombre: "En curso" }
         this._projService.setProj(this.updateProj)
-        this.finalizar.emit(this.updateProj) //Emitter
-        alert("Proyecto finalizado con éxito")
+        this.reactivar.emit(this.updateProj) //Emitter
+        alert("Proyecto reiniciado con éxito")
       } else {
-        this.finalizar.emit(false) //Emitter
+        this.reactivar.emit(false) //Emitter
         alert("Algo ha ido mal")
       }
     })

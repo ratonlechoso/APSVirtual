@@ -456,6 +456,7 @@ var proyectos_alistar_component_1 = __webpack_require__("./src/app/components/pr
 var proyectos_arrancar_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-arrancar/proyectos-arrancar.component.ts");
 var proyectos_finalizar_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-finalizar/proyectos-finalizar.component.ts");
 var proyectos_cancelar_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-cancelar/proyectos-cancelar.component.ts");
+var proyectos_reactivar_component_1 = __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.ts");
 //import { AngularFontAwesomeModule } from 'angular-font-awesome';
 var AppModule = /** @class */ (function () {
     function AppModule() {
@@ -521,6 +522,7 @@ var AppModule = /** @class */ (function () {
                 proyectos_arrancar_component_1.ProyectosArrancarComponent,
                 proyectos_finalizar_component_1.ProyectosFinalizarComponent,
                 proyectos_cancelar_component_1.ProyectosCancelarComponent,
+                proyectos_reactivar_component_1.ProyectosReactivarComponent,
             ],
             imports: [
                 angular2_fontawesome_1.Angular2FontawesomeModule,
@@ -4062,7 +4064,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos-detail/proyectos-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <!-- <div class=\"row\"> -->\n  <ul class=\"breadcrumb\">\n    <li routerLinkActive=\"active\">\n      <a [routerLink]=\"['/home']\">\n        <i class=\"fa fa-home\"> Home </i>\n      </a>\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/proyectos']\">\n          Proyectos ApS\n        </a>\n      </li>\n      <li routerLinkActive=\"active\">\n        <a (click)=goback();>\n          Listado\n        </a>\n      </li>\n      <li>Detalle de proyecto</li>\n  </ul>\n  <!-- </div> -->\n  <br>\n  <!-- <div class=\"container-experiencias\"> -->\n  <h3>Nombre del proyecto:</h3>\n  <h1>{{proyecto.nombre}}\n    <div *ngIf=\"user\">\n      <span title=\"Eliminar el proyecto\" class=\"fa  fa-remove pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"borrar()\"></span>\n      <span title=\"Actualizar datos\" class=\"fa fa-edit  pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"update(proyecto.id)\"></span>\n      <span title=\"Apadrinar proyecto\" class=\"fa fa-graduation-cap pull-right pointer icon-green\" *ngIf=\"user.rol_id > 2 && proyecto.estado.id == 1\"\n        (click)=\"apadrinar(proyecto.id)\"></span>\n      <span title=\"Iniciar reclutamiento\" class=\"fa fa-university pull-right pointer icon-green\" *ngIf=\"user.rol_id > 2 && proyecto.estado.id == 2\"\n        (click)=\"iniciar_reclutamiento(proyecto.id)\"></span>\n      <span title=\"Alistarse al proyecto\" class=\"fa fa-plus-square pull-right pointer icon-green\" *ngIf=\"user.rol_id == 1 && proyecto.estado.id == 3\"\n        (click)=\"alistar(proyecto.id)\"></span>\n      <span title=\"Arrancar el proyecto\" class=\"fa fa-arrow-circle-right pull-right pointer icon-green\" *ngIf=\"(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 3\"\n        (click)=\"arrancar(proyecto.id)\"></span>\n      <span title=\"Finalizar el proyecto\" class=\"fa fa-calendar pull-right pointer icon-green\" *ngIf=\"(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 4\"\n        (click)=\"finalizar(proyecto.id)\"></span>\n    </div>\n  </h1>\n  <h3> Entidad demandante del proyecto: </h3>\n  <p class=\"negrita\">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>\n  <h4>Estado actual del proyecto: </h4>\n  <p class=\"negrita\"> {{proyecto.estado.nombre}}</p>\n  <div *ngIf=\"proyecto.coordinadores!= null\">\n    <h4 *ngIf=\"proyecto.coordinadores.length > 1\">Coordinadores</h4>\n    <h4 *ngIf=\"proyecto.coordinadores.length == 1\">Coordinador</h4>\n    <div *ngFor=\"let coordinador of proyecto.coordinadores\">\n      <p class=\"negrita\" >{{coordinador.nombre}} ({{coordinador.email}})</p>\n    </div>\n  </div>\n\n\n  <app-proyectos-apadrinar *ngIf=\"updAction==1\" [proyecto]=\"proyecto\" (apadrinar)=\"apadrinarReceiver($event)\"></app-proyectos-apadrinar>\n  <app-proyectos-iniciar-reclutamiento *ngIf=\"updAction==2\" [proyecto]=\"proyecto\" (iniciar_reclutamiento)=\"iniciar_reclutamientoReceiver($event)\"></app-proyectos-iniciar-reclutamiento>\n  <app-proyectos-alistar *ngIf=\"updAction==3\" [proyecto]=\"proyecto\" (alistar)=\"alistarReceiver($event)\"></app-proyectos-alistar>\n  <app-proyectos-arrancar *ngIf=\"updAction==4\" [proyecto]=\"proyecto\" (arrancar)=\"arrancarReceiver($event)\"></app-proyectos-arrancar>\n  <app-proyectos-finalizar *ngIf=\"updAction==5\" [proyecto]=\"proyecto\" (finalizar)=\"finalizarReceiver($event)\"></app-proyectos-finalizar>\n\n  <h4>Descripción:</h4>\n  <p>{{proyecto.descripcion}}</p>\n  <br>\n  <hr>\n  <br>\n  <div *ngFor=\"let image of proyecto.adjuntos \">\n\n    <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n    <p></p>\n  </div>\n  <!-- </div> -->\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa-times\"></i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL Borrar -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modalDelete>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar proyecto? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>\n"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <!-- <div class=\"row\"> -->\n  <ul class=\"breadcrumb\">\n    <li routerLinkActive=\"active\">\n      <a [routerLink]=\"['/home']\">\n        <i class=\"fa fa-home\"> Home </i>\n      </a>\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/proyectos']\">\n          Proyectos ApS\n        </a>\n      </li>\n      <li routerLinkActive=\"active\">\n        <a (click)=goback();>\n          Listado\n        </a>\n      </li>\n      <li>Detalle de proyecto</li>\n  </ul>\n  <!-- </div> -->\n  <br>\n  <!-- <div class=\"container-experiencias\"> -->\n  <h3>Nombre del proyecto:</h3>\n  <h1>{{proyecto.nombre}}\n    <div *ngIf=\"user\">\n      <span title=\"Eliminar el proyecto\" class=\"fa  fa-remove pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"borrar()\"></span>\n      <span title=\"Actualizar datos\" class=\"fa fa-edit  pull-right pointer icon-blue\" *ngIf=\"user.rol_id > 3\" (click)=\"update(proyecto.id)\"></span>\n      <span title=\"Apadrinar proyecto\" class=\"fa fa-graduation-cap pull-right pointer icon-green\" *ngIf=\"user.rol_id > 2 && proyecto.estado.id == 1\"\n        (click)=\"apadrinar(proyecto.id)\"></span>\n      <span title=\"Iniciar reclutamiento\" class=\"fa fa-university pull-right pointer icon-green\" *ngIf=\"user.rol_id > 2 && proyecto.estado.id == 2\"\n        (click)=\"iniciar_reclutamiento(proyecto.id)\"></span>\n      <span title=\"Alistarse al proyecto\" class=\"fa fa-plus-square pull-right pointer icon-green\" *ngIf=\"user.rol_id == 1 && proyecto.estado.id == 3\"\n        (click)=\"alistar(proyecto.id)\"></span>\n      <span title=\"Arrancar el proyecto\" class=\"fa fa-arrow-circle-right pull-right pointer icon-green\" *ngIf=\"(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 3\"\n        (click)=\"arrancar(proyecto.id)\"></span>\n      <span title=\"Finalizar el proyecto\" class=\"fa fa-calendar pull-right pointer icon-green\" *ngIf=\"(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 4\"\n        (click)=\"finalizar(proyecto.id)\"></span>\n      <span title=\"Reactivar el proyecto\" class=\"fa fa-backward pull-right pointer icon-green\" *ngIf=\"(user.rol_id == 5 || user.rol_id == 4 || user.rol_id == 2)  && proyecto.estado.id == 5\"\n        (click)=\"reactivar(proyecto.id)\"></span>\n\n    </div>\n  </h1>\n  <h3> Entidad demandante del proyecto: </h3>\n  <p class=\"negrita\">{{proyecto.entidad.nombre}} - {{proyecto.entidad.municipio}}({{proyecto.entidad.provincia_nombre}})</p>\n  <h4>Estado actual del proyecto: </h4>\n  <p class=\"negrita\"> {{proyecto.estado.nombre}}</p>\n  <div *ngIf=\"proyecto.coordinadores!= null\">\n    <h4 *ngIf=\"proyecto.coordinadores.length > 1\">Coordinadores</h4>\n    <h4 *ngIf=\"proyecto.coordinadores.length == 1\">Coordinador</h4>\n    <div *ngFor=\"let coordinador of proyecto.coordinadores\">\n      <p class=\"negrita\" >{{coordinador.nombre}} ({{coordinador.email}})</p>\n    </div>\n  </div>\n\n\n  <app-proyectos-apadrinar *ngIf=\"updAction==1\" [proyecto]=\"proyecto\" (apadrinar)=\"apadrinarReceiver($event)\"></app-proyectos-apadrinar>\n  <app-proyectos-iniciar-reclutamiento *ngIf=\"updAction==2\" [proyecto]=\"proyecto\" (iniciar_reclutamiento)=\"iniciar_reclutamientoReceiver($event)\"></app-proyectos-iniciar-reclutamiento>\n  <app-proyectos-alistar *ngIf=\"updAction==3\" [proyecto]=\"proyecto\" (alistar)=\"alistarReceiver($event)\"></app-proyectos-alistar>\n  <app-proyectos-arrancar *ngIf=\"updAction==4\" [proyecto]=\"proyecto\" (arrancar)=\"arrancarReceiver($event)\"></app-proyectos-arrancar>\n  <app-proyectos-finalizar *ngIf=\"updAction==5\" [proyecto]=\"proyecto\" (finalizar)=\"finalizarReceiver($event)\"></app-proyectos-finalizar>\n  <app-proyectos-reactivar *ngIf=\"updAction==6\" [proyecto]=\"proyecto\" (reactivar)=\"reactivarReceiver($event)\"></app-proyectos-reactivar>\n\n  <h4>Descripción:</h4>\n  <p>{{proyecto.descripcion}}</p>\n  <br>\n  <hr>\n  <br>\n  <div *ngFor=\"let image of proyecto.adjuntos \">\n\n    <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n    <p></p>\n  </div>\n  <!-- </div> -->\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa-times\"></i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL Borrar -->\n<!-- ************************************************************************** -->\n\n<bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modalDelete>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar proyecto? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>\n"
 
 /***/ }),
 
@@ -4172,7 +4174,7 @@ var ProyectosDetailComponent = /** @class */ (function () {
         console.log("Proyecto despues de arrancar': ", this.proyecto);
     };
     ProyectosDetailComponent.prototype.finalizar = function (prokId) {
-        console.log("Arrancar ...");
+        console.log("finalizar ...");
         (this.updAction != 5) ? this.updAction = 5 : this.updAction = 0;
     };
     ProyectosDetailComponent.prototype.finalizarReceiver = function (event) {
@@ -4181,6 +4183,17 @@ var ProyectosDetailComponent = /** @class */ (function () {
             return;
         this.proyecto = event;
         console.log("Proyecto despues de finalizar': ", this.proyecto);
+    };
+    ProyectosDetailComponent.prototype.reactivar = function (prokId) {
+        console.log("Reactivar ...");
+        (this.updAction != 6) ? this.updAction = 6 : this.updAction = 0;
+    };
+    ProyectosDetailComponent.prototype.reactivarReceiver = function (event) {
+        (this.updAction != 6) ? this.updAction = 6 : this.updAction = 0;
+        if (event == false)
+            return;
+        this.proyecto = event;
+        console.log("Proyecto despues de reactivar': ", this.proyecto);
     };
     /*** MODALS ***/
     ProyectosDetailComponent.prototype.modalDeleteDismissed = function () {
@@ -4434,6 +4447,108 @@ var ProyectosIniciarReclutamientoComponent = /** @class */ (function () {
     return ProyectosIniciarReclutamientoComponent;
 }());
 exports.ProyectosIniciarReclutamientoComponent = ProyectosIniciarReclutamientoComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.css":
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"container\" [style.backgroundColor]=\"'#999999'\">\n    <hr>\n    <h2 [style.color]=\"'#333333'\"> Reactivación del desarrollo del proyecto de ApS</h2>\n    <div class=\"alert alert-info\"> Mediante la siguiente acción se dispone a reactivar un proyecto finalizado. El proyecto pasará a la fase de \"proyecto en desarrollo (en curso)\"\n    </div>\n    <hr>\n    <!-- BOTONES -->\n    <div class=\"row\">\n      <div class=\"col-md-3\"  *ngIf=\"accion != 2\">\n        <button type=\"submit\" class=\"button submit\" (click)=update();>\n          <i class=\"fa fa-check\"></i> Reactivar proyecto\n        </button>\n      </div>\n      <div class=\"col-md-3\">\n        <button type=\"button\" class=\"button cancel\" (click)=cancel();>\n          <i class=\"fa fa-times\"></i> Cancelar\n        </button>\n      </div>\n      <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n    </div>\n    <hr>\n  </div>\n  \n  <!-- ************************************************************************** -->\n  <!-- MODAL apadrinar -->\n  <!-- ************************************************************************** -->\n  \n  <bs-modal [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalArrancarClosed()\" (onDismiss)=\"modalArrancarDismissed()\"\n    (onOpen)=\"modalArrancarOpened()\" #modalArrancar>\n    <bs-modal-header>\n      <h4 class=\"modal-title\">APS Virtual</h4>\n    </bs-modal-header>\n    <bs-modal-body>\n      <p>\n        Se dispone a reactivar un proyecto ya finalizado. El proyecto pasará a la fase de \"proyecto en desarrollo (en curso)\" ¿Está seguro de que desea continuar?\n      </p>\n    </bs-modal-body>\n    <bs-modal-footer>\n      <button type=\"button\" class=\"button expanded submit\" (click)=\"modalArrancar.close()\">\n        <i class=\"fa fa-check\"></i> ok\n      </button>\n      <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalArrancar.dismiss()\">\n        <i class=\"fa fa-times\"></i> Cancelar\n      </button>\n    </bs-modal-footer>\n  </bs-modal>"
+
+/***/ }),
+
+/***/ "./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.ts":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var ng2_bs3_modal_1 = __webpack_require__("./node_modules/ng2-bs3-modal/bundles/ng2-bs3-modal.umd.js");
+var proyectos_service_1 = __webpack_require__("./src/app/components/proyectos/proyectos.service.ts");
+var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
+var ProyectosReactivarComponent = /** @class */ (function () {
+    function ProyectosReactivarComponent(_projService, authService) {
+        this._projService = _projService;
+        this.authService = authService;
+        this.reactivar = new core_1.EventEmitter();
+        this.updateProj = JSON.parse(JSON.stringify(this._projService.proyecto));
+        this.inscritos = this.updateProj.cupo_estudiantes - this.updateProj.plazas;
+    }
+    ProyectosReactivarComponent.prototype.ngOnDestroy = function () {
+        if (this.subscriptionToArrancar != null)
+            this.subscriptionToArrancar.unsubscribe();
+    };
+    ProyectosReactivarComponent.prototype.ngOnInit = function () {
+    };
+    ProyectosReactivarComponent.prototype.cancel = function () {
+        this.reactivar.emit(false); //Emitter
+    };
+    ProyectosReactivarComponent.prototype.update = function (form) {
+        this.modalArrancar.open();
+    };
+    ProyectosReactivarComponent.prototype.modalArrancarDismissed = function () {
+        console.log("Modal cerrado sin acción");
+    };
+    ProyectosReactivarComponent.prototype.modalArrancarOpened = function () {
+        /**No hacer nada*/
+    };
+    ProyectosReactivarComponent.prototype.modalArrancarClosed = function () {
+        var _this = this;
+        this.subscriptionToArrancar = this._projService.updateProyecto(this.updateProj, 6).subscribe(function (res) {
+            if (res['success'] == true) {
+                _this.updateProj.estado = { id: 4, nombre: "En curso" };
+                _this._projService.setProj(_this.updateProj);
+                _this.reactivar.emit(_this.updateProj); //Emitter
+                alert("Proyecto reiniciado con éxito");
+            }
+            else {
+                _this.reactivar.emit(false); //Emitter
+                alert("Algo ha ido mal");
+            }
+        });
+    };
+    __decorate([
+        core_1.ViewChild('modalArrancar'),
+        __metadata("design:type", ng2_bs3_modal_1.BsModalComponent)
+    ], ProyectosReactivarComponent.prototype, "modalArrancar", void 0);
+    __decorate([
+        core_1.Input(),
+        __metadata("design:type", Object)
+    ], ProyectosReactivarComponent.prototype, "proyecto", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], ProyectosReactivarComponent.prototype, "reactivar", void 0);
+    ProyectosReactivarComponent = __decorate([
+        core_1.Component({
+            selector: 'app-proyectos-reactivar',
+            template: __webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.html"),
+            styles: [__webpack_require__("./src/app/components/proyectos/proyectos-detail/proyectos-reactivar/proyectos-reactivar.component.css")]
+        }),
+        __metadata("design:paramtypes", [proyectos_service_1.ProyectosService,
+            auth_service_1.AuthService])
+    ], ProyectosReactivarComponent);
+    return ProyectosReactivarComponent;
+}());
+exports.ProyectosReactivarComponent = ProyectosReactivarComponent;
 
 
 /***/ }),

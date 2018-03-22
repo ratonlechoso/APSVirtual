@@ -327,7 +327,22 @@ router.put('/proyectos', (req, res) => {
             res.send(content)
             return
         });
+    } else if (upd_action == 6) {  //Asignar alumno en estado de reclutamiento de alumnos y actualizar numero de plazas
+        console.log("PASA 6")
+        async.waterfall([
+            reactivar_proyecto(reqProj, reqProj.id, sqlConn.pool)
+        ], function (error, success) {
+            if (error) { console.log('Algo ha ido mal!'); }
+            console.log("Hecho!")
+            let content = {
+                success: true,
+                message: 'ok'
+            };
+            res.send(content)
+            return
+        });
     }
+
 });
 
 router.post('/proyectos', (req, res) => {
@@ -432,6 +447,24 @@ function finalizar_proyecto(reqProj, projId, db) {
         let campos = {
             estado_id: 5,
             fecha_fin: moment().format().toString()
+        }
+        let sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
+        db.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
+            if (err) {
+                console.log(err)
+                throw err
+            }
+            callback(null);
+        })
+    }
+}
+
+function reactivar_proyecto(reqProj, projId, db) {
+    return function (callback) {
+        //ACTUALIZAR ESTADO
+        let campos = {
+            estado_id: 4,
+            fecha_fin: null
         }
         let sQuery = "UPDATE proyectos SET ? WHERE  id = " + projId
         db.query(sQuery, campos, function (err, entidad, fields) { //ACTUALIZANDO PROYECTO
