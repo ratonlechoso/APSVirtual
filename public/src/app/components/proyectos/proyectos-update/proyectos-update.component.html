@@ -17,7 +17,9 @@
   <div class="container-center col-md-10">
 
     <!-- TITULO -->
-    <h2>Modificar: {{updateProj.nombre}}</h2>
+    <h2>Modificar: {{nombreProyecto}}</h2>
+    <h4>Estado del proyecto: <span>{{updateProj.estado.nombre}}</span></h4>
+    <br>
     <form [formGroup]="myForm" novalidate (ngSubmit)="update(myForm)">
       <!--------------------------------  CAMPOS ------------------------------------------>
       <!-- NOMBRE -->
@@ -37,12 +39,13 @@
       </div>
 
       <!-- COORDINADORES(ARRAY) -->
-      <!-- <div *ngIf="coordinadores != null"> -->
-        <div *ngIf="updateProj.coordinadores" formArrayName="coordinadores">
+      <div class="container form-group" *ngIf="updateProj.estado.id > 1" id="div_coordinadores">
+        <h5>Coordinadores</h5>
+        <div *ngIf="updateProj.coordinadores != '' " formArrayName="coordinadores">
           <div *ngFor="let coordinador of myForm.controls.coordinadores.controls; let i=index">
             <div>
               <label class="negrita">Coordinador (#{{i + 1}})</label>
-              <span class="fa fa-remove pull-right" *ngIf="myForm.controls.coordinadores.controls.length > 1" (click)="removeCoordinador(i, myForm.controls.coordinadores.controls[i].controls.email)"></span>
+              <span class="fa fa-remove pull-right" *ngIf="myForm.controls.coordinadores.controls.length > 0" (click)="removeCoordinador(i, myForm.controls.coordinadores.controls[i].controls.email)"></span>
             </div>
             <div class="form-group row" [formGroupName]="i">
               <div class="col-md-1"></div>
@@ -60,20 +63,55 @@
               </div>
             </div>
           </div>
-          <div class="row tab">
-            <div class="col-md-1"></div>
-            <button type="button" class="button btn-form mt0" (click)="addCoordinador()">
-              <i class="fa fa-plus"></i> Añadir otro coordinador
-            </button>
+        </div>
+        <div class="row tab">
+          <div class="col-md-1"></div>
+          <button type="button" class="button btn-form mt0" (click)="addCoordinador()">
+            <i class="fa fa-plus"></i> Añadir coordinador
+          </button>
+        </div>
+        <hr>
+      </div>
+
+      <!-- ALUMNOS (ARRAY) -->
+      <div class="container form-group" *ngIf="updateProj.estado.id > 2"  id="div_alumnos" >
+        <h5>Alumnos</h5>
+        <div *ngIf="updateProj.alumnos != null" formArrayName="alumnos">
+          <div *ngFor="let alumno of myForm.controls.alumnos.controls; let i=index">
+            <div>
+              <label class="negrita">Alumno (#{{i + 1}})</label>
+              <span class="fa fa-remove pull-right" *ngIf="myForm.controls.alumnos.controls.length > 0" (click)="removeAlumno(i, myForm.controls.alumnos.controls[i].controls.email)"></span>
+            </div>
+            <div class="form-group row" [formGroupName]="i">
+              <div class="col-md-1"></div>
+              <!--NOMBRE-->
+              <div class="col-md-5">
+                <label class="required">Nombre</label>
+                <div class="alert alert-danger" *ngIf="!myForm.controls.alumnos.controls[i].controls.nombre.valid && myForm.controls.alumnos.controls[i].controls.nombre.touched">Este campo es obligatorio</div>
+                <input type="text" [(ngModel)]="updateProj.alumnos[i].nombre" class="form-control" formControlName="nombre" placeholder="Nombre del alumno">
+              </div>
+              <!--EMAIL-->
+              <div class="col-md-6">
+                <label class="required">Email</label>
+                <div class="alert alert-danger" *ngIf="!myForm.controls.alumnos.controls[i].controls.email.valid && myForm.controls.alumnos.controls[i].controls.email.touched">Este campo es obligatorio</div>
+                <input type="email" [(ngModel)]="updateProj.alumnos[i].email" class="form-control" formControlName="email" placeholder="Dirección de Email">
+              </div>
+            </div>
           </div>
         </div>
-      <!-- </div> -->
+        <div class="row tab">
+          <div class="col-md-1"></div>
+          <button type="button" class="button btn-form mt0" (click)="addAlumno()">
+            <i class="fa fa-plus"></i> Añadir alumno
+          </button>
+        </div>
+        <hr>
+      </div>
+
 
       <!-- ENTIDAD -->
-      <div class="form-group" id="div_entidad">
-        <div>
-          <label class="negrita">Entidad demandante del proyecto</label>
-        </div>
+      <div class="container form-group" id="div_entidad">
+        <h5>Entidad demandante del proyecto</h5>
         <div class="row">
           <!--nombre-->
           <div class="col-md-5">
@@ -243,7 +281,7 @@
         </div>
         <div class="alert alert-danger" *ngIf="message">{{message}}</div>
       </div>
- 
+
       <!-- <div class="margin-20">
         <div>myForm details:-</div>
         <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>

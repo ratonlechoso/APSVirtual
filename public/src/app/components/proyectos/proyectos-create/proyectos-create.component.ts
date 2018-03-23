@@ -28,7 +28,7 @@ export class ProyectosCreateComponent implements OnInit {
   subscriptionToVerify: Subscription
 
   model: NgbDateStruct;
-  newProj: Proyecto
+  newProj: any
   ambitos: any
   provincias: any
   filesToUpload: Array<any>
@@ -58,7 +58,7 @@ export class ProyectosCreateComponent implements OnInit {
       'nombre': ['', Validators.required],
       'nombre_entidad': ['', Validators.required],
       'email_entidad': ['', Validators.required],
-      'provincia_entidad': ['', Validators.required],
+      'provincia': ['', Validators.required],
       'municipio_entidad': ['', Validators.required],
       'descripcion': ['', Validators.required],
       'ambito': [null, Validators.required],
@@ -117,6 +117,8 @@ export class ProyectosCreateComponent implements OnInit {
 
     this.newProj = this.myForm.value
     this.newProj.adjuntos = this.filesToUpload
+    this.newProj.provincia_entidad={}
+    this.newProj.provincia_entidad.id = this.newProj.provincia
     console.log("proyecto: ", JSON.stringify(this.newProj))
     console.log("Modelo: ", model);
     this._projService.createProyecto(this.newProj).subscribe((res) => {

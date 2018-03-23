@@ -202,7 +202,7 @@ router.get('/proyectos', (req, res) => {
 
 
 
-router.put('/proyectos', (req, res) => {
+router.put('/proyectos', (req, res) => { //ACTUALIZAR PROYECTO
     var reqProj = req.body;
     var upd_action = req.headers['x-access-upd-action'];
     console.log("acción : ", upd_action)
@@ -642,6 +642,7 @@ function insertar_coordinadores(reqProj, projId, db) {
                 if (err) throw err
                 ////////////////RECORRER COORDINADORES ...
                 async.eachSeries(reqProj.coordinadores, (element, eachCallback) => {
+                    if (element.email == null) return eachCallback(null)
                     sQuery = "SELECT * FROM coordinadores where ? "
                     db.query(sQuery, { 'email': element.email }, function (err, results) { //SELECT COORDINADORES
                         console.log("sql: ", this.sql)
@@ -708,6 +709,7 @@ function insertar_alumnos(reqProj, projId, db) {
             if (err) throw err
             ////////////////RECORRER ALUMNOS ...
             async.eachSeries(reqProj.alumnos, (element, eachCallback) => {
+                if (element.email == null) return eachCallback(null)
                 sQuery = "SELECT * FROM alumnos where ? "
                 console.log("email vale ", element.email)
                 sqlConn.pool.query(sQuery, { 'email': element.email }, function (err, results) { //SELECT ALUMNOS

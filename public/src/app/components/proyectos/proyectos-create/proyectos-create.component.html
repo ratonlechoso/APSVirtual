@@ -51,7 +51,7 @@
         <div class="row">
           <div class="form-group col-md-6">
             <label class="required negrita">Provincia</label>
-            <select class="form-control minimal" formControlName="provincia_entidad">
+            <select class="form-control minimal" formControlName="provincia">
               <option [ngValue]="0">Selecciona una provincia</option>
               <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">
                 {{ provincia.nombre }}
@@ -166,7 +166,7 @@
         <div>myForm details:-</div>
         <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
         <pre>form value: <br>{{myForm.value | json}}</pre>
-      </div> -->
+      </div>  -->
     </form>
 
 

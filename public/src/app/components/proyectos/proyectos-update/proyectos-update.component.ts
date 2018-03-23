@@ -53,6 +53,7 @@ export class ProyectosUpdateComponent implements OnInit {
   adjuntos: Array<any>
   filesToUpload: Array<any>
   idProj
+  nombreProyecto: string
   message: string = ''
   advert1: string
   advert2: string
@@ -69,6 +70,7 @@ export class ProyectosUpdateComponent implements OnInit {
     private _fb: FormBuilder
   ) {
     this.updateProj = <Proyecto>JSON.parse(JSON.stringify(this._projService.proyecto))
+    this.nombreProyecto = this.updateProj.nombre
     this.idProj = this.updateProj.id
     this.adjuntos = this.updateProj.adjuntos
     this.filesToUpload = []
@@ -135,6 +137,9 @@ export class ProyectosUpdateComponent implements OnInit {
       'coordinadores': this._fb.array([
         this.initCoordinador(),
       ]),
+      'alumnos': this._fb.array([
+        this.initAlumno(),
+      ]),
       'nombre_entidad': ['', Validators.required],
       'email_entidad': ['', Validators.required],
       'provincia_entidad': [''],
@@ -145,6 +150,8 @@ export class ProyectosUpdateComponent implements OnInit {
       'universidad': null
       //FORMATEAR FECHA A UN SOLO CAMPO
     });
+    this.cargarCoordinadores()
+    this.cargarAlumnos()
   }
 
   ngOnInit() {
@@ -167,12 +174,50 @@ export class ProyectosUpdateComponent implements OnInit {
       'email': null
     })
   }
-
+  cargarCoordinadores() {
+    const control = <FormArray>this.myForm.controls['coordinadores'];
+    for (let index = 0; index < this.updateProj.coordinadores.length-1; index++) {
+      control.push(this.initCoordinador());        
+    }
+  }
   addCoordinador() {
     //console.log("Despues de borrar el cordinador: ", JSON.stringify(this.updateExp.coordinadores))
     const control = <FormArray>this.myForm.controls['coordinadores'];
     this.updateProj.coordinadores.push({ id: 0, nombre: '', email: '' })
     control.push(this.initCoordinador());
+  }
+  removeCoordinador(i: number, email) {
+    const control = <FormArray>this.myForm.controls['coordinadores'];
+    control.removeAt(i);
+    this.updateProj.coordinadores = this.updateProj.coordinadores.filter(function (el) {
+      return el.email !== email.value;
+    });
+  }
+
+  initAlumno() {
+    return this._fb.group({
+      'nombre': null,
+      'email': null
+    })
+  }
+  cargarAlumnos() {
+    const control = <FormArray>this.myForm.controls['alumnos'];
+    for (let index = 0; index < this.updateProj.alumnos.length-1; index++) {
+      control.push(this.initAlumno());        
+    }
+  }
+  addAlumno() {
+    //console.log("Despues de borrar el cordinador: ", JSON.stringify(this.updateExp.coordinadores))
+    const control = <FormArray>this.myForm.controls['alumnos'];
+    this.updateProj.alumnos.push({ id: 0, nombre: '', email: '' })
+    control.push(this.initAlumno());
+  }
+  removeAlumno(i: number, email) {
+    const control = <FormArray>this.myForm.controls['alumnos'];
+    control.removeAt(i);
+    this.updateProj.alumnos = this.updateProj.alumnos.filter(function (el) {
+      return el.email !== email.value;
+    });
   }
 
   onChangeAmbito(value) {
@@ -184,15 +229,6 @@ export class ProyectosUpdateComponent implements OnInit {
       this.especialidades = especialidadesList
       this.updateProjEspecialidad = ""
     })
-  }
-
-
-  removeCoordinador(i: number, email) {
-    const control = <FormArray>this.myForm.controls['coordinadores'];
-    control.removeAt(i);
-    this.updateProj.coordinadores = this.updateProj.coordinadores.filter(function (el) {
-      return el.email !== email.value;
-    });
   }
 
   removeAdjunto(i: number, nombre_fichero) {
