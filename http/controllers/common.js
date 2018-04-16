@@ -9,17 +9,19 @@ var moment = require('moment')
 
 router.post('/contact-email', (req, res) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    console.log(config.emailPassword)
+    console.log(config.emailUser)
     var smtpTrans = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
-            user: 'hectoram@gmail.com',
-            pass: 'Altair2011',
+            user: config.emailUser,
+            pass: config.emailPassword,
             tls: { rejectUnauthorized: false }
         }
     });
 
     var mailOptions = {
-        to: 'hectoram@gmail.com',
+        to: config.emailUser,
         from: req.body.email,
         subject: 'ApS Virtual: Mensaje enviado desde la sección de contacto',
         text: ' Emisor: ' + req.body.name + '\n' +
@@ -33,7 +35,7 @@ router.post('/contact-email', (req, res) => {
         if (err) {
             let content = {
                 success: false,
-                message: 'Error al enviar el correo de reseteo de contraseña.',
+                message: 'Error al enviar el correo de contacto al administrador.',
             }
             console.log(err)
             res.send(content)

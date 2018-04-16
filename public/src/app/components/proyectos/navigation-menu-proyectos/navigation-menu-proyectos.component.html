@@ -12,7 +12,13 @@
         </a>
       </li>
       <ul class="sub-menu collapse" routerLinkActive="active" id="estados">
-        <li [routerLink]="['/proyectos-list', {estado_id: 1}]">
+
+        <div *ngIf="user.roles == 'Entidad'">
+            <li [routerLink]="['/proyectos-list', {estado_id: 1}]">
+              <span class="fa fa-bank fa-fw"></span> Proyectos solicitados (propios)</li>
+        </div>     
+        <div *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad' || user.roles == 'Profesor'">
+          <li [routerLink]="['/proyectos-list', {estado_id: 1}]">
           <span class="fa fa-bank fa-fw"></span> Solicitado por entidad externa</li>
         <li [routerLink]="['/proyectos-list', {estado_id: 2}]">
           <span class="fa fa-handshake-o fa-fw"></span> Apadrinado</li>
@@ -22,6 +28,17 @@
           <span class="fa fa-gear fa-fw "></span> En curso</li>
         <li [routerLink]="['/proyectos-list', {estado_id: 5}]">
           <span class="fa fa-hourglass-end fa-fw"></span> Finalizado</li>
+        </div>
+        <div *ngIf="user.roles == 'Alumno' || user.roles == 'Entidad' || user.roles == ''">
+          <li [routerLink]="['/proyectos-list', {estado_id: 3}]">
+            <span class="fa fa-users fa-fw"></span> Aceptando candidatos</li>
+          <li [routerLink]="['/proyectos-list', {estado_id: 4}]">
+            <span class="fa fa-gear fa-fw "></span> En curso</li>
+          <li [routerLink]="['/proyectos-list', {estado_id: 5}]">
+            <span class="fa fa-hourglass-end fa-fw"></span> Finalizado</li>
+        </div>
+
+  
       </ul>
 
 
@@ -50,22 +67,22 @@
         </a>
       </li>
       <div *ngIf="user.roles != null">
-        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad' || user.roles == 'Entidad'">
           <a [routerLink]="['/proyectos-add']">
-            <i class="fa fa-plus fa-lg"></i> Añadir nuevo proyecto
+            <i class="fa fa-plus fa-lg"></i> Solicitar proyecto
           </a>
         </li>
-        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad'">
           <a [routerLink]="['/universidades']">
             <i class="fa fa-chevron-right fa-lg"></i> Universidades
           </a>
         </li>
-        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad'">
           <a [routerLink]="['/ambitos']">
             <i class="fa fa-chevron-right fa-lg"></i> Ambitos de conocimiento
           </a>
         </li>
-        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'universidad'">
+        <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad'"> 
           <a [routerLink]="['/especialidades']">
             <i class="fa fa-chevron-right fa-lg"></i> Especialidades
           </a>

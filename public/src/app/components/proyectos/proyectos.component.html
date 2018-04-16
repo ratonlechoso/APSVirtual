@@ -19,19 +19,18 @@
 
         <div *ngIf="user!=null">
           <p class="negrita">Buscar por estado actual del proyecto</p>
-          <li class="ambitos" *ngIf="user.rol_id == 2 || user.rol_id == 4 || user.rol_id == 5">
+          <li class="ambitos" *ngIf="user.rol_id == 3 || user.rol_id == 4 || user.rol_id == 5">
             <a class="ambitos" [routerLink]="['/proyectos-list', {estado_id: 1}]">
               <span class="fa fa-bank fa-fw"></span> Solicitado por entidad externa.</a>
             <p class="tab">Proyectos en ApS solicitados por una entidad u organización externa al ambito educativo y que se encuentran pendientes
               de ser atendidos por algún docente.</p>
           </li>
-
-          <li class="ambitos" *ngIf="user.rol_id == 2 || user.rol_id == 4 || user.rol_id == 5">
+          <li class="ambitos" *ngIf="user.rol_id == 3 || user.rol_id == 4 || user.rol_id == 5">
             <a class="ambitos" [routerLink]="['/proyectos-list', {estado_id: 2}]">
               <span class="fa fa-handshake-o fa-fw"></span> Apadrinado por algún docente. </a>
             <p class="tab">Proyectos que cuentan con el respaldo de algún docente para ser llevados a cabo.</p>
           </li>
-          <li class="ambitos" *ngIf="user.rol_id == 1 || user.rol_id == 4 || user.rol_id == 5">
+          <li class="ambitos" *ngIf="user.rol_id >1">
             <a class="ambitos" [routerLink]="['/proyectos-list', {estado_id: 3}]">
               <span class="fa fa-users fa-fw"></span> Aceptando candidatos</a>
             <p class="tab">Proyectos en fase de aceptación de candidaturas de alumnos.</p>
