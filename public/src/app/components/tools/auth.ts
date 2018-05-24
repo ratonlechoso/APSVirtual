@@ -27,8 +27,42 @@ export class AuthGuard implements CanActivate {
         // redirect the user
 
         console.log("Ruta protegida. No tienes permiso. RES: ", res)
-        alert (res['message'])
-        //this.router.navigate(['/login']);
+        switch (res['code']) {
+          case 'err_001': {     //Fallo al autenticar el token. Token caducado?
+            alert("Sesión caducada");
+            this.auth.logout();
+            this.router.navigate(['/login']);
+            break;
+          }
+          case 'err_002': {     //No autenticado
+            alert("Aun no te has autenticado. Acceso restringido a esta sección");
+            this.router.navigate(['/login']);
+            break;
+          }
+          case 'err_003': {     //Error en acceso a la tabla Users
+            alert("Error " + res['message']);
+            break;
+          }
+          case 'err_004': {     //Usuario bloqueado
+            alert("Error " + res['message']);
+            this.router.navigate(['/home']);
+            break;
+          }
+          case 'err_005': {       //Privilegios insuficientes
+            alert("Error " + res['message']);
+            this.router.navigate(['/home']);
+            break;
+          }
+          default:
+            break;
+        }
+
+        if (res['success'] == "false1") {
+          alert("Sesión caducada")
+          this.router.navigate(['/login']);
+        } else if (res['success'] == "false2") {
+
+        }
         return false;
       }
     });

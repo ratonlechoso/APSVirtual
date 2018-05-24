@@ -12,10 +12,16 @@
           </a>
         </li>
         <li routerLinkActive="active">
-          <a [routerLink]="['/experiencias-list', {ambito_id: ambito_id}]">
+            <a (click)=goback();>
+              Listado
+            </a>
+          </li>
+           
+        <!-- <li routerLinkActive="active">
+          <a [routerLink]="['/experiencias-list', {ambito_id: experiencia.ambito_id}]">
             Listado
           </a>
-        </li>
+        </li> -->
         <li>Detalle de experiencia</li>
     </ul>
   </div>

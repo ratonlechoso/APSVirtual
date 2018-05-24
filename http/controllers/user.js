@@ -87,13 +87,13 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
       sqlConn.pool.query(sQuery, { 'id': userId }, function (err, rows, fields) { //SELECT QUERY
         if (err) {
           console.log("Error en acceso a la tabla Users")
-          res.send({ success: false, message: 'privilegios insuficientes.' });
+          res.send({ success: false, code: 'err_003', message: 'privilegios insuficientes.' });
           return
         }
         //COMPROBAR QUE NO ESTE BLOQUEADO EL USUARIO
         if (rows[0].bloqueado == 1) { 
           console.log("Usuario bloqueado")
-          res.send({ success: false, message: 'usuario bloqueado.' });
+          res.send({ success: false, code: 'err_004', message: 'usuario bloqueado.' });
           return
         }
         //SI ESTÁ PENDIENTE DE ACTIVACION SU NIVEL DE PRIVILEGIOS ES 1 ó 2
@@ -101,7 +101,7 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
         if ((rows[0].pendiente == 1 && privileged_roles.indexOf(1)=== -1 && privileged_roles.indexOf(2)=== -1) 
           || (privileged_roles != "" && privileged_roles.indexOf(rows[0].rol_id) === -1)){
           console.log("Privilegios insuficientes. Se necesita ", privileged_roles)
-          res.send({ success: false, message: 'privilegios insuficientes.' });
+          res.send({ success: false, code: 'err_005', message: 'privilegios insuficientes.' });
           return
         }
         res.send({ success: true, message: 'Logeado correctamente. Bienvenido!' });

@@ -70,7 +70,7 @@ export class UsersManagerComponent implements OnInit {
     user.password = ""
     this.userToModify = <User>JSON.parse(JSON.stringify(user))
     this.userToModify.pendiente = !this.userToModify.pendiente
-    this.textoModal = "¿Activar usuario?"+
+    this.textoModal = "¿Activar usuario " + this.userToModify.first_name + " " +  this.userToModify.last_name + " ? "
     this.modalUpdateFlags.open()
   }
 

@@ -30,7 +30,7 @@
               <span class="fa fa-handshake-o fa-fw"></span> Apadrinado por algún docente. </a>
             <p class="tab">Proyectos que cuentan con el respaldo de algún docente para ser llevados a cabo.</p>
           </li>
-          <li class="ambitos" *ngIf="user.rol_id >1">
+          <li class="ambitos" *ngIf="user.rol_id >0">
             <a class="ambitos" [routerLink]="['/proyectos-list', {estado_id: 3}]">
               <span class="fa fa-users fa-fw"></span> Aceptando candidatos</a>
             <p class="tab">Proyectos en fase de aceptación de candidaturas de alumnos.</p>
@@ -72,7 +72,7 @@
       </div>
 
       <div class="col-md 5">
-        <p class="negrita">Buscar por ambito de conocimiento</p>
+        <p class="negrita">Buscar por rama de conocimiento</p>
         <li class="ambitos">
           <a class="ambitos" [routerLink]="['/proyectos-list', {ambito_id: 1}]">
             <span class="fa fa-bank fa-lg fa-fw"></span> Artes y Humanidades</a>

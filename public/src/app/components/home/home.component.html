@@ -1,14 +1,25 @@
 <div class="container">
-<div class="row">
+  <div class="row">
     <ul class="breadcrumb">
-        <li routerLinkActive="active"><a [routerLink]="['/home']">
-            <i class="fa fa-home"> </i><span>Home</span>
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> </i>
+          <span>Home</span>
         </a>
-        </li>
-    </ul>  
-</div>    
+      </li>
+    </ul>
+  </div>
 
-<main role="main">
+  <main role="main">
+
+    <p *ngIf="user">
+      Bienvenido/a, {{user.first_name}} {{user.last_name}}. Último login el {{ahoraFormatted}}
+    </p>
+
+    <p *ngIf="!user">
+      Home. No logeado
+    </p>
+
     <div id="myCarousel" class="carousel fade-carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -20,9 +31,17 @@
           <img class="first-slide" src="/assets/img/uned-gijon1.jpg" alt="First slide">
           <div class="container">
             <div class="carousel-caption text-left">
-              <h1>Aprendizaje Servicio.</h1>
-              <p>¿Qué es? blablabla. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Conocer un poco mas...</a></p>
+              <h1 class>Aprendizaje Servicio.</h1>
+              <p> <span class="cursiva">
+                  “El aprendizaje-servicio es una propuesta educativa que combina procesos de aprendizaje y de servicio a la comunidad en un solo proyecto bien articulado donde los participantes aprenden al trabajar en necesidades reales del entorno con la finalidad de mejorarlo”.
+                </span>
+              </p>
+              <p> 
+                  Centre Promotor d’Aprenentatge Servei.
+              </p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#" role="button">Conocer un poco mas...</a>
+              </p>
             </div>
           </div>
         </div>
@@ -31,8 +50,11 @@
           <div class="container">
             <div class="carousel-caption">
               <h1>Another example headline.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.
+                Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a>
+              </p>
             </div>
           </div>
         </div>
@@ -41,8 +63,11 @@
           <div class="container">
             <div class="carousel-caption text-right">
               <h1>One more for good measure.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.
+                Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+              <p>
+                <a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a>
+              </p>
             </div>
           </div>
         </div>
@@ -56,16 +81,8 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
-</main>
+  </main>
 
 
-<p *ngIf="user">
-    Bienvenido/a, {{user.first_name}} {{user.last_name}}. Último login el {{ahoraFormatted}}
-</p>
-
-<p *ngIf="!user">
-    Home. No logeado
-</p>
-
-<p *ngIf="message">{{message}}</p>
-</div>            
+  <p *ngIf="message">{{message}}</p>
+</div>

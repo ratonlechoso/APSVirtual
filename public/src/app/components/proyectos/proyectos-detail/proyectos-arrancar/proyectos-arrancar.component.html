@@ -10,6 +10,9 @@
     <div>
       <p><span class="negrita">Número máximo de alumnos para este proyecto: </span> {{updateProj.cupo_estudiantes}}</p>
       <p><span class="negrita">Actualmente inscritos: </span>{{inscritos}}</p>
+      <div *ngFor ="let alumno of updateProj.alumnos; let i = index">
+        <p> <span class="negrita">Alumno {{i}}: </span>    {{alumno.nombre}} - {{alumno.email}} </p>
+      </div>
       <p><span class="negrita">Plazas vacantes: </span>{{updateProj.plazas}}</p>
     </div>
     <!-- BOTONES -->

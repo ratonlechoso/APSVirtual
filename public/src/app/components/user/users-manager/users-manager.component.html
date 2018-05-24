@@ -1,5 +1,15 @@
 <div class="container">
-  <h2>Listado de usuarios</h2>
+  <div class="row">
+    <ul class="breadcrumb">
+      <li routerLinkActive="active">
+        <a [routerLink]="['/home']">
+          <i class="fa fa-home"> Home </i>
+        </a>
+      </li>
+      <li>Gestión de usuarios</li>
+    </ul>
+  </div>
+  <h2>Gestión de usuarios</h2>
   <br>
   <div class="row">
     <div class="col-md-7">
@@ -11,7 +21,7 @@
     <p class="col-md-3 negrita">Nombre</p>
     <p class="col-md-3 negrita">Apellidos</p>
     <p class="col-md-2 negrita">Rol</p>
-    <p class="col-md-3 negrita">Email</p>  
+    <p class="col-md-3 negrita">Email</p>
   </div>
   <div *ngFor="let user of users | search: 'first_name':query |paginate :{itemsPerPage: 15, currentPage: p}; let i=index">
 
@@ -20,9 +30,11 @@
       <p class="col-md-3">{{user.last_name}} </p>
       <p class="col-md-2">{{user.rol_nombre}} </p>
       <p class="col-md-3">{{user.email}}
-        <span *ngIf="user.pendiente == 1" class="fa fa-plus pull-right pointer color-blue " (click)="activar(user)" title = "Activar usuario pendiente"></span>
-        <span *ngIf="user.bloqueado == 0 && user.pendiente == 0" class="fa fa-check-circle pull-right pointer"  [style.color]="'green'" (click)="bloquear(user)" title = "Bloquear usuario"></span>
-        <span *ngIf="user.bloqueado == 1 && user.pendiente == 0" class="fa fa-ban pull-right pointer"  [style.color]="'red'" (click)="bloquear(user)" title = "Desbloquear usuario"></span>
+        <span *ngIf="user.pendiente == 1" class="fa fa-plus pull-right pointer color-blue " (click)="activar(user)" title="Activar usuario pendiente"></span>
+        <span *ngIf="user.bloqueado == 0 && user.pendiente == 0" class="fa fa-check-circle pull-right pointer" [style.color]="'green'"
+          (click)="bloquear(user)" title="Bloquear usuario"></span>
+        <span *ngIf="user.bloqueado == 1 && user.pendiente == 0" class="fa fa-ban pull-right pointer" [style.color]="'red'" (click)="bloquear(user)"
+          title="Desbloquear usuario"></span>
       </p>
     </div>
   </div>
@@ -42,7 +54,7 @@
     <h4 class="modal-title">APS Virtual</h4>
   </bs-modal-header>
   <bs-modal-body>
-    <p>{{textoModal}}</p>
+    <p class>{{textoModal}}</p>
   </bs-modal-body>
   <bs-modal-footer>
     <button type="button" class="button expanded submit" (click)="modalUpdateFlags.close()">

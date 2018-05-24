@@ -7,7 +7,7 @@
 
       <li data-toggle="collapse" data-target="#estados" routerLinkActive="active" class="collapsed">
         <a [routerLink]="['/proyectos']">
-          <i class="fa fa-list fa-lg"></i> Proyectos según estado
+          <i class="fa fa-list fa-lg"></i> Estado
           <span class="arrow"></span>
         </a>
       </li>
@@ -44,7 +44,7 @@
 
       <li data-toggle="collapse" data-target="#ambitos" routerLinkActive="active" class="collapsed">
         <a [routerLink]="['/proyectos']">
-          <i class="fa fa-list fa-lg"></i> Proyectos según ámbito
+          <i class="fa fa-list fa-lg"></i> Rama de conocimiento
           <span class="arrow"></span>
         </a>
       </li>
@@ -79,7 +79,7 @@
         </li>
         <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad'">
           <a [routerLink]="['/ambitos']">
-            <i class="fa fa-chevron-right fa-lg"></i> Ambitos de conocimiento
+            <i class="fa fa-chevron-right fa-lg"></i> Ramas de conocimiento
           </a>
         </li>
         <li class="nav-item active" routerLinkActive="active" *ngIf="user.roles == 'Administrador' || user.roles == 'Universidad'"> 

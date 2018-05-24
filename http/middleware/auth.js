@@ -10,8 +10,8 @@ module.exports = {
 
             jwt.verify(token, config.secret, (err, decoded) => {
                 if (err) {
-                    console.log("Failed to authenticate token.")
-                    return res.json({ success: false, message: 'Failed to authenticate token.' });    
+                    console.log("Fallo al autenticar el token.")
+                    return res.json({ success: false, code: 'err_001', message: 'Fallo al autenticar el token. Caducado?' });    
                 } else {
                     // all good, continue
                     console.log("Token ok")
@@ -22,7 +22,7 @@ module.exports = {
 
         }  else {
 
-            res.send({ success: false, message: 'No token exists.' });
+            res.send({ success: false, code: 'err_002', message: 'No autenticado.' });
             
         }
     })
