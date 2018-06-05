@@ -18,6 +18,10 @@ export class ProyectosService {
     proyecto$ = this.proyectoSource.asObservable();
     proyecto: Proyecto
 
+    public proyectos: Proyecto[]
+    public sCriteria: String
+  
+
     /******************* PROYECTO ***************************/
 
     setProj(proyecto: Proyecto) {
@@ -34,6 +38,16 @@ export class ProyectosService {
         console.log("Accediendo al endpoint GET proyectos")
         return this._http.get(`${this.base_url}/proyectos`, options).map(res => this.parseRes(res));
     }
+
+    searchProyectos(proj): Observable<Object> {
+        console.log("searchProyectos: ", proj)
+        let body = JSON.stringify(proj)
+        let headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        let options = new RequestOptions({ headers: headers })
+        return this._http.post(`${this.base_url}/search_proj`, body, options).map(res => this.parseRes(res));
+      }
+    
 
     getProyectosByEstado(estadoId): Observable<Object> {
         let headers = new Headers({ 'x-access-token': estadoId });

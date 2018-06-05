@@ -1,4 +1,5 @@
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Location } from '@angular/common';
 import { Component, OnInit, OnDestroy, EventEmitter, ViewChild } from '@angular/core';
 import { ProyectosService } from '../proyectos.service';
 import { Proyecto } from '../proyecto'
@@ -28,13 +29,19 @@ export class ProyectosListComponent implements OnInit {
   itemsPerPage: number = 25
   postsPerPage: number[] = [25, 50, 100]
   nombreLista: String
+  sCriteria: String //Criterios de búsqueda cuando se accede desde la pantalla de búsqueda
+  titulo: String
+
 
   constructor(
     private _proyectosService: ProyectosService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private _location: Location,
     authService: AuthService
   ) {
+    this.proyectos = []
+    this.sCriteria = ""
     this.user = authService.user;
     authService.user$.subscribe((user) => {
       this.user = user;
@@ -44,12 +51,19 @@ export class ProyectosListComponent implements OnInit {
   ngOnInit() {
     // subscribe to router event
     //this.ambitoId = this.activatedRoute.snapshot.queryParams["ambito_id"];
-    this.proyectos = []
+
     this.activatedRoute.params.subscribe((params: Params) => {
       this.ambitoId = params['ambito_id'];
       this.estadoId = params['estado_id'];
-      ((this.ambitoId == null) ? this.ambitoId = 0 : this.estadoId = 0)
-      this.open()
+      console.log("ambito", this.ambitoId)
+      if (this.ambitoId == undefined && this.estadoId == undefined) {
+        this.titulo = "Resultados de busqueda de Proyectos en ApS"
+        this.proyectos = this._proyectosService.proyectos
+        this.sCriteria = this._proyectosService.sCriteria
+      } else {
+        ((this.ambitoId == null) ? this.ambitoId = 0 : this.estadoId = 0)
+        this.open()
+      }
     });
 
   }
@@ -92,45 +106,50 @@ export class ProyectosListComponent implements OnInit {
     })
     console.log("estado", this.estadoId)
 
-
+    this.titulo = "Proyectos de ApS - "
     switch (this.estadoId.toString()) {
       case "1":
-        this.nombreLista = "Proyectos solicitado por entidad externa"
+        this.titulo += "solicitado por entidad externa"
         break;
       case "2":
-        this.nombreLista = "Proyectos apadrinado por algún docente"
+        this.titulo += "apadrinado por algún docente"
         break;
       case "3":
-        this.nombreLista = "Proyectos en fase de aceptación de candidatos"
+        this.titulo += "en fase de aceptación de candidatos"
         break;
       case "4":
-        this.nombreLista = "Proyectos en curso"
+        this.titulo += "en curso"
         break;
       case "5":
-        this.nombreLista = "Proyectos finalizado"
+        this.titulo += "finalizado"
         break;
       default:
         break;
     }
     switch (this.ambitoId.toString()) {
       case "1":
-        this.nombreLista = "Proyectos pertenecientes al ambito de Artes y Humanidades"
+        this.titulo += "pertenecientes al ambito de Artes y Humanidades"
         break;
       case "2":
-        this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias"
+        this.titulo += "pertenecientes al ambito de Ciencias"
         break;
       case "3":
-        this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias de la Salud"
+        this.titulo += "pertenecientes al ambito de Ciencias de la Salud"
         break;
       case "4":
-        this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias Sociales y Políticas"
+        this.titulo += "pertenecientes al ambito de Ciencias Sociales y Políticas"
         break;
       case "5":
-        this.nombreLista = "Proyectos pertenecientes al ambito de Arquitectura e Ingeniería"
+        this.titulo += "pertenecientes al ambito de Arquitectura e Ingeniería"
         break;
       default:
         break;
     }
+  }
+
+  
+  goback() {
+    this._location.back();
   }
 
   showDetail(projId) {

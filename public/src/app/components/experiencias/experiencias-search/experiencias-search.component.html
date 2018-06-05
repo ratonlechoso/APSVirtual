@@ -1,14 +1,103 @@
 <app-navigation-menu-experiencias> </app-navigation-menu-experiencias>
 <div class="container">
-  <div class="row">
-      <ul class="breadcrumb">
-          <li routerLinkActive="active"><a [routerLink]="['/home']">
-              <i class="fa fa-home"> Home </i>
-          </a>
-          <li routerLinkActive="active"><a [routerLink]="['/experiencias']">
-             Experiencias APS
-          </a>
-          </li>
-          <li>Buscar</li>
-      </ul>  
-  </div>    
+    <div class="row">
+        <ul class="breadcrumb">
+            <li routerLinkActive="active">
+                <a [routerLink]="['/home']">
+                    <i class="fa fa-home"> Home </i>
+                </a>
+                <li routerLinkActive="active">
+                    <a [routerLink]="['/experiencias']">
+                        Experiencias APS
+                    </a>
+                </li>
+                <li>Buscar</li>
+        </ul>
+    </div>
+
+    <div class="container-center col-md-10">
+        <!-- TITULO -->
+        <h2>Buscar experiencias previas de ApS Virtual</h2>
+        <form [formGroup]="myForm" novalidate (ngSubmit)="search(myForm)">
+
+            <!-- NOMBRE -->
+            <div class="form-group">
+                <label class="negrita">Nombre del proyecto</label>
+                <input type="text" formControlName="nombre" placeholder="Nombre del proyecto a buscar. Proporcione una coincidencia total o parcial" class="form-control">
+            </div>
+
+
+            <!-- AMBITO -->
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="negrita">Ambito</label>
+                    <select class="form-control" formControlName="ambito" (change)="onChangeAmbito($event.target.value) ">
+                        <option value="null" disabled="true" [selected]="true">Selecciona un ámbito...</option>
+                        <option *ngFor="let ambito of ambitos" [ngValue]="ambito.id">
+                            {{ ambito.nombre }}
+                        </option>
+                    </select>
+                </div>
+                <!-- ESPECIALIDAD -->
+                <div class="form-group col-md-6">
+                    <label class="negrita">Especialidad</label>
+                    <select class="form-control" formControlName="especialidad">
+                        <option value="null" disabled="true" [selected]="true">Selecciona una especialidad...</option>
+                        <option *ngFor="let especialidad of especialidades" [ngValue]="especialidad.id">
+                            {{ especialidad.nombre }}
+                        </option>
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- UNIVERSIDAD -->
+                <div class="form-group col-md-8">
+                    <label class="negrita">Universidad</label>
+                    <select class="form-control" formControlName="universidad">
+                        <option value="null" disabled="true" [selected]="true">Selecciona una universidad...</option>
+                        <option *ngFor="let universidad of universidades" [ngValue]="universidad.id">
+                            {{ universidad.nombre }}
+                        </option>
+                    </select>
+                </div>
+                <!-- FECHA -->
+
+                <div class="form-group col-md-4">
+                    <label class="negrita">Fecha de finalización anterior a ...</label>
+                    <div class="input-group">
+                        <input formControlName="fecha" class="form-control" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker #d="ngbDatepicker">
+                        <button class="input-group-addon" (click)="d.toggle()" type="button">
+                            <i class="fa fa-calendar" style="width: 1.2rem; height: 1rem; cursor: pointer;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- BOTONES -->
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="button submit">
+                        <i class="fa fa-check"></i> Buscar
+                    </button>
+                </div>
+                <div class="alert alert-danger" *ngIf="message">{{message}}</div>
+
+                <div class="col-md-6">
+                    <button type="button" class="button cancel" (click)=goback();>
+                        <i class="fa fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+            <!-- <div class="margin-20" >
+            <div>myForm details:-</div>
+            <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
+            <pre>form value: <br>{{myForm.value | json}}</pre>
+          </div> -->
+
+        </form>
+
+    </div>
+</div>

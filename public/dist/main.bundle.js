@@ -1991,7 +1991,7 @@ var ExpService = /** @class */ (function () {
         this.expSource = new Subject_1.Subject();
         this.exp$ = this.expSource.asObservable();
     }
-    /******************* EXPERIENCIA ***************************/
+    /******************* ACCESO A ENDPOINTS DE EXPERIENCIA ***************************/
     ExpService.prototype.setExp = function (exp) {
         console.log("pasa por setExp");
         this.exp = exp;
@@ -2005,6 +2005,14 @@ var ExpService = /** @class */ (function () {
         var options = new http_1.RequestOptions({ headers: headers });
         console.log("Accediendo al endpoint GET experiencias");
         return this._http.get(this.base_url + "/experiencias", options).map(function (res) { return _this.parseRes(res); });
+    };
+    ExpService.prototype.searchExperiencias = function (exp) {
+        var _this = this;
+        var body = JSON.stringify(exp);
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.post(this.base_url + "/search_exp", body, options).map(function (res) { return _this.parseRes(res); });
     };
     ExpService.prototype.getImages = function (expId) {
         var _this = this;
@@ -2174,7 +2182,7 @@ module.exports = ".nv-file-over { border: dotted 3px red; } /* Default class app
 /***/ "./src/app/components/experiencias/experiencias-create/experiencias-create.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <ul class=\"breadcrumb\">\r\n      <li routerLinkActive=\"active\">\r\n        <a [routerLink]=\"['/home']\">\r\n          <i class=\"fa fa-home\"> Home </i>\r\n        </a>\r\n        <li routerLinkActive=\"active\">\r\n          <a [routerLink]=\"['/experiencias']\">\r\n            Experiencias APS\r\n          </a>\r\n        </li>\r\n        <li>Insertar nueva</li>\r\n    </ul>\r\n  </div>\r\n  <div class=\"container-center col-md-10\">\r\n\r\n    <!-- TITULO -->\r\n    <h2>Insertar una experiencia en ApS</h2>\r\n    <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"save(myForm)\">\r\n\r\n      <!--------------------------------  CAMPOS ------------------------------------------>\r\n\r\n      <!-- NOMBRE -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Nombre del proyecto</label>\r\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre.valid && myForm.controls.nombre.touched\">Este campo es obligatorio</div>\r\n        <input type=\"text\" formControlName=\"nombre\" placeholder=\"Introduce aquí el nombre del proyecto\" class=\"form-control\">\r\n      </div>\r\n\r\n      <!-- COORDINADORES(ARRAY) -->\r\n      <div formArrayName=\"coordinadores\">\r\n        <div *ngFor=\"let coordinador of myForm.controls.coordinadores.controls; let i=index\">\r\n          <div>\r\n            <label class=\"negrita\">Coordinador (#{{i + 1}})</label>\r\n            <span class=\"fa fa-remove pull-right\" *ngIf=\"myForm.controls.coordinadores.controls.length > 1\" (click)=\"removeCoordinador(i)\"></span>\r\n          </div>\r\n          <div class=\"form-group row\" [formGroupName]=\"i\">\r\n            <div class=\"col-md-1\"></div>\r\n            <!--nombre-->\r\n            <div class=\"col-md-5\">\r\n              <label class=\"required\">Nombre</label>\r\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.nombre.valid && myForm.controls.coordinadores.controls[i].controls.nombre.touched\">Este campo es obligatorio</div>\r\n              <input type=\"text\" class=\"form-control\" formControlName=\"nombre\" placeholder=\"Nombre del coordinador\">\r\n            </div>\r\n            <!--email-->\r\n            <div class=\"col-md-6\">\r\n              <label class=\"required\">Email</label>\r\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.email.valid && myForm.controls.coordinadores.controls[i].controls.email.touched\">Este campo es obligatorio</div>\r\n              <input type=\"email\" class=\"form-control\" formControlName=\"email\" placeholder=\"Dirección de Email\">\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div class=\"row tab\">\r\n          <div class=\"col-md-1\"></div>\r\n          <button type=\"button\" class=\"button btn-form mt0\" (click)=\"addCoordinador()\">\r\n            <i class=\"fa fa-plus\"></i> Añadir otro coordinador\r\n          </button>\r\n        </div>\r\n      </div>\r\n\r\n      <!-- DESTINATARIO -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Destinatario del proyecto</label>\r\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['destinatario'].valid && myForm.controls['destinatario'].touched\">Este campo es obligatorio</div>\r\n        <input class=\"form-control\" type=\"text\" formControlName=\"destinatario\" placeholder=\"Destinatario del proyecto\">\r\n      </div>\r\n\r\n      <!-- DESCRIPCION -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Descripción</label>\r\n        <!-- <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div> -->\r\n        <textarea rows=\"5\" cols=\"50\" formControlName=\"descripcion\" placeholder=\"Descripción del proyecto\" class=\"form-control\"></textarea>\r\n      </div>\r\n\r\n      <!-- AMBITO -->\r\n      <div class=\"row\">\r\n        <div class=\"form-group col-md-6\">\r\n          <label class=\"required negrita\">Ambito</label>\r\n          <select class=\"form-control minimal\" formControlName=\"ambito\" (change)=\"onChangeAmbito($event.target.value) \">\r\n            <option [ngValue]=\"0\">Selecciona un ámbito</option>\r\n            <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\r\n              {{ ambito.nombre }}\r\n            </option>\r\n          </select>\r\n        </div>\r\n        <!-- ESPECIALIDAD -->\r\n        <div class=\"form-group col-md-6\">\r\n          <label class=\"required negrita\">Especialidad</label>\r\n          <select class=\"form-control minimal\" formControlName=\"especialidad\">\r\n            <option [ngValue]=\"0\">Selecciona una especialidad</option>\r\n            <option *ngFor=\"let especialidad of especialidades\" [ngValue]=\"especialidad.id\">\r\n              {{ especialidad.nombre }}\r\n            </option>\r\n          </select>\r\n\r\n\r\n          <!-- <label class=\"required negrita\">Especialidad</label> -->\r\n          <!-- <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div> -->\r\n          <!-- <input type=\"text\" formControlName=\"especialidad\" placeholder=\"Especialidad (p. ej.: 'Grado en Ingeniería Informática')\"\r\n            class=\"form-control\"> -->\r\n        </div>\r\n      </div>\r\n      <div class=\"row\">\r\n        <!-- UNIVERSIDAD -->\r\n        <div class=\"form-group col-md-8\">\r\n          <label class=\"required negrita\">Universidad</label>\r\n          <select class=\"form-control minimal\" formControlName=\"universidad\">\r\n            <option [ngValue]=\"null\">Selecciona una universidad</option>\r\n            <option *ngFor=\"let universidad of universidades\" [ngValue]=\"universidad.id\">\r\n              {{ universidad.nombre }}\r\n            </option>\r\n          </select>\r\n        </div>\r\n        <!-- FECHA -->\r\n\r\n        <div class=\"form-group col-md-4\">\r\n          <label class=\"required negrita\">Fecha</label>\r\n          <div class=\"input-group\">\r\n            <input formControlName=\"fecha\" class=\"form-control\" placeholder=\"dd-mm-yyyy\" name=\"dp\" ngbDatepicker #d=\"ngbDatepicker\">\r\n            <button class=\"input-group-addon\" (click)=\"d.toggle()\" type=\"button\">\r\n              <i class=\"fa fa-calendar\" style=\"width: 1.2rem; height: 1rem; cursor: pointer;\"></i>\r\n            </button>\r\n          </div>\r\n        </div>\r\n      </div>\r\n\r\n      <!-- Adjuntos(ARRAY) -->\r\n      <div formArrayName=\"adjuntos\">\r\n        <div class=\"form-group\">\r\n          <label class=\"negrita\" for=\"single\">Archivo adjunto</label>\r\n          <input type=\"file\" class=\"form-control\" name=\"single\" ng2FileSelect [uploader]=\"uploader\" />\r\n        </div>\r\n\r\n        <table class=\"table\">\r\n          <thead>\r\n            <tr>\r\n              <th width=\"50%\">Nombre</th>\r\n              <th>Tamaño</th>\r\n              <th>Progreso</th>\r\n              <th>Estado</th>\r\n              <th>Acciones</th>\r\n            </tr>\r\n          </thead>\r\n          <tbody>\r\n            <tr *ngFor=\"let item of uploader.queue\">\r\n              <td>\r\n                <strong>{{ item.file.name }}</strong>\r\n              </td>\r\n              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\r\n              <td>\r\n                <div class=\"progress\" style=\"margin-bottom: 0;\">\r\n                  <div class=\"progress-bar\" role=\"progressbar\" [ngStyle]=\"{ 'width': item.progress + '%' }\"></div>\r\n                </div>\r\n              </td>\r\n              <td class=\"text-center\">\r\n                <span *ngIf=\"item.isSuccess\">\r\n                  <i class=\"fa fa-check\" style=\"color:green\"></i>\r\n                </span>\r\n                <span *ngIf=\"item.isCancel\">\r\n                  <i class=\"fa fa-circle\" style=\"color:orange\"></i>\r\n                </span>\r\n                <span *ngIf=\"item.isError\">\r\n                  <i class=\"fa fa-cancel\" style=\"color:red\"></i>\r\n                </span>\r\n              </td>\r\n              <td nowrap>\r\n                <button type=\"button\" class=\"btn btn-success btn-xs\" (click)=\"subir(item)\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\r\n                  <span class=\"fa fa-upload\"></span> Subir\r\n                </button>\r\n                <button type=\"button\" class=\"btn btn-warning btn-xs\" (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\r\n                  <span class=\"fa fa-ban\"></span> Cancelar\r\n                </button>\r\n                <button type=\"button\" class=\"btn btn-danger btn-xs\" (click)=\"eliminar(item)\">\r\n                  <span class=\"fa fa-trash\"></span> Borrar\r\n                </button>\r\n              </td>\r\n            </tr>\r\n          </tbody>\r\n        </table>\r\n\r\n\r\n\r\n      </div>\r\n\r\n\r\n      <!-- BOTONES -->\r\n      <div class=\"row\">\r\n        <div class=\"col-md-6\">\r\n          <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\r\n            <i class=\"fa fa-check\"></i> Aceptar\r\n          </button>\r\n        </div>\r\n        <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\r\n\r\n        <div class=\"col-md-6\">\r\n          <button type=\"button\" class=\"button cancel\" (click)=goback();>\r\n            <i class=\"fa fa-times\"></i> Cancelar\r\n          </button>\r\n        </div>\r\n      </div>\r\n      <!-- <div class=\"margin-20\" >\r\n        <div>myForm details:-</div>\r\n        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\r\n        <pre>form value: <br>{{myForm.value | json}}</pre>\r\n      </div> -->\r\n    </form>\r\n\r\n\r\n  </div>\r\n</div>"
+module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <ul class=\"breadcrumb\">\r\n      <li routerLinkActive=\"active\">\r\n        <a [routerLink]=\"['/home']\">\r\n          <i class=\"fa fa-home\"> Home </i>\r\n        </a>\r\n        <li routerLinkActive=\"active\">\r\n          <a [routerLink]=\"['/experiencias']\">\r\n            Experiencias APS\r\n          </a>\r\n        </li>\r\n        <li>Insertar nueva</li>\r\n    </ul>\r\n  </div>\r\n  <div class=\"container-center col-md-10\">\r\n\r\n    <!-- TITULO -->\r\n    <h2>Insertar una experiencia en ApS</h2>\r\n    <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"save(myForm)\">\r\n\r\n      <!--------------------------------  CAMPOS ------------------------------------------>\r\n\r\n      <!-- NOMBRE -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Nombre del proyecto</label>\r\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre.valid && myForm.controls.nombre.touched\">Este campo es obligatorio</div>\r\n        <input type=\"text\" formControlName=\"nombre\" placeholder=\"Introduce aquí el nombre del proyecto\" class=\"form-control\">\r\n      </div>\r\n\r\n      <!-- COORDINADORES(ARRAY) -->\r\n      <div formArrayName=\"coordinadores\">\r\n        <div *ngFor=\"let coordinador of myForm.controls.coordinadores.controls; let i=index\">\r\n          <div>\r\n            <label class=\"negrita\">Coordinador (#{{i + 1}})</label>\r\n            <span class=\"fa fa-remove pull-right\" *ngIf=\"myForm.controls.coordinadores.controls.length > 1\" (click)=\"removeCoordinador(i)\"></span>\r\n          </div>\r\n          <div class=\"form-group row\" [formGroupName]=\"i\">\r\n            <div class=\"col-md-1\"></div>\r\n            <!--nombre-->\r\n            <div class=\"col-md-5\">\r\n              <label class=\"required\">Nombre</label>\r\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.nombre.valid && myForm.controls.coordinadores.controls[i].controls.nombre.touched\">Este campo es obligatorio</div>\r\n              <input type=\"text\" class=\"form-control\" formControlName=\"nombre\" placeholder=\"Nombre del coordinador\">\r\n            </div>\r\n            <!--email-->\r\n            <div class=\"col-md-6\">\r\n              <label class=\"required\">Email</label>\r\n              <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.coordinadores.controls[i].controls.email.valid && myForm.controls.coordinadores.controls[i].controls.email.touched\">Este campo es obligatorio</div>\r\n              <input type=\"email\" class=\"form-control\" formControlName=\"email\" placeholder=\"Dirección de Email\">\r\n            </div>\r\n          </div>\r\n        </div>\r\n        <div class=\"row tab\">\r\n          <div class=\"col-md-1\"></div>\r\n          <button type=\"button\" class=\"button btn-form mt0\" (click)=\"addCoordinador()\">\r\n            <i class=\"fa fa-plus\"></i> Añadir otro coordinador\r\n          </button>\r\n        </div>\r\n      </div>\r\n\r\n      <!-- DESTINATARIO -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Destinatario del proyecto</label>\r\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['destinatario'].valid && myForm.controls['destinatario'].touched\">Este campo es obligatorio</div>\r\n        <input class=\"form-control\" type=\"text\" formControlName=\"destinatario\" placeholder=\"Destinatario del proyecto\">\r\n      </div>\r\n\r\n      <!-- DESCRIPCION -->\r\n      <div class=\"form-group\">\r\n        <label class=\"required negrita\">Descripción</label>\r\n        <!-- <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div> -->\r\n        <textarea rows=\"5\" cols=\"50\" formControlName=\"descripcion\" placeholder=\"Descripción del proyecto\" class=\"form-control\"></textarea>\r\n      </div>\r\n\r\n      <!-- AMBITO -->\r\n      <div class=\"row\">\r\n        <div class=\"form-group col-md-6\">\r\n          <label class=\"required negrita\">Ambito</label>\r\n          <select class=\"form-control minimal\" formControlName=\"ambito\" (change)=\"onChangeAmbito($event.target.value) \">\r\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona un ámbito...</option>\r\n            <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\r\n              {{ ambito.nombre }}\r\n            </option>\r\n          </select>\r\n        </div>\r\n        <!-- ESPECIALIDAD -->\r\n        <div class=\"form-group col-md-6\">\r\n          <label class=\"required negrita\">Especialidad</label>\r\n          <select class=\"form-control minimal\" formControlName=\"especialidad\">\r\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona una especialidad...</option>\r\n            <option *ngFor=\"let especialidad of especialidades\" [ngValue]=\"especialidad.id\">\r\n              {{ especialidad.nombre }}\r\n            </option>\r\n          </select>\r\n\r\n\r\n          <!-- <label class=\"required negrita\">Especialidad</label> -->\r\n          <!-- <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div> -->\r\n          <!-- <input type=\"text\" formControlName=\"especialidad\" placeholder=\"Especialidad (p. ej.: 'Grado en Ingeniería Informática')\"\r\n            class=\"form-control\"> -->\r\n        </div>\r\n      </div>\r\n      <div class=\"row\">\r\n        <!-- UNIVERSIDAD -->\r\n        <div class=\"form-group col-md-8\">\r\n          <label class=\"required negrita\">Universidad</label>\r\n          <select class=\"form-control minimal\" formControlName=\"universidad\">\r\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona una universidad...</option>\r\n            <option *ngFor=\"let universidad of universidades\" [ngValue]=\"universidad.id\">\r\n              {{ universidad.nombre }}\r\n            </option>\r\n          </select>\r\n        </div>\r\n        <!-- FECHA -->\r\n\r\n        <div class=\"form-group col-md-4\">\r\n          <label class=\"required negrita\">Fecha</label>\r\n          <div class=\"input-group\">\r\n            <input formControlName=\"fecha\" class=\"form-control\" placeholder=\"dd-mm-yyyy\" name=\"dp\" ngbDatepicker #d=\"ngbDatepicker\">\r\n            <button class=\"input-group-addon\" (click)=\"d.toggle()\" type=\"button\">\r\n              <i class=\"fa fa-calendar\" style=\"width: 1.2rem; height: 1rem; cursor: pointer;\"></i>\r\n            </button>\r\n          </div>\r\n        </div>\r\n      </div>\r\n\r\n      <!-- Adjuntos(ARRAY) -->\r\n      <div formArrayName=\"adjuntos\">\r\n        <div class=\"form-group\">\r\n          <label class=\"negrita\" for=\"single\">Archivo adjunto</label>\r\n          <input type=\"file\" class=\"form-control\" name=\"single\" ng2FileSelect [uploader]=\"uploader\" />\r\n        </div>\r\n        <div *ngIf=\"uploader.queue.length > 0\">\r\n          <table class=\"table\">\r\n            <thead>\r\n              <tr>\r\n                <th width=\"50%\">Nombre</th>\r\n                <th>Tamaño</th>\r\n                <th>Progreso</th>\r\n                <th>Estado</th>\r\n                <th>Acciones</th>\r\n              </tr>\r\n            </thead>\r\n            <tbody>\r\n              <tr *ngFor=\"let item of uploader.queue\">\r\n                <td>\r\n                  <strong>{{ item.file.name }}</strong>\r\n                </td>\r\n                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\r\n                <td>\r\n                  <div class=\"progress\" style=\"margin-bottom: 0;\">\r\n                    <div class=\"progress-bar\" role=\"progressbar\" [ngStyle]=\"{ 'width': item.progress + '%' }\"></div>\r\n                  </div>\r\n                </td>\r\n                <td class=\"text-center\">\r\n                  <span *ngIf=\"item.isSuccess\">\r\n                    <i class=\"fa fa-check\" style=\"color:green\"></i>\r\n                  </span>\r\n                  <span *ngIf=\"item.isCancel\">\r\n                    <i class=\"fa fa-circle\" style=\"color:orange\"></i>\r\n                  </span>\r\n                  <span *ngIf=\"item.isError\">\r\n                    <i class=\"fa fa-cancel\" style=\"color:red\"></i>\r\n                  </span>\r\n                </td>\r\n                <td nowrap>\r\n                  <button type=\"button\" class=\"btn btn-success btn-xs\" (click)=\"subir(item)\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\r\n                    <span class=\"fa fa-upload\"></span> Subir\r\n                  </button>\r\n                  <button type=\"button\" class=\"btn btn-warning btn-xs\" (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\r\n                    <span class=\"fa fa-ban\"></span> Cancelar\r\n                  </button>\r\n                  <button type=\"button\" class=\"btn btn-danger btn-xs\" (click)=\"eliminar(item)\">\r\n                    <span class=\"fa fa-trash\"></span> Borrar\r\n                  </button>\r\n                </td>\r\n              </tr>\r\n            </tbody>\r\n          </table>\r\n        </div>\r\n\r\n\r\n      </div>\r\n\r\n\r\n      <!-- BOTONES -->\r\n      <div class=\"row\">\r\n        <div class=\"col-md-6\">\r\n          <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\r\n            <i class=\"fa fa-check\"></i> Aceptar\r\n          </button>\r\n        </div>\r\n        <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\r\n\r\n        <div class=\"col-md-6\">\r\n          <button type=\"button\" class=\"button cancel\" (click)=goback();>\r\n            <i class=\"fa fa-times\"></i> Cancelar\r\n          </button>\r\n        </div>\r\n      </div>\r\n      <!-- <div class=\"margin-20\" >\r\n        <div>myForm details:-</div>\r\n        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\r\n        <pre>form value: <br>{{myForm.value | json}}</pre>\r\n      </div> -->\r\n    </form>\r\n\r\n\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -2363,7 +2371,7 @@ module.exports = ""
 /***/ "./src/app/components/experiencias/experiencias-detail/experiencias-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/experiencias']\">\n            Experiencias ApS\n          </a>\n        </li>\n        <li routerLinkActive=\"active\">\n            <a (click)=goback();>\n              Listado\n            </a>\n          </li>\n           \n        <!-- <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/experiencias-list', {ambito_id: experiencia.ambito_id}]\">\n            Listado\n          </a>\n        </li> -->\n        <li>Detalle de experiencia</li>\n    </ul>\n  </div>\n  <br>\n  <div class=\"container-experiencias\">\n    <h3>{{experiencia.nombre}}\n      <div *ngIf=\"user\">\n        <span title=\"Eliminar la experiencia\" class=\"fa fa-remove pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\"\n          (click)=\"borrar()\"></span>\n        <span title=\"Actualizar datos\" class=\"fa fa-edit pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\" (click)=\"update(experiencia.id)\"></span>\n      </div>\n    </h3>\n    <h3>{{experiencia.universidad}} - {{experiencia.especialidad}}</h3>\n    <h4 *ngIf=\"experiencia.coordinadores.length > 1\">Coordinadores</h4>\n    <h4 *ngIf=\"experiencia.coordinadores.length == 1\">Coordinador</h4>\n    <div *ngFor=\"let coordinador of experiencia.coordinadores\">\n      <p>{{coordinador.nombre}} ({{coordinador.email}})</p>\n    </div>\n    <h4>Destinatario: </h4>\n    <p>{{experiencia.destinatario}}</p>\n    <h4>Descripción:</h4>\n    <p>{{experiencia.descripcion}}</p>\n    <br>\n    <br>\n    <hr>\n    <br>\n    <div *ngFor=\"let image of experiencia.adjuntos \">\n\n      <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n      <p></p>\n    </div>\n  </div>\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa-times\"></i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal  [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar experiencia? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
+module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/experiencias']\">\n            Experiencias ApS\n          </a>\n        </li>\n        <li routerLinkActive=\"active\">\n            <a (click)=goback();>\n              Listado\n            </a>\n          </li>\n           \n        <!-- <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/experiencias-list', {ambito_id: experiencia.ambito_id}]\">\n            Listado\n          </a>\n        </li> -->\n        <li>Detalle de experiencia</li>\n    </ul>\n  </div>\n  <br>\n  <div class=\"container-experiencias\">\n    <h3>{{experiencia.nombre}}\n      <div *ngIf=\"user\">\n        <span title=\"Eliminar la experiencia\" class=\"fa fa-remove pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\"\n          (click)=\"borrar()\"></span>\n        <span title=\"Actualizar datos\" class=\"fa fa-edit pull-right pointer icon-blue\" *ngIf=\"user.roles == 'Administrador'\" (click)=\"update(experiencia.id)\"></span>\n      </div>\n    </h3>\n    <h3>{{experiencia.universidad}} - {{experiencia.especialidad}}</h3>\n    <h4 *ngIf=\"experiencia.coordinadores.length > 1\">Coordinadores</h4>\n    <h4 *ngIf=\"experiencia.coordinadores.length == 1\">Coordinador</h4>\n    <div *ngFor=\"let coordinador of experiencia.coordinadores\">\n      <p>{{coordinador.nombre}} ({{coordinador.email}})</p>\n    </div>\n    <h4>Destinatario: </h4>\n    <p>{{experiencia.destinatario}}</p>\n    <h4>Descripción:</h4>\n    <p>{{experiencia.descripcion}}</p>\n    <br>\n    <br>\n    <hr>\n    <br>\n    <div *ngFor=\"let image of experiencia.adjuntos \">\n\n      <img src=\"/assets/uploads/{{image.nombre_fichero}}\" width=\"500\" height=\"400\" class=\"d-inline-block align-top\" alt=\"\" />\n      <p></p>\n    </div>\n  </div>\n  <!-- BOTONES -->\n  <div class=\"row\">\n    <div class=\"col-md-6\">\n      <button type=\"button\" class=\"button cancel\" (click)=goback();>\n        <i class=\"fa fa fa-chevron-circle-left\"> </i> Volver al listado\n      </button>\n    </div>\n    <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n  </div>\n\n</div>\n\n\n\n<!-- ************************************************************************** -->\n<!-- MODAL -->\n<!-- ************************************************************************** -->\n\n<bs-modal  [animation]=\"animation\" [keyboard]=\"keyboard\" [backdrop]=\"backdrop\" (onClose)=\"modalDeleteClosed()\" (onDismiss)=\"modalDeleteDismissed()\"\n  (onOpen)=\"modalDeleteOpened()\" #modal>\n  <bs-modal-header>\n    <h4 class=\"modal-title\">APS Virtual</h4>\n  </bs-modal-header>\n  <bs-modal-body>\n    <p>¿Borrar experiencia? Si acepta esta acción no podrá revertirla</p>\n  </bs-modal-body>\n  <bs-modal-footer>\n    <button type=\"button\" class=\"button expanded submit\" (click)=\"modalDelete.close()\">\n      <i class=\"fa fa-check\"></i> ok\n    </button>\n    <button type=\"button\" data-dismiss=\"modal\" class=\"button expanded cancel\" (click)=\"modalDelete.dismiss()\">\n      <i class=\"fa fa-times\"></i> Cancelar\n    </button>\n  </bs-modal-footer>\n</bs-modal>"
 
 /***/ }),
 
@@ -2475,14 +2483,14 @@ exports.ExperienciasDetailComponent = ExperienciasDetailComponent;
 /***/ "./src/app/components/experiencias/experiencias-list/experiencias-list.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".experiencia-detalle {\r\n    border-radius: 10px;\r\n    \r\n    margin-top: 2em;\r\n    margin-bottom: 1em;\r\n    margin-left: 0;\r\n    margin-right: 0;\r\n    padding-left: 40px;\r\n    padding-top: 10px;\r\n    padding-bottom: 10px;\r\n\r\n    background-color: rgb(212, 215, 216);\r\n    \r\n}\r\n"
 
 /***/ }),
 
 /***/ "./src/app/components/experiencias/experiencias-list/experiencias-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <ul class=\"breadcrumb\">\r\n      <li routerLinkActive=\"active\">\r\n        <a [routerLink]=\"['/home']\">\r\n          <i class=\"fa fa-home\"> Home </i>\r\n        </a>\r\n        <li routerLinkActive=\"active\">\r\n          <a [routerLink]=\"['/experiencias']\">\r\n            Experiencias ApS\r\n          </a>\r\n        </li>\r\n        <li>Listado</li>\r\n    </ul>\r\n  </div>\r\n\r\n  <div class=\"container-experiencias\">\r\n    <h1>{{nombreLista}}</h1>\r\n    <br>\r\n    <div *ngIf=\"experiencias.length > 0\">\r\n      <div class=\"experiencia-detalle\" *ngFor=\"let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p}; let i = index\">\r\n        <h3>{{experiencia.nombre}}</h3>\r\n        <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>\r\n        <h4><span title = \"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(experiencia.id)\"></span></h4>\r\n        <br>\r\n        <br>\r\n        <br>\r\n      </div>\r\n    </div>\r\n    <div *ngIf=\"experiencias.length == 0\">\r\n      <h3>NO HAY NINGUNA EXPERIENCIA EN ESTE AMBITO</h3>\r\n    </div>\r\n    <br>\r\n    <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\r\n      screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\" autoHide=\"true\"></pagination-controls>\r\n    <br>\r\n  </div>\r\n</div>\r\n\r\n"
+module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <ul class=\"breadcrumb\">\r\n      <li routerLinkActive=\"active\">\r\n        <a [routerLink]=\"['/home']\">\r\n          <i class=\"fa fa-home\"> Home </i>\r\n        </a>\r\n        <li routerLinkActive=\"active\">\r\n          <a [routerLink]=\"['/experiencias']\">\r\n            Experiencias ApS\r\n          </a>\r\n        </li>\r\n        <li>Listado</li>\r\n    </ul>\r\n  </div>\r\n\r\n  <div class=\"container-experiencias\">\r\n    <h1> {{titulo}}</h1>\r\n    <div *ngIf=\"sCriteria !=''\">\r\n      <p>\r\n        <span class=\"negrita\">Criterios de búsqueda: </span>{{sCriteria}}</p>\r\n    </div>\r\n    <div *ngIf=\"experiencias.length > 0\">\r\n      <div class=\"experiencia-detalle\" *ngFor=\"let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p, totalItems: total}; let i = index\">\r\n        <h2>{{experiencia.nombre}}</h2>\r\n        <h3>Finalizada el: {{experiencia.fecha}}</h3>\r\n        <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>\r\n        <br>\r\n        <h4>\r\n          <span title=\"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(experiencia.id)\"></span>\r\n        </h4>\r\n      </div>\r\n    </div>\r\n    <div *ngIf=\"experiencias.length == 0\">\r\n      <h3>NO HAY NINGUNA EXPERIENCIA PREVIA.</h3>\r\n    </div>\r\n    <br>\r\n    <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\r\n      screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\" autoHide=\"true\"></pagination-controls>\r\n    <br>\r\n    <!-- BOTONES -->\r\n    <div class=\"row\">\r\n      <div class=\"col-md-6\">\r\n        <button type=\"button\" class=\"button cancel\" (click)=goback();>\r\n          <i class=\"fa fa-times\"></i> Volver atrás\r\n        </button>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n</div>"
 
 /***/ }),
 
@@ -2502,28 +2510,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var exp_service_1 = __webpack_require__("./src/app/components/experiencias/exp.service.ts");
 var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
 var ExperienciasListComponent = /** @class */ (function () {
-    function ExperienciasListComponent(expService, router, activatedRoute, authService) {
+    function ExperienciasListComponent(expService, router, activatedRoute, _location, authService) {
         this.expService = expService;
         this.router = router;
         this.activatedRoute = activatedRoute;
+        this._location = _location;
         this.p = 1;
         this.itemsPerPage = 25;
         this.postsPerPage = [25, 50, 100];
         this.experiencias = [];
+        this.total = 0;
     }
     ExperienciasListComponent.prototype.ngOnInit = function () {
         var _this = this;
         // subscribe to router event
         //this.ambitoId = this.activatedRoute.snapshot.queryParams["ambito_id"];
         this.experiencias = [];
-        this.ambitoId = 0;
+        //this.ambitoId = 0;
         this.activatedRoute.params.subscribe(function (params) {
             _this.ambitoId = params['ambito_id'];
-            _this.open();
+            if (_this.ambitoId != undefined)
+                _this.open();
+            else {
+                console.log("experiencias en list: " + JSON.stringify(_this.expService.experiencias));
+                _this.experiencias = _this.expService.experiencias;
+                _this.titulo = "Resultados de busqueda de Experiencias en ApS";
+                _this.sCriteria = _this.expService.sCriteria;
+            }
         });
     };
     ExperienciasListComponent.prototype.ngOnDestroy = function () {
@@ -2548,25 +2566,29 @@ var ExperienciasListComponent = /** @class */ (function () {
                 console.log("Experiencias: ", _this.experiencias);
             }
         });
+        this.titulo = "Experiencias de ApS desarrolladas - ";
         switch (this.ambitoId.toString()) {
             case "1":
-                this.nombreLista = "Artes y Humanidades";
+                this.titulo += "Artes y Humanidades";
                 break;
             case "2":
-                this.nombreLista = "Ciencias";
+                this.titulo += "Ciencias";
                 break;
             case "3":
-                this.nombreLista = "Ciencias de la Salud";
+                this.titulo += "Ciencias de la Salud";
                 break;
             case "4":
-                this.nombreLista = "Ciencias Sociales y Políticas";
+                this.titulo += "Ciencias Sociales y Políticas";
                 break;
             case "5":
-                this.nombreLista = "Arquitectura e Ingeniería";
+                this.titulo += "Arquitectura e Ingeniería";
                 break;
             default:
                 break;
         }
+    };
+    ExperienciasListComponent.prototype.goback = function () {
+        this._location.back();
     };
     ExperienciasListComponent.prototype.showDetail = function (expId) {
         var _this = this;
@@ -2594,6 +2616,7 @@ var ExperienciasListComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [exp_service_1.ExpService,
             router_1.Router,
             router_1.ActivatedRoute,
+            common_1.Location,
             auth_service_1.AuthService])
     ], ExperienciasListComponent);
     return ExperienciasListComponent;
@@ -2613,7 +2636,7 @@ module.exports = ""
 /***/ "./src/app/components/experiencias/experiencias-search/experiencias-search.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n      <ul class=\"breadcrumb\">\r\n          <li routerLinkActive=\"active\"><a [routerLink]=\"['/home']\">\r\n              <i class=\"fa fa-home\"> Home </i>\r\n          </a>\r\n          <li routerLinkActive=\"active\"><a [routerLink]=\"['/experiencias']\">\r\n             Experiencias APS\r\n          </a>\r\n          </li>\r\n          <li>Buscar</li>\r\n      </ul>  \r\n  </div>    \r\n"
+module.exports = "<app-navigation-menu-experiencias> </app-navigation-menu-experiencias>\r\n<div class=\"container\">\r\n    <div class=\"row\">\r\n        <ul class=\"breadcrumb\">\r\n            <li routerLinkActive=\"active\">\r\n                <a [routerLink]=\"['/home']\">\r\n                    <i class=\"fa fa-home\"> Home </i>\r\n                </a>\r\n                <li routerLinkActive=\"active\">\r\n                    <a [routerLink]=\"['/experiencias']\">\r\n                        Experiencias APS\r\n                    </a>\r\n                </li>\r\n                <li>Buscar</li>\r\n        </ul>\r\n    </div>\r\n\r\n    <div class=\"container-center col-md-10\">\r\n        <!-- TITULO -->\r\n        <h2>Buscar experiencias previas de ApS Virtual</h2>\r\n        <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"search(myForm)\">\r\n\r\n            <!-- NOMBRE -->\r\n            <div class=\"form-group\">\r\n                <label class=\"negrita\">Nombre del proyecto</label>\r\n                <input type=\"text\" formControlName=\"nombre\" placeholder=\"Nombre del proyecto a buscar. Proporcione una coincidencia total o parcial\" class=\"form-control\">\r\n            </div>\r\n\r\n\r\n            <!-- AMBITO -->\r\n            <div class=\"row\">\r\n                <div class=\"form-group col-md-6\">\r\n                    <label class=\"negrita\">Ambito</label>\r\n                    <select class=\"form-control\" formControlName=\"ambito\" (change)=\"onChangeAmbito($event.target.value) \">\r\n                        <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona un ámbito...</option>\r\n                        <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\r\n                            {{ ambito.nombre }}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <!-- ESPECIALIDAD -->\r\n                <div class=\"form-group col-md-6\">\r\n                    <label class=\"negrita\">Especialidad</label>\r\n                    <select class=\"form-control\" formControlName=\"especialidad\">\r\n                        <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona una especialidad...</option>\r\n                        <option *ngFor=\"let especialidad of especialidades\" [ngValue]=\"especialidad.id\">\r\n                            {{ especialidad.nombre }}\r\n                        </option>\r\n                    </select>\r\n\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <!-- UNIVERSIDAD -->\r\n                <div class=\"form-group col-md-8\">\r\n                    <label class=\"negrita\">Universidad</label>\r\n                    <select class=\"form-control\" formControlName=\"universidad\">\r\n                        <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona una universidad...</option>\r\n                        <option *ngFor=\"let universidad of universidades\" [ngValue]=\"universidad.id\">\r\n                            {{ universidad.nombre }}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <!-- FECHA -->\r\n\r\n                <div class=\"form-group col-md-4\">\r\n                    <label class=\"negrita\">Fecha de finalización anterior a ...</label>\r\n                    <div class=\"input-group\">\r\n                        <input formControlName=\"fecha\" class=\"form-control\" placeholder=\"dd-mm-yyyy\" name=\"dp\" ngbDatepicker #d=\"ngbDatepicker\">\r\n                        <button class=\"input-group-addon\" (click)=\"d.toggle()\" type=\"button\">\r\n                            <i class=\"fa fa-calendar\" style=\"width: 1.2rem; height: 1rem; cursor: pointer;\"></i>\r\n                        </button>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n\r\n            <!-- BOTONES -->\r\n            <div class=\"row\">\r\n                <div class=\"col-md-6\">\r\n                    <button type=\"submit\" class=\"button submit\">\r\n                        <i class=\"fa fa-check\"></i> Buscar\r\n                    </button>\r\n                </div>\r\n                <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\r\n\r\n                <div class=\"col-md-6\">\r\n                    <button type=\"button\" class=\"button cancel\" (click)=goback();>\r\n                        <i class=\"fa fa-times\"></i> Cancelar\r\n                    </button>\r\n                </div>\r\n            </div>\r\n            <!-- <div class=\"margin-20\" >\r\n            <div>myForm details:-</div>\r\n            <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\r\n            <pre>form value: <br>{{myForm.value | json}}</pre>\r\n          </div> -->\r\n\r\n        </form>\r\n\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -2633,10 +2656,100 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
+var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+var exp_service_1 = __webpack_require__("./src/app/components/experiencias/exp.service.ts");
+var now = new Date();
 var ExperienciasSearchComponent = /** @class */ (function () {
-    function ExperienciasSearchComponent() {
+    function ExperienciasSearchComponent(_expService, _router, _location, _fb) {
+        var _this = this;
+        this._expService = _expService;
+        this._router = _router;
+        this._location = _location;
+        this._fb = _fb;
+        _expService.getAmbitos().subscribe(function (ambitosList) {
+            _this.ambitos = ambitosList;
+        });
+        _expService.getUniversidades().subscribe(function (universidadesList) {
+            _this.universidades = universidadesList;
+        });
+        this.newExp = {}; //Esta es la forma correcta de inicializar un objeto basado en una Interface cuando no se requieren valores iniciales.
+        this.myForm = _fb.group({
+            'nombre': ['', forms_1.Validators.required],
+            'destinatario': ['', forms_1.Validators.required],
+            'descripcion': ['', forms_1.Validators.required],
+            'fecha': ['', forms_1.Validators.required],
+            'ambito': [null, forms_1.Validators.required],
+            'especialidad': ['', forms_1.Validators.required],
+            'universidad': ['', forms_1.Validators.required],
+        });
+        this.myForm.valueChanges.subscribe(function (data) {
+            var fecha = _this.myForm.controls['fecha'];
+            if (fecha.value != '') {
+                _this.message = null;
+                //this.myForm.controls.get['fecha']).setValue("12/12/2001")
+                //console.log(fecha.value)  
+            }
+        });
     }
     ExperienciasSearchComponent.prototype.ngOnInit = function () {
+    };
+    ExperienciasSearchComponent.prototype.selectToday = function () {
+        this.model = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    };
+    ExperienciasSearchComponent.prototype.onChangeAmbito = function (value) {
+        var _this = this;
+        var idx = parseInt(value);
+        if (idx == 0)
+            return;
+        this._expService.getEspecialidades(idx).subscribe(function (especialidadesList) {
+            _this.especialidades = especialidadesList;
+        });
+    };
+    ExperienciasSearchComponent.prototype.goback = function () {
+        this._router.navigate(['/experiencias']);
+    };
+    ExperienciasSearchComponent.prototype.search = function (model) {
+        var _this = this;
+        var sCriteria = "";
+        this.newExp = this.myForm.value;
+        if (this.newExp.nombre != "")
+            sCriteria += "nombre: " + this.newExp.nombre + "; ";
+        if (this.newExp.ambito == "0" || this.newExp.ambito == null)
+            this.newExp.ambito = "";
+        else
+            sCriteria += "ambito: '" + this.getNombre(this.ambitos, this.newExp.ambito) + "'; ";
+        if (this.newExp.especialidad == "")
+            this.newExp.especialidad = "";
+        else
+            sCriteria += "especialidad: '" + this.getNombre(this.especialidades, this.newExp.especialidad) + "'; ";
+        if (this.newExp.universidad == "")
+            this.newExp.universidad = "";
+        else
+            sCriteria += "universidad: '" + this.getNombre(this.universidades, this.newExp.universidad) + "'; ";
+        if (this.myForm.controls['fecha'].value != "") {
+            var ngbDate = this.myForm.controls['fecha'].value;
+            var formatDate = (ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year);
+            sCriteria += "fecha: " + formatDate + "; ";
+        }
+        this._expService.sCriteria = sCriteria;
+        this._expService.searchExperiencias(this.newExp).subscribe(function (res) {
+            if (res['success'] == true) {
+                _this._expService.experiencias = res['exp'];
+                _this._router.navigate(['/experiencias-list']);
+            }
+            else {
+                console.log(res['message']);
+                _this.message = res['message'];
+            }
+        });
+    };
+    ExperienciasSearchComponent.prototype.getNombre = function (lista, idx) {
+        for (var key = 0; key < lista.length; key++)
+            if ((lista[key].id) == idx)
+                return lista[key].nombre;
+        return "";
     };
     ExperienciasSearchComponent = __decorate([
         core_1.Component({
@@ -2644,7 +2757,10 @@ var ExperienciasSearchComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/components/experiencias/experiencias-search/experiencias-search.component.html"),
             styles: [__webpack_require__("./src/app/components/experiencias/experiencias-search/experiencias-search.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [exp_service_1.ExpService,
+            router_1.Router,
+            common_1.Location,
+            forms_1.FormBuilder])
     ], ExperienciasSearchComponent);
     return ExperienciasSearchComponent;
 }());
@@ -3423,7 +3539,7 @@ module.exports = ".nv-file-over { border: dotted 3px red; } /* Default class app
 /***/ "./src/app/components/proyectos/proyectos-create/proyectos-create.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos APS\n          </a>\n        </li>\n        <li>Insertar nueva</li>\n    </ul>\n  </div>\n  <div class=\"container-center col-md-10\">\n\n    <!-- TITULO -->\n    <h2>Insertar un proyecto de ApS</h2>\n    <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"save(myForm)\">\n\n      <!--------------------------------  CAMPOS ------------------------------------------>\n\n      <!-- NOMBRE -->\n      <div class=\"form-group\">\n        <label class=\"required negrita\">Nombre del proyecto</label>\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre.valid && myForm.controls.nombre.touched\">Este campo es obligatorio</div>\n        <input type=\"text\" formControlName=\"nombre\" placeholder=\"Introduce aquí el nombre del proyecto\" class=\"form-control\">\n      </div>\n\n      <!-- ENTIDAD -->\n      <div class=\"form-group\" id=\"div_entidad\">\n        <div>\n          <label class=\"negrita\">Entidad demandante del proyecto</label>\n        </div>\n        <div class=\"row\">\n          <!--nombre-->\n          <div class=\"col-md-5\">\n            <label class=\"required negrita\">Nombre</label>\n            <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre_entidad.valid && myForm.controls.nombre_entidad.touched\">Este campo es obligatorio</div>\n            <input type=\"text\" class=\"form-control\" formControlName=\"nombre_entidad\" placeholder=\"Nombre de la entidad\">\n          </div>\n          <!--email-->\n          <div class=\"col-md-6\">\n            <label class=\"required negrita\">Email</label>\n            <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.email_entidad.valid && myForm.controls.email_entidad.touched\">Este campo es obligatorio</div>\n            <input type=\"email\" class=\"form-control\" formControlName=\"email_entidad\" placeholder=\"Dirección de Email\">\n          </div>\n        </div>\n        <div class=\"row\">\n          <div class=\"form-group col-md-6\">\n            <label class=\"required negrita\">Provincia</label>\n            <select class=\"form-control minimal\" formControlName=\"provincia\">\n              <option [ngValue]=\"0\">Selecciona una provincia</option>\n              <option *ngFor=\"let provincia of provincias\" [ngValue]=\"provincia.id\">\n                {{ provincia.nombre }}\n              </option>\n            </select>\n          </div>\n          <div class=\"col-md-5\">\n            <div class=\"form-group\">\n              <label class=\"required negrita\">Municipio</label>\n              <input type=\"text\" class=\"form-control\" formControlName=\"municipio_entidad\" placeholder=\"Municipio de la entidad\">\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- DESCRIPCION -->\n      <div class=\"form-group\">\n        <label class=\"required negrita\">Descripción</label>\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div>\n        <textarea rows=\"5\" cols=\"50\" formControlName=\"descripcion\" placeholder=\"Descripción del proyecto\" class=\"form-control\"></textarea>\n      </div>\n\n      <!-- AMBITO -->\n      <div class=\"row\">\n        <div class=\"form-group col-md-6\">\n          <label class=\"required negrita\">Ambito</label>\n          <select class=\"form-control minimal\" formControlName=\"ambito\" >\n            <option [ngValue]=\"0\">Selecciona un ámbito</option>\n            <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\n              {{ ambito.nombre }}\n            </option>\n          </select>\n        </div>\n      </div>\n\n      <!-- Adjuntos(ARRAY) -->\n      <div formArrayName=\"adjuntos\">\n        <!-- <div *ngFor=\"let adjunto of myForm.controls.adjuntos.controls; let i=index\"> -->\n          <div class=\"form-group\">\n            <label class=\"negrita\" for=\"single\">Archivo adjunto</label>\n            <input type=\"file\" class=\"form-control\" name=\"single\" ng2FileSelect [uploader]=\"uploader\" />\n          </div>\n\n          <table class=\"table\">\n            <thead>\n              <tr>\n                <th width=\"50%\">Nombre</th>\n                <th>Tamaño</th>\n                <th>Progreso</th>\n                <th>Estado</th>\n                <th>Acciones</th>\n              </tr>\n            </thead>\n            <tbody>\n              <tr *ngFor=\"let item of uploader.queue\">\n                <td>\n                  <strong>{{ item.file.name }}</strong>\n                </td>\n                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\n                <td>\n                  <div class=\"progress\" style=\"margin-bottom: 0;\">\n                    <div class=\"progress-bar\" role=\"progressbar\" [ngStyle]=\"{ 'width': item.progress + '%' }\"></div>\n                  </div>\n                </td>\n                <td class=\"text-center\">\n                  <span *ngIf=\"item.isSuccess\">\n                    <i class=\"fa fa-check\" style=\"color:green\"></i>\n                  </span>\n                  <span *ngIf=\"item.isCancel\">\n                    <i class=\"fa fa-circle\" style=\"color:orange\"></i>\n                  </span>\n                  <span *ngIf=\"item.isError\">\n                    <i class=\"fa fa-cancel\" style=\"color:red\"></i>\n                  </span>\n                </td>\n                <td nowrap>\n                  <button type=\"button\" class=\"btn btn-success btn-xs\" (click)=\"subir(item)\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\n                    <span class=\"fa fa-upload\"></span> Subir\n                  </button>\n                  <button type=\"button\" class=\"btn btn-warning btn-xs\" (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\n                    <span class=\"fa fa-ban\"></span> Cancelar\n                  </button>\n                  <button type=\"button\" class=\"btn btn-danger btn-xs\" (click)=\"eliminar(item)\">\n                    <span class=\"fa fa-trash\"></span> Borrar\n                  </button>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n\n\n        <!-- </div> -->\n\n      </div>\n\n      <!-- BOTONES -->\n      <div class=\"row\">\n        <div class=\"col-md-6\">\n          <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\n            <i class=\"fa fa-check\"></i> Aceptar\n          </button>\n        </div>\n        <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n\n        <div class=\"col-md-6\">\n          <button type=\"button\" class=\"button cancel\" (click)=goback();>\n            <i class=\"fa fa-times\"></i> Cancelar\n          </button>\n        </div>\n      </div>\n      <!-- <div class=\"margin-20\">\n        <div>myForm details:-</div>\n        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\n        <pre>form value: <br>{{myForm.value | json}}</pre>\n      </div>  -->\n    </form>\n\n\n  </div>\n</div>"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos APS\n          </a>\n        </li>\n        <li>Insertar nueva</li>\n    </ul>\n  </div>\n  <div class=\"container-center col-md-10\">\n\n    <!-- TITULO -->\n    <h2>Insertar un proyecto de ApS</h2>\n    <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"save(myForm)\">\n\n      <!--------------------------------  CAMPOS ------------------------------------------>\n\n      <!-- NOMBRE -->\n      <div class=\"form-group\">\n        <label class=\"required negrita\">Nombre del proyecto</label>\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre.valid && myForm.controls.nombre.touched\">Este campo es obligatorio</div>\n        <input type=\"text\" formControlName=\"nombre\" placeholder=\"Introduce aquí el nombre del proyecto\" class=\"form-control\">\n      </div>\n\n      <!-- ENTIDAD -->\n      <div class=\"form-group\" id=\"div_entidad\">\n        <div>\n          <label class=\"negrita\">Entidad demandante del proyecto</label>\n        </div>\n        <div class=\"row\">\n          <!--nombre-->\n          <div class=\"col-md-5\">\n            <label class=\"required negrita\">Nombre</label>\n            <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.nombre_entidad.valid && myForm.controls.nombre_entidad.touched\">Este campo es obligatorio</div>\n            <input type=\"text\" class=\"form-control\" formControlName=\"nombre_entidad\" placeholder=\"Nombre de la entidad\">\n          </div>\n          <!--email-->\n          <div class=\"col-md-6\">\n            <label class=\"required negrita\">Email</label>\n            <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls.email_entidad.valid && myForm.controls.email_entidad.touched\">Este campo es obligatorio</div>\n            <input type=\"email\" class=\"form-control\" formControlName=\"email_entidad\" placeholder=\"Dirección de Email\">\n          </div>\n        </div>\n        <div class=\"row\">\n          <div class=\"form-group col-md-6\">\n            <label class=\"required negrita\">Provincia</label>\n            <select class=\"form-control minimal\" formControlName=\"provincia\">\n              <option [ngValue]=\"0\">Selecciona una provincia</option>\n              <option *ngFor=\"let provincia of provincias\" [ngValue]=\"provincia.id\">\n                {{ provincia.nombre }}\n              </option>\n            </select>\n          </div>\n          <div class=\"col-md-5\">\n            <div class=\"form-group\">\n              <label class=\"required negrita\">Municipio</label>\n              <input type=\"text\" class=\"form-control\" formControlName=\"municipio_entidad\" placeholder=\"Municipio de la entidad\">\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- DESCRIPCION -->\n      <div class=\"form-group\">\n        <label class=\"required negrita\">Descripción</label>\n        <div class=\"alert alert-danger\" *ngIf=\"!myForm.controls['descripcion'].valid && myForm.controls['descripcion'].touched\">Este campo es obligatorio</div>\n        <textarea rows=\"5\" cols=\"50\" formControlName=\"descripcion\" placeholder=\"Descripción del proyecto\" class=\"form-control\"></textarea>\n      </div>\n\n      <!-- AMBITO -->\n      <div class=\"row\">\n        <div class=\"form-group col-md-6\">\n          <label class=\"required negrita\">Ambito</label>\n          <select class=\"form-control minimal\" formControlName=\"ambito\">\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Selecciona un ámbito...</option>\n            <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\n              {{ ambito.nombre }}\n            </option>\n          </select>\n        </div>\n      </div>\n\n      <!-- Adjuntos(ARRAY) -->\n      <div formArrayName=\"adjuntos\">\n        <!-- <div *ngFor=\"let adjunto of myForm.controls.adjuntos.controls; let i=index\"> -->\n        <div class=\"form-group\">\n          <label class=\"negrita\" for=\"single\">Archivo adjunto</label>\n          <input type=\"file\" class=\"form-control\" name=\"single\" ng2FileSelect [uploader]=\"uploader\" />\n        </div>\n        <div *ngIf=\"uploader.queue.length > 0\">\n          <table class=\"table\">\n            <thead>\n              <tr>\n                <th width=\"50%\">Nombre</th>\n                <th>Tamaño</th>\n                <th>Progreso</th>\n                <th>Estado</th>\n                <th>Acciones</th>\n              </tr>\n            </thead>\n            <tbody>\n              <tr *ngFor=\"let item of uploader.queue\">\n                <td>\n                  <strong>{{ item.file.name }}</strong>\n                </td>\n                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>\n                <td>\n                  <div class=\"progress\" style=\"margin-bottom: 0;\">\n                    <div class=\"progress-bar\" role=\"progressbar\" [ngStyle]=\"{ 'width': item.progress + '%' }\"></div>\n                  </div>\n                </td>\n                <td class=\"text-center\">\n                  <span *ngIf=\"item.isSuccess\">\n                    <i class=\"fa fa-check\" style=\"color:green\"></i>\n                  </span>\n                  <span *ngIf=\"item.isCancel\">\n                    <i class=\"fa fa-circle\" style=\"color:orange\"></i>\n                  </span>\n                  <span *ngIf=\"item.isError\">\n                    <i class=\"fa fa-cancel\" style=\"color:red\"></i>\n                  </span>\n                </td>\n                <td nowrap>\n                  <button type=\"button\" class=\"btn btn-success btn-xs\" (click)=\"subir(item)\" [disabled]=\"item.isReady || item.isUploading || item.isSuccess\">\n                    <span class=\"fa fa-upload\"></span> Subir\n                  </button>\n                  <button type=\"button\" class=\"btn btn-warning btn-xs\" (click)=\"item.cancel()\" [disabled]=\"!item.isUploading\">\n                    <span class=\"fa fa-ban\"></span> Cancelar\n                  </button>\n                  <button type=\"button\" class=\"btn btn-danger btn-xs\" (click)=\"eliminar(item)\">\n                    <span class=\"fa fa-trash\"></span> Borrar\n                  </button>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </div>\n      </div>\n\n      <!-- BOTONES -->\n      <div class=\"row\">\n        <div class=\"col-md-6\">\n          <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\n            <i class=\"fa fa-check\"></i> Aceptar\n          </button>\n        </div>\n        <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n\n        <div class=\"col-md-6\">\n          <button type=\"button\" class=\"button cancel\" (click)=goback();>\n            <i class=\"fa fa-times\"></i> Cancelar\n          </button>\n        </div>\n      </div>\n      <!-- <div class=\"margin-20\">\n        <div>myForm details:-</div>\n        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>\n        <pre>form value: <br>{{myForm.value | json}}</pre>\n      </div>  -->\n    </form>\n\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -4565,7 +4681,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos-list/proyectos-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li>Listado</li>\n    </ul>\n  </div>\n\n  <div class=\"container-experiencias\">\n    <h1>{{nombreLista}}</h1>\n    <br>\n    <div *ngIf=\"proyectos.length > 0\">\n      <div class=\"experiencia-detalle\" *ngFor=\"let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index\">\n        <h2>{{proyecto.nombre}}</h2>\n        <h5>Estado: </h5>\n        <h4>{{proyecto.estado.nombre}}</h4>\n        <h5>Entidad demandante: </h5>\n        <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>\n        <div *ngIf=\"proyecto.universidad != null\">\n          <h5>Universidad: </h5>\n          <h4>{{proyecto.universidad}}</h4>\n        </div>\n        <h4>\n          <span title=\"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(proyecto.id)\"></span>\n        </h4>\n        <br>\n        <br>\n        <br>\n      </div>\n    </div>\n    <div *ngIf=\"proyectos.length == 0\">\n      <h3>NO HAY NINGUN PROYECTO</h3>\n    </div>\n    <br>\n    <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n      screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n    <br>\n  </div>\n</div>"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/proyectos']\">\n            Proyectos ApS\n          </a>\n        </li>\n        <li>Listado</li>\n    </ul>\n  </div>\n\n  <div class=\"container-experiencias\">\n    <h1> {{titulo}}</h1>\n    <div *ngIf=\"sCriteria != null\">\n      <div *ngIf=\"sCriteria !=''\">\n        <p>\n          <span class=\"negrita\">Criterios de búsqueda: </span>{{sCriteria}}</p>\n      </div>\n    </div>\n    <div *ngIf=\"proyectos != null\">\n      <div *ngIf=\"proyectos.length > 0\">\n\n        <div class=\"experiencia-detalle\" *ngFor=\"let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index\">\n          <h2>{{proyecto.nombre}}</h2>\n          <h5>Estado: </h5>\n          <h4>{{proyecto.estado.nombre}}</h4>\n          <h5>Entidad demandante: </h5>\n          <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>\n          <div *ngIf=\"proyecto.universidad != null\">\n            <h5>Universidad: </h5>\n            <h4>{{proyecto.universidad}}</h4>\n          </div>\n          <h4>\n            <span title=\"Ampliar detalle\" class=\"fa fa-file-text pointer icon-blue\" (click)=\"showDetail(proyecto.id)\"></span>\n          </h4>\n          <br>\n        </div>\n        \n        <pagination-controls (pageChange)=\"p = $event\" previousLabel=\"Anterior\" nextLabel=\"Siguiente\" screenReaderPaginationLabel=\"Paginación \"\n          screenReaderPageLabel=\"página\" screenReaderCurrentLabel=\"estás en la página\"></pagination-controls>\n\n      </div>\n      <div *ngIf=\"proyectos.length == 0\">\n        <h3>NO HAY NINGUN PROYECTO</h3>\n      </div>\n    </div>\n    <div *ngIf=\"proyectos == null\">\n      <h3>NO HAY NINGUN PROYECTO</h3>\n    </div>\n    <br>\n\n    <!-- BOTONES -->\n    <div class=\"row\">\n      <div class=\"col-md-6\">\n        <button type=\"button\" class=\"button cancel\" (click)=goback();>\n          <i class=\"fa fa-times\"></i> Volver atrás\n        </button>\n      </div>\n    </div>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -4585,33 +4701,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 var proyectos_service_1 = __webpack_require__("./src/app/components/proyectos/proyectos.service.ts");
 var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
 var ProyectosListComponent = /** @class */ (function () {
-    function ProyectosListComponent(_proyectosService, router, activatedRoute, authService) {
+    function ProyectosListComponent(_proyectosService, router, activatedRoute, _location, authService) {
         var _this = this;
         this._proyectosService = _proyectosService;
         this.router = router;
         this.activatedRoute = activatedRoute;
+        this._location = _location;
         this.p = 1;
         this.itemsPerPage = 25;
         this.postsPerPage = [25, 50, 100];
+        this.proyectos = [];
+        this.sCriteria = "";
         this.user = authService.user;
         authService.user$.subscribe(function (user) {
             _this.user = user;
         });
     }
     ProyectosListComponent.prototype.ngOnInit = function () {
-        var _this = this;
         // subscribe to router event
         //this.ambitoId = this.activatedRoute.snapshot.queryParams["ambito_id"];
-        this.proyectos = [];
+        var _this = this;
         this.activatedRoute.params.subscribe(function (params) {
             _this.ambitoId = params['ambito_id'];
             _this.estadoId = params['estado_id'];
-            ((_this.ambitoId == null) ? _this.ambitoId = 0 : _this.estadoId = 0);
-            _this.open();
+            console.log("ambito", _this.ambitoId);
+            if (_this.ambitoId == undefined && _this.estadoId == undefined) {
+                _this.titulo = "Resultados de busqueda de Proyectos en ApS";
+                _this.proyectos = _this._proyectosService.proyectos;
+                _this.sCriteria = _this._proyectosService.sCriteria;
+            }
+            else {
+                ((_this.ambitoId == null) ? _this.ambitoId = 0 : _this.estadoId = 0);
+                _this.open();
+            }
         });
     };
     ProyectosListComponent.prototype.ngOnDestroy = function () {
@@ -4651,44 +4778,48 @@ var ProyectosListComponent = /** @class */ (function () {
             }
         });
         console.log("estado", this.estadoId);
+        this.titulo = "Proyectos de ApS - ";
         switch (this.estadoId.toString()) {
             case "1":
-                this.nombreLista = "Proyectos solicitado por entidad externa";
+                this.titulo += "solicitado por entidad externa";
                 break;
             case "2":
-                this.nombreLista = "Proyectos apadrinado por algún docente";
+                this.titulo += "apadrinado por algún docente";
                 break;
             case "3":
-                this.nombreLista = "Proyectos en fase de aceptación de candidatos";
+                this.titulo += "en fase de aceptación de candidatos";
                 break;
             case "4":
-                this.nombreLista = "Proyectos en curso";
+                this.titulo += "en curso";
                 break;
             case "5":
-                this.nombreLista = "Proyectos finalizado";
+                this.titulo += "finalizado";
                 break;
             default:
                 break;
         }
         switch (this.ambitoId.toString()) {
             case "1":
-                this.nombreLista = "Proyectos pertenecientes al ambito de Artes y Humanidades";
+                this.titulo += "pertenecientes al ambito de Artes y Humanidades";
                 break;
             case "2":
-                this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias";
+                this.titulo += "pertenecientes al ambito de Ciencias";
                 break;
             case "3":
-                this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias de la Salud";
+                this.titulo += "pertenecientes al ambito de Ciencias de la Salud";
                 break;
             case "4":
-                this.nombreLista = "Proyectos pertenecientes al ambito de Ciencias Sociales y Políticas";
+                this.titulo += "pertenecientes al ambito de Ciencias Sociales y Políticas";
                 break;
             case "5":
-                this.nombreLista = "Proyectos pertenecientes al ambito de Arquitectura e Ingeniería";
+                this.titulo += "pertenecientes al ambito de Arquitectura e Ingeniería";
                 break;
             default:
                 break;
         }
+    };
+    ProyectosListComponent.prototype.goback = function () {
+        this._location.back();
     };
     ProyectosListComponent.prototype.showDetail = function (projId) {
         var _this = this;
@@ -4716,6 +4847,7 @@ var ProyectosListComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [proyectos_service_1.ProyectosService,
             router_1.Router,
             router_1.ActivatedRoute,
+            common_1.Location,
             auth_service_1.AuthService])
     ], ProyectosListComponent);
     return ProyectosListComponent;
@@ -4735,7 +4867,7 @@ module.exports = ""
 /***/ "./src/app/components/proyectos/proyectos-search/proyectos-search.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  proyectos-search works!\n</p>\n"
+module.exports = "<app-navigation-menu-proyectos> </app-navigation-menu-proyectos>\n<div class=\"container\">\n  <div class=\"row\">\n    <ul class=\"breadcrumb\">\n      <li routerLinkActive=\"active\">\n        <a [routerLink]=\"['/home']\">\n          <i class=\"fa fa-home\"> Home </i>\n        </a>\n        <li routerLinkActive=\"active\">\n          <a [routerLink]=\"['/experiencias']\">\n            Proyectos APS\n          </a>\n        </li>\n        <li>Buscar</li>\n    </ul>\n  </div>\n\n  <div class=\"container-center col-md-10\">\n    <!-- TITULO -->\n    <h2>Buscar Proyectos de ApS Virtual</h2>\n    <form [formGroup]=\"myForm\" novalidate (ngSubmit)=\"search(myForm)\">\n\n      <!-- ESTADO -->\n      <div class=\"row\">\n        <div class=\"form-group col-md-6\">\n          <label class=\"negrita required\">Estado</label>\n          <select class=\"form-control\" formControlName=\"estado\">\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Elige un estado...</option>\n            <option *ngFor=\"let estado of estados\" [ngValue]=\"estado.id\">\n              {{ estado.nombre }}\n            </option>\n          </select>\n        </div>\n      </div>\n\n\n      <!-- NOMBRE -->\n      <div class=\"form-group\">\n        <label class=\"negrita\">Nombre del proyecto</label>\n        <input type=\"text\" formControlName=\"nombre\" placeholder=\"Nombre del proyecto a buscar. Proporcione una coincidencia total o parcial\"\n          class=\"form-control\">\n      </div>\n\n\n      <!-- AMBITO -->\n      <div class=\"row\">\n        <div class=\"form-group col-md-6\">\n          <label class=\"negrita\">Ambito</label>\n          <select class=\"form-control\" formControlName=\"ambito\" (change)=\"onChangeAmbito($event.target.value) \">\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Elige una rama de conocimiento...</option>\n            <option *ngFor=\"let ambito of ambitos\" [ngValue]=\"ambito.id\">\n              {{ ambito.nombre }}\n            </option>\n          </select>\n        </div>\n        <!-- ESPECIALIDAD -->\n        <div class=\"form-group col-md-6\">\n          <label class=\"negrita\">Especialidad</label>\n          <select class=\"form-control\" formControlName=\"especialidad\">\n            <option value=\"null\" disabled=\"true\" [selected]=\"true\">Elige una especialidad...</option>\n            <option *ngFor=\"let especialidad of especialidades\" [ngValue]=\"especialidad.id\">\n              {{ especialidad.nombre }}\n            </option>\n          </select>\n        </div>\n      </div>\n\n      <div class=\"row\">\n        <!-- UNIVERSIDAD -->\n        <div class=\"form-group col-md-6\">\n          <label class=\"negrita\">Universidad</label>\n          <select class=\"form-control\" formControlName=\"universidad\">\n            <option value=\"null\" [selected]=\"true\" disabled=\"true\">Elige una universidad...</option>\n            <option *ngFor=\"let universidad of universidades\" [ngValue]=\"universidad.id\">\n              {{ universidad.nombre }}\n            </option>\n          </select>\n        </div>\n\n\n      </div>\n\n\n      <!-- BOTONES -->\n      <div class=\"row\">\n        <div class=\"col-md-6\">\n          <button type=\"submit\" class=\"button submit\" [disabled]=\"!myForm.valid\">\n            <i class=\"fa fa-check\"></i> Buscar\n          </button>\n        </div>\n        <div class=\"alert alert-danger\" *ngIf=\"message\">{{message}}</div>\n\n        <div class=\"col-md-6\">\n          <button type=\"button\" class=\"button cancel\" (click)=goback();>\n            <i class=\"fa fa-times\"></i> Cancelar\n          </button>\n        </div>\n      </div>\n    </form>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -4755,10 +4887,160 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+var common_1 = __webpack_require__("./node_modules/@angular/common/esm5/common.js");
+var forms_1 = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
+var router_1 = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+var proyectos_service_1 = __webpack_require__("./src/app/components/proyectos/proyectos.service.ts");
+var exp_service_1 = __webpack_require__("./src/app/components/experiencias/exp.service.ts");
+var auth_service_1 = __webpack_require__("./src/app/auth.service.ts");
+var now = new Date();
 var ProyectosSearchComponent = /** @class */ (function () {
-    function ProyectosSearchComponent() {
+    function ProyectosSearchComponent(_expService, _projService, _authService, _router, _location, _fb) {
+        var _this = this;
+        this._expService = _expService;
+        this._projService = _projService;
+        this._authService = _authService;
+        this._router = _router;
+        this._location = _location;
+        this._fb = _fb;
+        _expService.getUniversidades().subscribe(function (universidadesList) {
+            _this.universidades = universidadesList;
+        });
+        _expService.getAmbitos().subscribe(function (ambitosList) {
+            _this.ambitos = ambitosList;
+        });
+        this.user = _authService.getLocalUser();
+        this.getEstados();
+        _authService.user$.subscribe(function (user) {
+            _this.user = user;
+            console.log("local User: ", _this.user);
+            _this.getEstados();
+        });
+        this.newProj = {}; //Esta es la forma correcta de inicializar un objeto basado en una Interface cuando no se requieren valores iniciales.
+        this.myForm = _fb.group({
+            'nombre': '',
+            'fecha': '',
+            'ambito': null,
+            'estado': [null, forms_1.Validators.required],
+            'especialidad': '',
+            'universidad': '',
+        });
+        this.myForm.valueChanges.subscribe(function (data) {
+            var fecha = _this.myForm.controls['fecha'];
+            if (fecha.value != '') {
+                _this.message = null;
+                //this.myForm.controls.get['fecha']).setValue("12/12/2001")
+                //console.log(fecha.value)  
+            }
+        });
     }
     ProyectosSearchComponent.prototype.ngOnInit = function () {
+    };
+    ProyectosSearchComponent.prototype.selectToday = function () {
+        this.model = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    };
+    ProyectosSearchComponent.prototype.onChangeAmbito = function (value) {
+        var _this = this;
+        var idx = parseInt(value);
+        if (idx == 0)
+            return;
+        this._expService.getEspecialidades(idx).subscribe(function (especialidadesList) {
+            _this.especialidades = especialidadesList;
+        });
+    };
+    ProyectosSearchComponent.prototype.goback = function () {
+        this._router.navigate(['/proyectos']);
+    };
+    ProyectosSearchComponent.prototype.search = function (model) {
+        var _this = this;
+        var sCriteria = "";
+        this.newProj = this.myForm.value;
+        if (this.newProj.nombre != "")
+            sCriteria += "nombre: '" + this.newProj.nombre + "'; ";
+        if (this.newProj.ambito == "0" || this.newProj.ambito == null)
+            this.newProj.ambito = "";
+        else
+            sCriteria += "ambito: '" + this.getNombre(this.ambitos, this.newProj.ambito) + "'; ";
+        if (this.newProj.estado == null) {
+            this.newProj.estado = { id: 0, nombre: "no state", descripcion: "" };
+        }
+        else {
+            var estado = +this.newProj.estado; //El simbolo + parsea a entero
+            this.newProj.estado = null;
+            this.newProj.estado = { id: estado, nombre: "", descripcion: "" };
+            sCriteria += "estado: '" + this.getNombre(this.estados, estado) + "'; ";
+        }
+        if (this.newProj.especialidad == "")
+            this.newProj.especialidad = "";
+        else
+            sCriteria += "especialidad: '" + this.getNombre(this.especialidades, this.newProj.especialidad) + "'; ";
+        if (this.newProj.universidad == "")
+            this.newProj.universidad = "";
+        else
+            sCriteria += "universidad: '" + this.getNombre(this.universidades, this.newProj.universidad) + "'; ";
+        if (this.myForm.controls['fecha'].value != "") {
+            var ngbDate = this.myForm.controls['fecha'].value;
+            var formatDate = (ngbDate.day + '-' + ngbDate.month + '-' + ngbDate.year);
+            sCriteria += "fecha: " + formatDate + "; ";
+        }
+        this._projService.sCriteria = sCriteria;
+        this._projService.searchProyectos(this.newProj).subscribe(function (res) {
+            if (res['success'] == true) {
+                console.log("Proyectos: ", res['proj']);
+                _this._projService.proyectos = res['proj'];
+                _this._router.navigate(['/proyectos-list']);
+            }
+            else {
+                console.log(res['message']);
+                _this.message = res['message'];
+            }
+        });
+    };
+    ProyectosSearchComponent.prototype.getEstados = function () {
+        var _this = this;
+        this._projService.getEstados().subscribe(function (estadosList) {
+            _this.estados = [];
+            var estadosAll = estadosList;
+            console.log("todos los estados: ", estadosList);
+            for (var estado in estadosList) {
+                if (_this.user != null) {
+                    console.log("rol: ", _this.user.rol_id);
+                    switch (estado) {
+                        case "0"://solicitado
+                            if (_this.user.rol_id > 2)
+                                _this.estados.push(estadosList[estado]);
+                            break;
+                        case "1"://Apadrinado
+                            if (_this.user.rol_id > 2)
+                                _this.estados.push(estadosList[estado]);
+                            break;
+                        case "2"://reclutando
+                            _this.estados.push(estadosList[estado]);
+                            break;
+                        case "3"://running
+                            _this.estados.push(estadosList[estado]);
+                            break;
+                        case "4"://finalizado
+                            _this.estados.push(estadosList[estado]);
+                            break;
+                        case "5"://cancelado
+                            if (_this.user.rol_id > 3)
+                                _this.estados.push(estadosList[estado]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (+(estado) + 1 > 2 && +(estado) + 1 < 6)
+                    _this.estados.push(estadosList[estado]);
+            }
+        });
+    };
+    ProyectosSearchComponent.prototype.getNombre = function (lista, idx) {
+        for (var key = 0; key < lista.length; key++)
+            if ((lista[key].id) == idx)
+                return lista[key].nombre;
+        return "";
     };
     ProyectosSearchComponent = __decorate([
         core_1.Component({
@@ -4766,7 +5048,12 @@ var ProyectosSearchComponent = /** @class */ (function () {
             template: __webpack_require__("./src/app/components/proyectos/proyectos-search/proyectos-search.component.html"),
             styles: [__webpack_require__("./src/app/components/proyectos/proyectos-search/proyectos-search.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [exp_service_1.ExpService,
+            proyectos_service_1.ProyectosService,
+            auth_service_1.AuthService,
+            router_1.Router,
+            common_1.Location,
+            forms_1.FormBuilder])
     ], ProyectosSearchComponent);
     return ProyectosSearchComponent;
 }());
@@ -5187,6 +5474,15 @@ var ProyectosService = /** @class */ (function () {
         var options = new http_1.RequestOptions({ headers: headers });
         console.log("Accediendo al endpoint GET proyectos");
         return this._http.get(this.base_url + "/proyectos", options).map(function (res) { return _this.parseRes(res); });
+    };
+    ProyectosService.prototype.searchProyectos = function (proj) {
+        var _this = this;
+        console.log("searchProyectos: ", proj);
+        var body = JSON.stringify(proj);
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.post(this.base_url + "/search_proj", body, options).map(function (res) { return _this.parseRes(res); });
     };
     ProyectosService.prototype.getProyectosByEstado = function (estadoId) {
         var _this = this;

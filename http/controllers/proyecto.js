@@ -201,6 +201,97 @@ router.get('/proyectos', (req, res) => {
 });
 
 
+router.post('/search_proj', (req, res) => {
+    console.log("pasa")
+    try {
+        var reqProj = req.body;
+        console.log("Busqueda de proyectos. Paramatros: ", reqProj)
+
+        let ambitoId = reqProj.ambito
+        let projNombre = reqProj.nombre
+        let especialidadId = reqProj.especialidad
+        let universidadId = reqProj.universidad
+        let estadoId = reqProj.estado.id
+
+        let sQuery =
+            "SELECT " +
+            "proyectos.id as `idProj`, proyectos.nombre as `nombre_proyecto`, proyectos.descripcion as `descripcion_proyecto`, " +
+            "proyectos.fecha_inicio, proyectos.fecha_fin, proyectos.cupo_estudiantes, " +
+            "estados_proyectos.id as `id_estado`, " +
+            "estados_proyectos.nombre as `nombre_estado`, " +
+            "entidades.id as 'entidad_id', " +
+            "entidades.nombre as 'nombre_entidad', " +
+            "entidades.descripcion as 'descripcion_entidad', " +
+            "entidades.email as 'email_entidad', " +
+            "entidades.tfno as 'tfno_entidad', " +
+            "entidades.municipio as 'municipio_entidad', " +
+            "provincias.id as 'id_provincia', " +
+            "provincias.nombre as 'nombre_provincia', " +
+            "proyectos.descripcion as `desc`, " +
+            "ambitos.nombre as `nombre_ambito`, " +
+            "proyectos.ambito_id, " +
+            "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
+            "FROM proyectos " +
+            "LEFT JOIN entidades on proyectos.entidad_id = entidades.id " +
+            "LEFT JOIN estados_proyectos on proyectos.estado_id = estados_proyectos.id " +
+            "LEFT JOIN ambitos on proyectos.ambito_id = ambitos.id " +
+            "LEFT JOIN especialidades on proyectos.especialidad_id = especialidades.id " +
+            "LEFT JOIN universidades on proyectos.universidad_id = universidades.id  " +
+            "LEFT JOIN provincias on entidades.provincia_id = provincias.id  "
+        sQuery += "WHERE 1=1 "
+        if (ambitoId != "") sQuery += " and proyectos.ambito_id = " + ambitoId
+        if (estadoId != "") sQuery += " and proyectos.estado_id = " + estadoId
+        if (projNombre != "") sQuery += " and proyectos.nombre like '%" + projNombre + "%'"
+        if (especialidadId != "") sQuery += " and proyectos.especialidad_id = " + especialidadId
+        if (universidadId != "") sQuery += " and proyectos.universidad_id = " + universidadId
+
+        sqlConn.pool.query(sQuery, function (err, proj, fields) { //SELECT PROYECTOS
+            //console.log("Query: ", this.sql)
+            if (err) {
+                console.log("error: ", err)
+                let content = {
+                    success: false,
+                    message: 'Error listando proyectos',
+                    err: err
+                };
+            }
+
+            //TRATAMIENTO DE LA ASINCRONIA: 
+            //Por cada fila en proj extrae un element sobre el que realizar las consultas de coordinador y de ficheros adjuntos
+            //Por medio del waterfall nos aseguramos de tener la estructura de datos comepleta antes de hacer push en el objeto resultado
+            var proyectos = [];
+            var proyecto = projSchema;
+            async.eachSeries(proj, (element, eachCallback) => {
+                let sQuery = "SELECT coordinadores.id, nombre, email " +
+                    "FROM coordinadores " +
+                    "INNER JOIN proyecto_coordinador ON coordinadores.id = proyecto_coordinador.coordinador_id " +
+                    "WHERE ?";
+                sqlConn.pool.query(sQuery, { 'proyecto_id': element.idProj }, function (err, coord, fields) { //SELECT COORDINADORES
+                    if (err) eachCallback(err)
+                    proyecto.setProyecto(element)
+                    console.log("nombre_uni: ", proyecto.universidad)
+                    proyecto.setCoordinadores(coord)
+                    proyectos.push(JSON.parse(JSON.stringify(proyecto)))
+                    eachCallback(null, proyectos)
+                }) //sql 
+            }, function (err) {
+                if (err) res.send(err)
+                let content = {
+                    proj: (proyectos),
+                    success: true,
+                    message: 'ok'
+                };
+                res.send(content)
+                return
+            }
+            ) //EACH
+        }) //SELECT PROYECTO
+    } catch (err) {
+        console.log("ERROR: ", err)
+    }
+});
+
+
 
 router.put('/proyectos', (req, res) => { //ACTUALIZAR PROYECTO
     var reqProj = req.body;
@@ -792,7 +883,7 @@ router.delete('/proyectos', (req, res) => {
 });
 
 router.get('/estados', (req, res) => {
-    let sQuery = "SELECT * FROM estados_proyectos order by nombre asc"
+    let sQuery = "SELECT * FROM estados_proyectos order by id asc"
     sqlConn.pool.query(sQuery, function (err, rows, fields) { //SELECT QUERY
         if (err) {
             console.log("error: ", err)

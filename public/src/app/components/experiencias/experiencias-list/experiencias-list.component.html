@@ -16,25 +16,37 @@
   </div>
 
   <div class="container-experiencias">
-    <h1>{{nombreLista}}</h1>
-    <br>
+    <h1> {{titulo}}</h1>
+    <div *ngIf="sCriteria !=''">
+      <p>
+        <span class="negrita">Criterios de búsqueda: </span>{{sCriteria}}</p>
+    </div>
     <div *ngIf="experiencias.length > 0">
-      <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
-        <h3>{{experiencia.nombre}}</h3>
+      <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p, totalItems: total}; let i = index">
+        <h2>{{experiencia.nombre}}</h2>
+        <h3>Finalizada el: {{experiencia.fecha}}</h3>
         <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>
-        <h4><span title = "Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)"></span></h4>
         <br>
-        <br>
-        <br>
+        <h4>
+          <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)"></span>
+        </h4>
       </div>
     </div>
     <div *ngIf="experiencias.length == 0">
-      <h3>NO HAY NINGUNA EXPERIENCIA EN ESTE AMBITO</h3>
+      <h3>NO HAY NINGUNA EXPERIENCIA PREVIA.</h3>
     </div>
     <br>
     <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
       screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página" autoHide="true"></pagination-controls>
     <br>
+    <!-- BOTONES -->
+    <div class="row">
+      <div class="col-md-6">
+        <button type="button" class="button cancel" (click)=goback();>
+          <i class="fa fa-times"></i> Volver atrás
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
-

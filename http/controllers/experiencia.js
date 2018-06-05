@@ -246,6 +246,80 @@ router.put('/experiencias', (req, res) => {
   }
 });
 
+router.post('/search_exp', (req, res) => {
+  var reqExp = req.body;
+  console.log("Busqueda de experiencias. Paramatros: ", reqExp)
+
+
+  let ambitoId= reqExp.ambito
+  let expNombre = reqExp.nombre
+  let especialidadId = reqExp.especialidad
+  let universidadId = reqExp.universidad
+  
+  try {
+    let sQuery =
+      "SELECT " +
+      "destinatario, fecha, experiencias.id as `idExpe`, experiencias.nombre as `nombre_experiencia`, " +
+      "experiencias.descripcion as `desc`, " +
+      "ambitos.nombre as `nombre_ambito`, " +
+      "universidades.nombre as `nombre_uni`, especialidades.nombre as `nombre_especialidad` " +
+      "FROM experiencias " +
+      "INNER JOIN ambitos on experiencias.ambito_id = ambitos.id " +
+      "INNER JOIN especialidades on experiencias.especialidad_id = especialidades.id " +
+      "INNER JOIN universidades on experiencias.universidad_id = universidades.id  "
+    sQuery += "WHERE 1=1 "  
+
+    if (ambitoId != "") sQuery += " and experiencias.ambito_id = " + ambitoId
+    if (expNombre != "") sQuery += " and experiencias.nombre like '%" + expNombre + "%'"
+    if (especialidadId != "") sQuery += " and experiencias.especialidad_id = " + especialidadId
+    if (universidadId != "") sQuery += " and experiencias.universidad_id = " + universidadId
+
+
+    sqlConn.pool.query(sQuery, function (err, exp, fields) { //SELECT EXPERIENCIAS
+      if (err) {
+        console.log("error: ", err)
+        let content = {
+          success: false,
+          message: 'Error listando experiencias',
+          err: err
+        };
+      }
+      console.log("SQL: ", this.sql)
+      //TRATAMIENTO DE LA ASINCRONIA: 
+      //Por cada fila en exp extrae un element sobre el que realizar las consultas de coordinador y de ficheros adjuntos
+      //Por medio del waterfall nos aseguramos de tener la estructura de datos comepleta antes de hacer push en el objeto resultado
+      var experiencias = [];
+      var experiencia = expSchema;
+      async.eachSeries(exp, (element, eachCallback) => {
+        let sQuery = "SELECT coordinadores.id, nombre, email " +
+          "FROM coordinadores " +
+          "INNER JOIN experiencia_coordinador ON coordinadores.id = experiencia_coordinador.coordinador_id " +
+          "WHERE ?";
+        sqlConn.pool.query(sQuery, { 'experiencia_id': element.idExpe }, function (err, coord, fields) { //SELECT COORDINADORES
+          if (err) eachCallback(err)
+          experiencia.setExperiencia(element)
+          experiencia.setCoordinadores(coord)
+          experiencias.push(JSON.parse(JSON.stringify(experiencia)))
+          eachCallback(null, experiencias)
+        }) //sql 
+      }, function (err) {
+        if (err) res.send(err)
+        let content = {
+          exp: (experiencias),
+          success: true,
+          message: 'ok'
+        };
+        res.send(content)
+        return
+      }
+      ) //EACH
+    }) //SELECT EXP
+
+  } catch (err) {
+    console.log("ERROR: ", err)
+  }
+});
+
 router.post('/experiencias', (req, res) => {
   var reqExp = req.body;
   try {
@@ -801,11 +875,11 @@ router.post('/upload', function (req, res) {
     }
     //Esto no se si es lo mas ortodoxo pero debo tener una copia de los ficheros que se suben en el assets/uploads de src 
     //para que las subidas sean permanentes respecto a los reinicios del servidor
-    
+
     let pathToAssetsInDist = './public/dist/assets/uploads/'
-    let pathToAssetsInSrc =  './public/src/assets/uploads/'
-    console.log("copiando ",pathToAssetsInDist, req.file.filename, ' a ', pathToAssetsInSrc, req.file.filename )
-    fs.createReadStream(pathToAssetsInDist+req.file.filename).pipe(fs.createWriteStream(pathToAssetsInSrc+req.file.filename));
+    let pathToAssetsInSrc = './public/src/assets/uploads/'
+    console.log("copiando ", pathToAssetsInDist, req.file.filename, ' a ', pathToAssetsInSrc, req.file.filename)
+    fs.createReadStream(pathToAssetsInDist + req.file.filename).pipe(fs.createWriteStream(pathToAssetsInSrc + req.file.filename));
 
     res.json({ error_code: 0, file: req.file.filename, err_desc: null })
   })

@@ -16,33 +16,53 @@
   </div>
 
   <div class="container-experiencias">
-    <h1>{{nombreLista}}</h1>
-    <br>
-    <div *ngIf="proyectos.length > 0">
-      <div class="experiencia-detalle" *ngFor="let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
-        <h2>{{proyecto.nombre}}</h2>
-        <h5>Estado: </h5>
-        <h4>{{proyecto.estado.nombre}}</h4>
-        <h5>Entidad demandante: </h5>
-        <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>
-        <div *ngIf="proyecto.universidad != null">
-          <h5>Universidad: </h5>
-          <h4>{{proyecto.universidad}}</h4>
-        </div>
-        <h4>
-          <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"></span>
-        </h4>
-        <br>
-        <br>
-        <br>
+    <h1> {{titulo}}</h1>
+    <div *ngIf="sCriteria != null">
+      <div *ngIf="sCriteria !=''">
+        <p>
+          <span class="negrita">Criterios de búsqueda: </span>{{sCriteria}}</p>
       </div>
     </div>
-    <div *ngIf="proyectos.length == 0">
+    <div *ngIf="proyectos != null">
+      <div *ngIf="proyectos.length > 0">
+
+        <div class="experiencia-detalle" *ngFor="let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
+          <h2>{{proyecto.nombre}}</h2>
+          <h5>Estado: </h5>
+          <h4>{{proyecto.estado.nombre}}</h4>
+          <h5>Entidad demandante: </h5>
+          <h4>{{proyecto.entidad.nombre}} - {{proyecto.entidad.provincia_nombre}}</h4>
+          <div *ngIf="proyecto.universidad != null">
+            <h5>Universidad: </h5>
+            <h4>{{proyecto.universidad}}</h4>
+          </div>
+          <h4>
+            <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"></span>
+          </h4>
+          <br>
+        </div>
+        
+        <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
+          screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+
+      </div>
+      <div *ngIf="proyectos.length == 0">
+        <h3>NO HAY NINGUN PROYECTO</h3>
+      </div>
+    </div>
+    <div *ngIf="proyectos == null">
       <h3>NO HAY NINGUN PROYECTO</h3>
     </div>
     <br>
-    <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
-      screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
-    <br>
+
+    <!-- BOTONES -->
+    <div class="row">
+      <div class="col-md-6">
+        <button type="button" class="button cancel" (click)=goback();>
+          <i class="fa fa-times"></i> Volver atrás
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>
