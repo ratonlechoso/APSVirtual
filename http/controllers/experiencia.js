@@ -824,7 +824,7 @@ router.delete('/bibliografiaExt', (req, res) => {
       "WHERE ? "
     console.log("bibId vale: ", bibId)
     sqlConn.pool.query(sQuery, { 'id': bibId }, function (err, deletedBib) { //ELIMINAR RECURSOS BIBLIOGRAFICO 
-      console.log("datos de callback del delete: ", deletedBbib)
+      console.log("datos de callback del delete: ", deletedBib)
       if (err) {
         let content = {
           err: err,
