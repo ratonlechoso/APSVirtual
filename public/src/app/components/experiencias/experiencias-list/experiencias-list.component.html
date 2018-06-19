@@ -17,9 +17,11 @@
 
   <div class="container-experiencias">
     <h1> {{titulo}}</h1>
-    <div *ngIf="sCriteria !=''">
-      <p>
-        <span class="negrita">Criterios de búsqueda: </span>{{sCriteria}}</p>
+    <div *ngIf="sCriteria != null">
+      <div *ngIf="sCriteria !=''">
+        <p>
+          <span class="negrita">Criterios de búsqueda: </span>{{sCriteria}}</p>
+      </div>
     </div>
     <div *ngIf="experiencias.length > 0">
       <div class="experiencia-detalle" *ngFor="let experiencia of experiencias | paginate :{itemsPerPage: 4, currentPage: p, totalItems: total}; let i = index">
@@ -27,9 +29,7 @@
         <h3>Finalizada el: {{experiencia.fecha}}</h3>
         <h4>{{experiencia.universidad}} - {{experiencia.especialidad}}</h4>
         <br>
-        <h4>
-          <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)"></span>
-        </h4>
+          <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(experiencia.id)">   Ver detalle...</span>
       </div>
     </div>
     <div *ngIf="experiencias.length == 0">

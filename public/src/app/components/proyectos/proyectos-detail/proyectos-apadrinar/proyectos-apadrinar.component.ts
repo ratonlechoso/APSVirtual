@@ -56,7 +56,7 @@ export class ProyectosApadrinarComponent implements OnInit , OnDestroy {
     this.updateProj.cupo_estudiantes = 0
     this.updateProj.coordinadores.push(coordinador)
 
-    this.updateProj.coord
+    //this.updateProj.coord
     console.log("updateProj: ", this.updateProj)
     _expService.getAmbitos().subscribe((ambitosList) => {
       this.ambitos = ambitosList
@@ -93,9 +93,17 @@ export class ProyectosApadrinarComponent implements OnInit , OnDestroy {
 
       //FORMATEAR FECHA A UN SOLO CAMPO
     });
+    this.cargarCoordinadores()
   }
 
   ngOnInit() {
+  }
+
+  cargarCoordinadores() {
+    const control = <FormArray>this.myForm.controls['coordinadores'];
+    for (let index = 0; index < this.updateProj.coordinadores.length-1; index++) {
+      control.push(this.initCoordinador());        
+    }
   }
 
   ngOnDestroy() {

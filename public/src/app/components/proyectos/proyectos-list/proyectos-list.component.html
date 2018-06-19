@@ -26,7 +26,7 @@
     <div *ngIf="proyectos != null">
       <div *ngIf="proyectos.length > 0">
 
-        <div class="experiencia-detalle" *ngFor="let proyecto of proyectos | paginate :{itemsPerPage: 4, currentPage: p}; let i = index">
+        <div class="proyecto-detalle" *ngFor="let proyecto of proyectos | paginate :{itemsPerPage: 3, currentPage: p}; let i = index">
           <h2>{{proyecto.nombre}}</h2>
           <h5>Estado: </h5>
           <h4>{{proyecto.estado.nombre}}</h4>
@@ -36,14 +36,15 @@
             <h5>Universidad: </h5>
             <h4>{{proyecto.universidad}}</h4>
           </div>
-          <h4>
-            <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"></span>
-          </h4>
+          <br>
+
+          <span title="Ampliar detalle" class="fa fa-file-text pointer icon-blue" (click)="showDetail(proyecto.id)"> Ver detalle...</span>
+
           <br>
         </div>
-        
+
         <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente" screenReaderPaginationLabel="Paginación "
-          screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página"></pagination-controls>
+          screenReaderPageLabel="página" screenReaderCurrentLabel="estás en la página" autoHide="true"></pagination-controls>
 
       </div>
       <div *ngIf="proyectos.length == 0">

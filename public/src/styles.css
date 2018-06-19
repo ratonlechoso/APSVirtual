@@ -178,7 +178,7 @@ a.ambitos {
 }
 
 a.ambitos:hover {
-     color: orange!important;
+    color: rgb(127, 161, 67)  !important;
 }
 
 a.ambitos:link {
@@ -186,7 +186,7 @@ a.ambitos:link {
 }
 
 a.ambitos:visited {
-    color: orange!important;
+    color: darkolivegreen  !important;
 }
 
 a.ambitos:active {
@@ -196,20 +196,20 @@ a.ambitos:active {
 
 a.normal:hover {
     text-decoration: underline!important;
-    color: orange!important;
+    color: rgb(113, 143, 62)  !important;
 }
 
 a.normal:link {
-    color: brown!important;
+    color: darkolivegreen  !important;
 }
 
 a.normal:visited {
-    color: orange!important;
+    color: darkolivegreen  !important;
 }
 
 a.normal:active {
     text-decoration: underline!important;
-    color: orange!important;
+    color: darkolivegreen  !important;
 }
 
 div.alert.alert-danger {
