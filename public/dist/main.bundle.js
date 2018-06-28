@@ -4264,7 +4264,8 @@ var ProyectosDetailComponent = /** @class */ (function () {
     };
     ProyectosDetailComponent.prototype.apadrinarReceiver = function (event) {
         console.log("datos del evento 'apadrinar': ", event);
-        this.proyecto = event;
+        if (event !== false)
+            this.proyecto = event;
         (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0;
     };
     ProyectosDetailComponent.prototype.iniciar_reclutamiento = function (projId) {
@@ -4273,7 +4274,8 @@ var ProyectosDetailComponent = /** @class */ (function () {
     };
     ProyectosDetailComponent.prototype.iniciar_reclutamientoReceiver = function (event) {
         console.log("datos del evento 'iniciar_reclutamiento': ", event);
-        this.proyecto = event;
+        if (event !== false)
+            this.proyecto = event;
         (this.updAction != 2) ? this.updAction = 2 : this.updAction = 0;
     };
     ProyectosDetailComponent.prototype.alistar = function (projId) {
@@ -4788,10 +4790,10 @@ var ProyectosListComponent = /** @class */ (function () {
         this.titulo = "Proyectos de ApS - ";
         switch (this.estadoId.toString()) {
             case "1":
-                this.titulo += "solicitado por entidad externa";
+                this.titulo += "solicitados por entidad externa";
                 break;
             case "2":
-                this.titulo += "apadrinado por algún docente";
+                this.titulo += "apadrinados por algún docente";
                 break;
             case "3":
                 this.titulo += "en fase de aceptación de candidatos";
@@ -4800,7 +4802,10 @@ var ProyectosListComponent = /** @class */ (function () {
                 this.titulo += "en curso";
                 break;
             case "5":
-                this.titulo += "finalizado";
+                this.titulo += "finalizados";
+                break;
+            case "6":
+                this.titulo += "cancelados";
                 break;
             default:
                 break;

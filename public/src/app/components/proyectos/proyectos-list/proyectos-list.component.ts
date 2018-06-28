@@ -109,10 +109,10 @@ export class ProyectosListComponent implements OnInit {
     this.titulo = "Proyectos de ApS - "
     switch (this.estadoId.toString()) {
       case "1":
-        this.titulo += "solicitado por entidad externa"
+        this.titulo += "solicitados por entidad externa"
         break;
       case "2":
-        this.titulo += "apadrinado por algún docente"
+        this.titulo += "apadrinados por algún docente"
         break;
       case "3":
         this.titulo += "en fase de aceptación de candidatos"
@@ -121,7 +121,10 @@ export class ProyectosListComponent implements OnInit {
         this.titulo += "en curso"
         break;
       case "5":
-        this.titulo += "finalizado"
+        this.titulo += "finalizados"
+        break;
+      case "6":
+        this.titulo += "cancelados"
         break;
       default:
         break;

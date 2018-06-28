@@ -84,7 +84,8 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
 
   apadrinarReceiver(event) {
     console.log("datos del evento 'apadrinar': ", event);
-    this.proyecto = <Proyecto>event;
+    if (event !== false) 
+      this.proyecto = <Proyecto>event;
     (this.updAction != 1) ? this.updAction = 1 : this.updAction = 0
   }
 
@@ -95,7 +96,8 @@ export class ProyectosDetailComponent implements OnInit, OnDestroy {
 
   iniciar_reclutamientoReceiver(event) {
     console.log("datos del evento 'iniciar_reclutamiento': ", event);
-    this.proyecto = <Proyecto>event;
+    if (event !== false) 
+      this.proyecto = <Proyecto>event;
     (this.updAction != 2) ? this.updAction = 2 : this.updAction = 0
   }
 
