@@ -13,7 +13,7 @@ module.exports = {
     portDbSql: process.env.SQLPORT || 3306,
 
     //MAILER
-    emailUser: process.env.EMAILUSER || 'HARDCODEAR AQUI UN USUARIO',
-    emailPassword: process.env.EMAILPASSWORD || 'HARDCODEAR EL PASSWORD',
+    emailUser: process.env.EMAILUSER || 'hectoram@gmail.com', //HARDCODEAR AQUI UN USUARIO',
+    emailPassword: process.env.EMAILPASSWORD || 'Clara2011',
     emailService: 'Gmail'
 }
