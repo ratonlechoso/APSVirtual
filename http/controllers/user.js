@@ -96,6 +96,11 @@ router.get('/check-state', auth.verifyToken, (req, res) => {
           res.send({ success: false, code: 'err_004', message: 'usuario bloqueado.' });
           return
         }
+        if (rows[0].pendiente == 1) { 
+          console.log("Usuario pendiente")
+          res.send({ success: false, code: 'err_005', message: 'Usuario pendiente de activar. Privilegios insuficientes.' });
+          return
+        }
         //SI ESTÁ PENDIENTE DE ACTIVACION SU NIVEL DE PRIVILEGIOS ES 1 ó 2
         console.log ("PR", privileged_roles)
         if ((rows[0].pendiente == 1 && privileged_roles.indexOf(1)=== -1 && privileged_roles.indexOf(2)=== -1) 
